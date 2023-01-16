@@ -1,0 +1,14 @@
+/* Picture_01 from: https: //pixabay.com/photos/people-woman-travel-adventure-trek-2591874/ */
+
+.img-home-main{
+    min-height: 600px;
+    background-image: url("./Picture_01.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.hello{
+    height: 50px;
+    width: 50px;
+    background-color: blueviolet;
+}
