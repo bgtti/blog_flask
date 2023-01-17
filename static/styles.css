@@ -2,9 +2,10 @@ html,
 body {
     overflow-x: hidden;
 }
-.HOME-special-font {
+.HOME-special-font, .ALL-special-font {
     font-family: 'La Belle Aurore', cursive;
 }
+/* HOME */
 .HOME-title {
     font-size: 4em;
     padding-top: 25px;
@@ -51,4 +52,26 @@ body {
 .HOME-card-footer{
     border:none;
     background-color: white;
+}
+
+/* ALL POSTS */
+.ALL-h1{
+    margin: 30px;
+    font-size: 3em;
+}
+@media screen and (min-width: 600px) {
+    .ALL-h1 {
+        font-size: 5em;
+    }
+
+}
+.ALL-picture {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ALL-read-btn{
+    width: 150px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    color: rgb(75, 75, 75);
 }
