@@ -1,45 +1,4 @@
-<!doctype html>
-<html lang="en">
-
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=La+Belle+Aurore&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="../static/styles.css">
-
-    <title>Blog</title>
-</head>
-
-<body>
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-light  justify-content-center HOME-nav">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
-            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNavDropdown">
-            <ul class="navbar-nav justify-content-center">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">All Posts</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+{% include "header.html" %}
 
 <!-- Content -->
     <!-- Main image -->
@@ -53,12 +12,14 @@
         <div class="row justify-content-center">
             {% for theme in posts_themes: %}
             <div class="col col-auto mb-3 HOME-theme-btn">
-                <div class="card h-100" style="width: 13rem; border:none;">
-                    <img src="{{ theme[1] }}" class="card-img-top HOME-round-img" alt="Theme" />
-                    <div class="card-body" style="display:flex; justify-content: center;">
-                        <h5 class="card-title">{{theme[0]}}</h5>
+                <a class="ALL-no-hover" href="{{ url_for('all', index=theme[2]) }}">
+                    <div class="card h-100" style="width: 13rem; border:none;">
+                        <img src="{{ theme[1] }}" class="card-img-top HOME-round-img" alt="Theme" />
+                        <div class="card-body" style="display:flex; justify-content: center;">
+                            <h5 class="card-title ALL-no-hover">{{theme[0]}}</h5>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             {% endfor %}
         </div>
@@ -70,15 +31,17 @@
             {% for beach_posts in posts_all: %}
             {% if beach_posts["theme"] == "Beach": %}
             <div class="col col-auto mb-3">
-                <div class="card h-100 HOME-card" style="width: 18rem;">
-                    <img src="{{ beach_posts['picture_small'] }}" class="card-img-top" alt="{{ beach_posts['picture_alt'] }}" />
-                    <div class="card-body">
-                        <h5 class="card-title">{{ beach_posts["title"] }}</h5>
+                <a class="ALL-no-hover" href="{{ url_for('blog_post', index=beach_posts['id']) }}">
+                    <div class="card h-100 HOME-card ALL-post-hover" style="width: 18rem;">
+                        <img src="{{ beach_posts['picture_small'] }}" class="card-img-top" alt="{{ beach_posts['picture_alt'] }}" />
+                        <div class="card-body">
+                            <h5 class="card-title ALL-no-hover">{{ beach_posts["title"] }}</h5>
+                        </div>
+                        <div class="card-footer HOME-card-footer">
+                            <small class="text-muted ALL-no-hover">by {{ beach_posts["author"] }}</small>
+                        </div>
                     </div>
-                    <div class="card-footer HOME-card-footer">
-                        <small class="text-muted">by {{ beach_posts["author"] }}</small>
-                    </div>
-                </div>
+                </a>
             </div>
             {% endif %}
             {% endfor %}
@@ -90,18 +53,20 @@
         <div class="row justify-content-center">
             {% for cultural in posts_all: %}
             {% if cultural["theme"] == "Culture" and cultural["num_theme"] < 3: %} <div class="col col-auto mb-3">
-                <div class="card h-100" style="width: 27.9rem;">
-                    <img src="{{ cultural['picture_small'] }}" class="card-img" alt="{{ cultural['picture_alt'] }}" />
-                    {% if cultural["num_theme"] == 2: %}
-                    <div class="card-img-overlay d-flex flex-column justify-content-end">
-                        {% else: %}
-                        <div class="card-img-overlay">
-                            {% endif %}
-                            <h5 class="card-title HOME-txt-background">{{ cultural["title"] }}</h5>
-                            <p class="card-text HOME-txt-background">by {{ cultural["author"] }}</p>
+                <a class="ALL-no-hover" href="{{ url_for('blog_post', index=cultural['id']) }}">
+                    <div class="card h-100 ALL-post-hover" style="width: 27.9rem;">
+                        <img src="{{ cultural['picture_small'] }}" class="card-img" alt="{{ cultural['picture_alt'] }}" />
+                        {% if cultural["num_theme"] == 2: %}
+                        <div class="card-img-overlay d-flex flex-column justify-content-end">
+                            {% else: %}
+                            <div class="card-img-overlay">
+                                {% endif %}
+                                <h5 class="card-title HOME-txt-background ALL-no-hover">{{ cultural["title"] }}</h5>
+                                <p class="card-text HOME-txt-background ALL-no-hover">by {{ cultural["author"] }}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
                 {% endif %}
                 {% endfor %}
         </div>
@@ -113,16 +78,17 @@
             {% for nature_posts in posts_all: %}
             {% if nature_posts["theme"] == "Nature": %}
             <div class="col col-auto mb-3">
-                <div class="card h-100 HOME-card" style="width: 18rem;">
-                    <img src="{{ nature_posts['picture_small'] }}" class="card-img-top"
-                        alt="{{ nature_posts['picture_alt'] }}" />
-                    <div class="card-body">
-                        <h5 class="card-title">{{ nature_posts["title"] }}</h5>
+                <a class="ALL-no-hover" href="{{ url_for('blog_post', index=nature_posts['id']) }}">
+                    <div class="card h-100 HOME-card ALL-post-hover" style="width: 18rem;">
+                        <img src="{{ nature_posts['picture_small'] }}" class="card-img-top" alt="{{ nature_posts['picture_alt'] }}" />
+                        <div class="card-body">
+                            <h5 class="card-title ALL-no-hover">{{ nature_posts["title"] }}</h5>
+                        </div>
+                        <div class="card-footer HOME-card-footer">
+                            <small class="text-muted">by {{ nature_posts["author"] }}</small>
+                        </div>
                     </div>
-                    <div class="card-footer HOME-card-footer">
-                        <small class="text-muted">by {{ nature_posts["author"] }}</small>
-                    </div>
-                </div>
+                </a>
             </div>
             {% endif %}
             {% endfor %}
@@ -132,22 +98,24 @@
     <!-- Cards: Culture (missing piece)-->
     <section class="container-fluid mt-4">
         <div class="row justify-content-center" >
-            <div class="row no-gutters" style="width: 57rem;">
-                {% for cultural_piece in posts_all: %}
-                {% if cultural_piece["theme"] == "Culture" and cultural_piece["num_theme"] == 3: %}
-                <div class="col-md-6 card-img" >
-                    <img src="{{ cultural_piece['picture_small'] }}" class="card-img" alt="{{ cultural_piece['picture_alt'] }}">
-                </div>
-                <div class="col-md-6">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ cultural_piece["title"] }}</h5>
-                        <p class="card-text">{{ cultural_piece["intro"] }}</p>
-                        <p class="card-text"><small class="text-muted"> by {{ cultural_piece["author"] }}</small></p>
+            {% for cultural_piece in posts_all: %}
+            {% if cultural_piece["theme"] == "Culture" and cultural_piece["num_theme"] == 3: %}
+            <a class="ALL-no-hover" href="{{ url_for('blog_post', index=cultural_piece['id']) }}">
+                <div class="row no-gutters ALL-post-hover" style="width: 57rem;">
+                    <div class="col-md-6 card-img">
+                        <img src="{{ cultural_piece['picture_small'] }}" class="card-img" alt="{{ cultural_piece['picture_alt'] }}">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <h5 class="card-title ALL-no-hover">{{ cultural_piece["title"] }}</h5>
+                            <p class="card-text ALL-no-hover text-justify">{{ cultural_piece["intro"] }}</p>
+                            <p class="card-text ALL-no-hover"><small class="text-muted"> by {{ cultural_piece["author"] }}</small></p>
+                        </div>
                     </div>
                 </div>
-                {% endif %}
-                {% endfor %}
-            </div>
+            </a>
+            {% endif %}
+            {% endfor %}
         </div>
     </section>
 
@@ -156,46 +124,22 @@
         <div class="row justify-content-center">
             {% for city_posts in posts_all: %}
             {% if city_posts["theme"] == "City": %}
-            <div class="col col-auto mb-3">
-                <div class="card h-100 HOME-card" style="width: 18rem;">
-                    <img src="{{ city_posts['picture_small'] }}" class="card-img-top"
-                        alt="{{ city_posts['picture_alt'] }}" />
-                    <div class="card-body">
-                        <h5 class="card-title">{{ city_posts["title"] }}</h5>
-                    </div>
-                    <div class="card-footer HOME-card-footer">
-                        <small class="text-muted">by {{ city_posts["author"] }}</small>
+            <a class="ALL-no-hover" href="{{ url_for('blog_post', index=city_posts['id']) }}">
+                <div class="col col-auto mb-3">
+                    <div class="card h-100 HOME-card ALL-post-hover" style="width: 18rem;">
+                        <img src="{{ city_posts['picture_small'] }}" class="card-img-top" alt="{{ city_posts['picture_alt'] }}" />
+                        <div class="card-body">
+                            <h5 class="card-title ALL-no-hover">{{ city_posts["title"] }}</h5>
+                        </div>
+                        <div class="card-footer HOME-card-footer">
+                            <small class="text-muted ALL-no-hover">by {{ city_posts["author"] }}</small>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
             {% endif %}
             {% endfor %}
         </div>
     </section>
 
-<!-- Footer -->
-<footer class=" text-center text-lg-start HOME-footer">
-    <p class="text-center p-3">
-        © 2023 Copyright:
-        <a class="text-dark" href="https://github.com/bgtti">Bgtti</a>
-    </p>
-</footer>
-
-    <!-- Optional JavaScript; choose one of the two! -->
-
-    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous"></script>
-
-    <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
-    -->
-</body>
-
-</html>
+{% include "footer.html" %}
