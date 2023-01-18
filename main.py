@@ -6,10 +6,14 @@ import copy
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime 
 import smtplib
-import os #getting .env
-from dotenv import load_dotenv  # .env
+import os #getting .env variables
+from dotenv import load_dotenv  # getting .env variables
+from flask_wtf import FlaskForm # login form
+from wtforms import StringField, PasswordField, SubmitField  # login form
+from wtforms.validators import DataRequired  # login form
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = "myFlaskApp4Fun"  # needed for login with wtforms
 
 # EMAIL
 load_dotenv() # used to get .env variables, where username and password for the email account are stored
@@ -122,7 +126,7 @@ def contact():
             return "There was an error adding message to the database."
     my_contacts = db.session.query(Blog_Contact).all()
     print(my_contacts)
-    return render_template('contact.html', msg_sent=True)
+    return render_template('contact.html', msg_sent=False)
 
 @app.route("/post/<int:index>")
 def blog_post(index):
@@ -143,6 +147,28 @@ def blog_post(index):
 
     return render_template('post.html', blog_posts=blog_posts, post_author=post_author)
 
+# Log in form
+class SignInForm(FlaskForm):
+    username = StringField(label='Username', validators=[DataRequired()])
+    password = PasswordField(label='Password', validators=[DataRequired()])
+    submit = SubmitField(label='Login')
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def blog_login():
+    form = SignInForm()
+    if form.validate_on_submit():
+        if form.username.data == "admin" and form.password.data == "12345678":
+            return render_template("dashboard.html")
+        else:
+            return render_template('login.html', form=form, login_failure=True)
+    return render_template('login.html', form=form, login_failure=False)
+
+
+@app.route("/dashboard")
+def dashboard():
+    return render_template('dashboard.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
+

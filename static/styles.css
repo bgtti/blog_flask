@@ -91,3 +91,13 @@ body {
     font-weight: bold;
     font-size: 1.5em;
 }
+.ALL-login-link{
+    color: rgb(150, 150, 150);
+}
+.ALL-login-link-link{
+    color: rgb(150, 150, 150) !important;
+    text-decoration: underline !important;
+}
+.All-error{
+    color: #8E1600;
+}

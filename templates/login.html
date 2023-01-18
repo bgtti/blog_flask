@@ -1,0 +1,43 @@
+{% include "header.html" %}
+
+<!-- Content -->
+<h1 class="ALL-special-font ALL-h1 text-center">Log in</h1>
+
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <p class= "text-justify">Blog admin log-in section.</p>
+    </div>
+</section>
+
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class= " justify-content-center" action="{{url_for('blog_login')}}" method="POST" novalidate>
+            {{ form.csrf_token }}
+            <div class="form-group justify-content-center">
+                {{ form.username.label }} <br> {{ form.username(size=30) }}
+                {% for err in form.username.errors %}
+                <br>
+                <span class="All-error">{{ err }}</span>
+                <br>
+                {% endfor %}
+            </div>
+            <div class="form-group justify-content-center">
+                {{ form.password.label }} <br> {{ form.password(size=30) }}
+                {% for err in form.username.errors %}
+                <br>
+                <span class="All-error">{{ err }}</span>
+                <br>
+                {% endfor %}
+            </div>
+            {{form.submit}}
+        </form>
+    </div>
+    {% if login_failure == True: %}
+    <br>
+    <div class="form-group justify-content-center">
+        <p class="All-error text-center">Login denied: wrong credentials.</p>
+    </div>
+    {% endif %}
+</section>
+
+{% include "footer.html" %}
