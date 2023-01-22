@@ -1,11 +1,11 @@
 # blog_flask
 A responsive travel blog template created using python flask and bootstrap.
 
-![Preview of app](Blog_Preview.png)
+![Preview of app](/static/Pictures_Blog/Blog_Preview.png)
 
-![Preview of app](Blog_Preview_Posts.png)
+![Preview of app](/static/Pictures_Blog/Blog_Preview_Posts.png)
 
-![Preview of app](Blog_Preview_Responsive.png)
+![Preview of app](/static/Pictures_Blog/Blog_Preview_Responsive.png)
 
 ## Contact form email
 If you are using this code, create a .env file to the main folder, with the following variables:

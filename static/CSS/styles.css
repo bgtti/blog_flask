@@ -26,7 +26,7 @@ body {
 /* Picture_01 from: https: //pixabay.com/photos/people-woman-travel-adventure-trek-2591874/ */
 .HOME-img-main{
     height: 94vh;
-    background-image: url("./Picture_01.jpg");
+    background-image: url("../Pictures_Blog/Picture_01.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;

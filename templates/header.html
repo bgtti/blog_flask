@@ -14,7 +14,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="../static/CSS/styles.css">
 
     <title>Blog</title>
 </head>
@@ -40,6 +40,16 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/contact">Contact</a>
                 </li>
+                {% if not logged_in: %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('user_login') }}">Log in</a>
+                </li>
+                {% endif %}
+                {% if logged_in: %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Log out</a>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </nav>

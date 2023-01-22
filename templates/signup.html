@@ -5,7 +5,7 @@
 
 <section class="mb-3 container-fluid">
     <div class="row justify-content-center">
-        <p class="text-justify">Log in to save your favorite posts!</p>
+        <p class="text-justify">Sign up to save your favorite posts!</p>
     </div>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -20,27 +20,23 @@
 
 <section class="mb-3 container-fluid">
     <div class="row justify-content-center">
-        <form class="col-lg-3 col-md-8" action="{{ url_for('user_login') }}" method="POST">
+        <form class="col-lg-3 col-md-8" action="{{ url_for('user_signup') }}" method="POST">
             <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com"
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="John Doe"
                     maxlength="200" required>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" name="password" placeholder="Password" required="required"
-                    class="form-control" />
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" name="email"
+                    placeholder="name@example.com" maxlength="200" required>
             </div>
-            <button type="submit" class="btn btn-light  ALL-read-btn mb-2">Log in</button>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" placeholder="Password" required="required" class="form-control"/>
+            </div>
+            <button type="submit" class="btn btn-light  ALL-read-btn mb-2">Sign up</button>
         </form>
-    </div>
-</section>
-<section class="mb-3 container-fluid">
-    <div class="row justify-content-center">
-        <p class="text-justify">Don't have an account yet? Sign up!</p>
-    </div>
-    <div class="row justify-content-center">
-        <a role="button" href="/signup" class="btn btn-light  ALL-read-btn mb-2">Sign up</a>
     </div>
 </section>
 
