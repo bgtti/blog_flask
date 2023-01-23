@@ -1,0 +1,76 @@
+{% extends "user_dashboard.html" %}
+{% block page %}
+
+<h1 class="mb-3 text-center">Blog users</h1>
+<h2 class="mb-3 text-center">Search user</h2>
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="col-lg-8 col-md-10" action="{{ url_for('user_signup') }}" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="John Doe"
+                    maxlength="200" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com"
+                    maxlength="200" required>
+            </div>
+            <div class="form-group">
+                <label for="accttype">Acct Type</label>
+                <select id="accttype" class="form-control">
+                    <option selected>user</option>
+                    <option>author</option>
+                    <option>admin</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="acctblocked">Blocked</label>
+                <select id="acctblocked" class="form-control">
+                    <option selected>FALSE</option>
+                    <option>TRUE</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-light  ALL-read-btn mb-2">Search User</button>
+        </form>
+    </div>
+</section>
+<h2 class="mb-3 text-center">All users</h2>
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <table class="col-lg-8 col-md-10 table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col"># id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Acct Type</th>
+                    <th scope="col">Acct Creation</th>
+                    <th scope="col">Blocked</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in all_blog_users %}
+                <tr>
+                    <th scope="row">{{user.id}}</th>
+                    <td>{{user.name}}</td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.type}}</td>
+                    <td>{{user.date_created}}</td>
+                    <td>{{user.blocked}}</td>
+                    <td>
+                        {% if user.id != 1: %}
+                        <a href="{{url_for('update_users', id=user.id)}}">edit</a> | <a href="#">delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+</section>
+
+{% endblock %}

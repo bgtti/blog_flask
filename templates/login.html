@@ -1,4 +1,11 @@
-{% include "header.html" %}
+{% extends "base.html" %}
+
+{% block meta %}
+<meta name="description" content="Travel blog - Login">
+{% endblock %}
+{% block title %}Log into Travel Blog{% endblock %}
+
+{% block content %}
 
 <!-- Content -->
 <h1 class="ALL-special-font ALL-h1 text-center">Log in</h1>
@@ -44,4 +51,4 @@
     </div>
 </section>
 
-{% include "footer.html" %}
+{% endblock %}

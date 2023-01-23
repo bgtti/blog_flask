@@ -12,9 +12,12 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, cur
 from contact import send_email
 from helpers import hash_pw
 from werkzeug.security import generate_password_hash, check_password_hash  # used in login
+from flask_ckeditor import CKEditor #add new blog posts
+
 
 
 app = Flask(__name__)
+ckeditor = CKEditor(app) #adding ck editor
 app.config['SECRET_KEY'] = "myFlaskApp4Fun"  # needed for login with wtforms
 
 # DATABASE
@@ -33,7 +36,7 @@ def load_user(user_id):
 class Blog_User(UserMixin, db.Model):
     __bind_key__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
+    name = db.Column(db.String(200), nullable=False, unique=True)
     email = db.Column(db.String(200), nullable=False, unique=True)
     password = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
@@ -83,6 +86,19 @@ with app.app_context():
         the_super_admin = Blog_User(
             name="Super Admin", email="super@admin", password=ADMIN_PW, type="super_admin")
         db.session.add(the_super_admin)
+        # db.session.commit()
+        # creating some dummie accounts (for testing, delete the bellow later):
+        RANDOM_PW = hash_pw("user123")
+        random1 = Blog_User(name="Maria", email="m@m", password=RANDOM_PW, type="user")
+        random2 = Blog_User(name="John Meyers", email="j@m", password=RANDOM_PW, type="author")
+        random3 = Blog_User(name="Fabienne123", email="f@f", password=RANDOM_PW, type="user")
+        random4 = Blog_User(name="Kokaloka", email="k@k", password=RANDOM_PW, type="user")
+        random5 = Blog_User(name="SublimePoster", email="s@p", password=RANDOM_PW, type="user")
+        db.session.add(random1)
+        db.session.add(random2)
+        db.session.add(random3)
+        db.session.add(random4)
+        db.session.add(random5)
         db.session.commit()
     theadmin = Blog_User.query.all()
 
@@ -215,6 +231,7 @@ def logout():
 #SIGN UP and LOG IN
 @app.route("/signup", methods=["GET", "POST"])
 def user_signup():
+    # in the future, check if username is unique
     if request.method == "POST":
         if Blog_User.query.filter_by(email=request.form.get("email")).first():
             #if user already exists:
@@ -260,6 +277,55 @@ def user_login():
             return redirect(url_for('user_dashboard'))
     return render_template("login.html", logged_in=current_user.is_authenticated)
 
+# ***********************************************************************************************
+# Super admin: ability to manage users
+
+@app.route("/user_dashboard/manage_users", methods=["GET", "POST"])
+def manage_users():
+    all_blog_users = Blog_User.query.order_by(Blog_User.id)
+    return render_template("manage_users.html", logged_in=current_user.is_authenticated, all_blog_users=all_blog_users)
+
+
+@app.route("/user_dashboard/manage_users/update/<int:id>", methods=["GET", "POST"])
+def update_users(id):
+    acct_types = ["admin", "author", "user"]
+    acct_blocked = ["FALSE", "TRUE"]
+    user_to_update = Blog_User.query.get_or_404(id)
+
+    if request.method == "POST":
+        if Blog_User.query.filter(Blog_User.id != id, Blog_User.email == request.form.get("email_update")).first():
+            flash("This email is already registered with us.")
+            return render_template("manage_users_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+        elif Blog_User.query.filter(Blog_User.id != id, Blog_User.name == request.form.get("username_update")).first():
+            flash("This username is already registered with us.")
+            return render_template("manage_users_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+        else:
+            print("in else")
+            user_to_update.name = request.form.get("username_update")
+            user_to_update.email = request.form.get("email_update")
+            user_to_update.type = request.form.get("accttype_update")
+            user_to_update.blocked = request.form.get("acctblocked_update")
+            try:
+                db.session.commit()
+                flash("User updated successfully!")
+                # no time for flash, change way of displaying success
+                return redirect(url_for('manage_users'))
+            except:
+                flash("Error, try again.")
+                return render_template("manage_users_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+    else:
+        return render_template("manage_users_update.html", logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+
+
+# ***********************************************************************************************
+# 404 and 500 Errors
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
+
+@app.errorhandler(500)
+def server_error(e):
+    return render_template("500.html"), 500
 
 if __name__ == "__main__":
     app.run(debug=True)

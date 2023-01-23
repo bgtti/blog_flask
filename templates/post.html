@@ -1,4 +1,12 @@
-{% include "header.html" %}
+{% extends "base.html" %}
+
+{% block meta %}
+<meta name="description" content="Travel blog - Blog Post">
+{% endblock %}
+
+{% block title %}{{blog_posts['title']}}{% endblock %}
+
+{% block content %}
 
     <!-- Content -->
     <section class="mb-3 container-fluid">
@@ -55,5 +63,4 @@
         </div>
     </section>
 
-
-{% include "footer.html" %}
+{% endblock %}

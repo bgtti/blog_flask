@@ -1,0 +1,70 @@
+{% extends "user_dashboard.html" %}
+{% block page %}
+
+<h1 class="mb-3 text-center">Blog users</h1>
+<h2 class="mb-3 text-center">Update User</h2>
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <p class="text-justify">You are about to change the following user:</p>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="row justify-content-center">
+        <p class="text-justify">{{ message }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</section>
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="col-lg-8 col-md-10" action="/user_dashboard/manage_users/update/{{user_to_update.id}}" method="POST">
+            <div class="form-group">
+                <label for="username_update">Username</label>
+                <input type="text" class="form-control" id="username_update" name="username_update" value="{{user_to_update.name}}"
+                    maxlength="200"  required>
+            </div>
+            <div class="form-group">
+                <label for="email_update">Email address</label>
+                <input type="email" class="form-control" id="email_update" name="email_update" value="{{user_to_update.email}}"
+                    maxlength="200"  required>
+            </div>
+            <div class="form-group">
+                <label for="accttype_update"> Acct Type </label>
+                        <select id="accttype_update" name="accttype_update" class="form-control">
+                            {% for type in acct_types: %}
+                                {% if type == user_to_update.type: %}
+                                <option value="{{type}}" selected="selected">
+                                {% else: %}
+                                <option value="{{type}}" >
+                                {% endif %}
+                                {{type}}
+                            </option>
+                            {% endfor %}
+                        </select>
+            </div>
+            <div class="form-group">
+                <label for="acctblocked_update">Blocked</label>
+                <select id="acctblocked_update" name="acctblocked_update" class="form-control">
+                    {% for TorF in acct_blocked: %}
+                    {% if TorF == user_to_update.blocked: %}
+                    <option value="{{TorF}}" selected="selected">
+                        {% else: %}
+                    <option value="{{TorF}}">
+                        {% endif %}
+                        {{TorF}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" name="submit_update" class="btn btn-light  ALL-read-btn mb-2">Save Changes</button>
+        </form>
+    </div>
+</section>
+
+    </div>
+</section>
+
+{% endblock %}

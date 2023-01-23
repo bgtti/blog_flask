@@ -1,4 +1,11 @@
-{% include "header.html" %}
+{% extends "base.html" %}
+
+{% block meta %}
+<meta name="description" content="Travel blog - Contact">
+{% endblock %}
+{% block title %}Contact the Travel Blog{% endblock %}
+
+{% block content %}
 
 <!-- Content -->
 <h1 class="ALL-special-font ALL-h1 text-center">Contact Us</h1>
@@ -39,4 +46,4 @@
 </section>
 {% endif %}
 
-{% include "footer.html" %}
+{% endblock %}

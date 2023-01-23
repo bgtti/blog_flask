@@ -1,4 +1,11 @@
-{% include "header.html" %}
+{% extends "base.html" %}
+
+{% block meta %}
+<meta name="description" content="Travel blog - Your source of travel tips and news">
+{% endblock %}
+{% block title %}Travel Blog - embark on this adventure{% endblock %}
+
+{% block content %}
 
 <!-- Content -->
     <!-- Main image -->
@@ -142,4 +149,4 @@
         </div>
     </section>
 
-{% include "footer.html" %}
+{% endblock %}

@@ -1,8 +1,15 @@
-{% include "header.html" %}
+{% extends "base.html" %}
+
+{% block meta %}
+<meta name="robots" content="noindex, follow">
+{% endblock %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
 
 <!-- Content -->
 <h1 class="ALL-special-font ALL-h1 text-center">Dashboard</h1>
 
 <p>You are logged in</p>
 
-{% include "footer.html" %}
+{% endblock %}
