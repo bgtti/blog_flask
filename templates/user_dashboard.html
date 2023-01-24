@@ -19,7 +19,10 @@
             <a class="nav-link" href="#">Dashboard <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Submit Posts</a>
+            <a class="nav-link" href="{{ url_for('submitted_posts') }}">Manage Posts</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('submit_post') }}">Submit Posts</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="{{ url_for('manage_users') }}">Manage Users</a>

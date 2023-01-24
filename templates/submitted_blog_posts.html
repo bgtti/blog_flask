@@ -1,0 +1,56 @@
+{% extends "user_dashboard.html" %}
+{% block page %}
+
+<h1 class="mb-3 text-center">Blog posts</h1>
+<h2 class="mb-3 text-center">See all submitted posts</h2>
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="col-lg-8 col-md-10" action="" method="">
+            <button type="submit" class="btn btn-light  ALL-read-btn mb-2">Add new blog post</button>
+        </form>
+    </div>
+</section>
+<h2 class="mb-3 text-center">All submitted posts</h2>
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <table class="col-lg-8 col-md-10 table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col"># id</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Theme</th>
+                    <th scope="col">Date to post</th>
+                    <th scope="col">Date submitted</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Likes</th>
+                    <th scope="col">Comments</th>
+                    <th scope="col">Admin Approved</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in all_blog_posts_submitted %}
+                <tr>
+                    <th scope="row">{{post.id}}</th>
+                    <td>{{post.title}}</td>
+                    <td>{{post.theme}}</td>
+                    <td>{{post.date_to_post}}</td>
+                    <td>{{post.date_submitted}}</td>
+                    <td>{{post.author}}</td>
+                    <td>{{post.likes}}</td>
+                    <td>{{post.comments}}</td>
+                    <td>{{post.admin_approved}}</td>
+                    <td>
+                        <a href="{{url_for('editing_posts', id=post.id)}}">edit</a> | <a href="{{url_for('preview_post', id=post.id)}}">preview</a> | <a
+                            href="{{url_for('deleting_posts', id=post.id)}}">delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+</section>
+
+{% endblock %}

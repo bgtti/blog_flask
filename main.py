@@ -6,8 +6,9 @@ import copy
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime 
 from flask_wtf import FlaskForm # login form
-from wtforms import StringField, PasswordField, SubmitField  # login form
+from wtforms import StringField, PasswordField, SubmitField, DateTimeField, SelectField  # login form
 from wtforms.validators import DataRequired  # login form
+from wtforms.widgets import TextArea
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from contact import send_email
 from helpers import hash_pw
@@ -52,6 +53,33 @@ class Blog_User(UserMixin, db.Model):
 
     def __repr__(self):
         return f"<User: {self.id} {self.name} {self.email}>"
+
+# Blog Posts
+class Blog_Posts(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    theme = db.Column(db.String(200), nullable=False)
+    author = db.Column(db.String(200), nullable=False)
+    date_submitted = db.Column(db.DateTime, default=datetime.utcnow)
+    date_to_post = db.Column(db.DateTime, default=datetime.utcnow)
+    title = db.Column(db.String(200), nullable=False)
+    intro = db.Column(db.String(200), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    picture_v = db.Column(db.String(200))
+    picture_v_source = db.Column(db.String(500))
+    picture_h = db.Column(db.String(200))
+    picture_h_source = db.Column(db.String(500))
+    picture_s = db.Column(db.String(200))
+    picture_s_source = db.Column(db.String(500))
+    picture_alt = db.Column(db.String(200))
+    meta_tag = db.Column(db.String(200))
+    title_tag = db.Column(db.String(200))
+    admin_approved = db.Column(db.String(5), default="FALSE")
+    featured = db.Column(db.String(5), default="FALSE")
+    likes = db.Column(db.Integer, default=0)
+    comments = db.Column(db.Integer, default=0)
+
+    def __repr__(self):
+        return f"<Post: {self.id} {self.theme} {self.title}>"
 
 # Create DB module for contact (stores messages sent via contact form)
 class Blog_Contact(db.Model):
@@ -285,7 +313,6 @@ def manage_users():
     all_blog_users = Blog_User.query.order_by(Blog_User.id)
     return render_template("manage_users.html", logged_in=current_user.is_authenticated, all_blog_users=all_blog_users)
 
-
 @app.route("/user_dashboard/manage_users/update/<int:id>", methods=["GET", "POST"])
 def update_users(id):
     acct_types = ["admin", "author", "user"]
@@ -315,6 +342,156 @@ def update_users(id):
                 return render_template("manage_users_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
     else:
         return render_template("manage_users_update.html", logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+
+
+@app.route("/user_dashboard/manage_users/delete/<int:id>", methods=["GET", "POST"])
+def delete_users(id):
+    user_to_delete = Blog_User.query.get_or_404(id)
+    if request.method == "POST":
+        if id == 1:
+            flash("Authorization error: this user cannot be deleted")
+        else:
+            try:
+                db.session.delete(user_to_delete)
+                db.session.commit()
+                flash("User deleted successfully.")
+                return redirect(url_for('manage_users'))
+            except:
+                flash("There was a problem deleting this user.")
+                return render_template("manage_users_delete.html", logged_in=current_user.is_authenticated, user_to_delete=user_to_delete)
+    else:
+        return render_template("manage_users_delete.html", logged_in=current_user.is_authenticated, user_to_delete=user_to_delete)
+
+# ***********************************************************************************************
+# Blog posts
+class The_Posts(FlaskForm):
+    theme = SelectField(u'Theme', choices=['Beach', 'City', 'Nature', 'Culture'])
+    author = StringField("Author", validators=[DataRequired()])
+    date = DateTimeField('Date', default=datetime.now, format='%Y-%m-%d')
+    title = StringField("Title", validators=[DataRequired()])
+    intro = StringField("Intro", validators=[DataRequired()])
+    body = StringField("Body", validators=[DataRequired()], widget=TextArea())
+    picture_v = StringField("Picture Vertical", default="Picture_v_XX.jpg", validators=[DataRequired()])
+    picture_v_source = StringField("Picture Vertical", default="http://")
+    picture_h = StringField("Picture Horizontal", default="Picture_h_XX.jpg", validators=[DataRequired()])
+    picture_h_source = StringField("Picture Vertical", default="http://")
+    picture_s = StringField("Picture Squared", default="Picture_s_XX.jpg", validators=[DataRequired()])
+    picture_s_source = StringField("Picture Vertical", default="http://")
+    picture_alt = StringField("Picture Alt Text", validators=[DataRequired()])
+    meta_tag = StringField("Meta Tag", validators=[DataRequired()])
+    title_tag = StringField("Title Tag", validators=[DataRequired()])
+    submit =  SubmitField()
+
+# Adding a new blog post
+@app.route("/user_dashboard/submit_posts", methods=["GET", "POST"])
+def submit_post():
+    form = The_Posts()
+    if form.validate_on_submit():
+        post = Blog_Posts(theme=form.theme.data, author=form.author.data, 
+                          date_to_post=form.date.data, title=form.title.data, intro=form.intro.data,
+                          body=form.body.data, picture_v=form.picture_v.data, picture_v_source=form.picture_v_source.data,
+                          picture_h=form.picture_h.data, picture_h_source=form.picture_h_source.data,
+                          picture_s=form.picture_s.data, picture_s_source=form.picture_s_source.data, 
+                          picture_alt=form.picture_alt.data, meta_tag=form.meta_tag.data, title_tag=form.title_tag.data)
+        # clear form:
+        form.theme.data = ""
+        form.author.data = ""
+        form.date.data = datetime.now
+        form.title.data = ""
+        form.intro.data = ""
+        form.body.data = ""
+        form.picture_v.data = ""
+        form.picture_v_source.data= ""
+        form.picture_h.data = ""
+        form.picture_h_source.data = ""
+        form.picture_s.data = ""
+        form.picture_s_source.data = ""
+        form.picture_alt.data = ""
+        form.meta_tag.data = ""
+        form.title_tag.data = ""
+        #add to database:
+        db.session.add(post)
+        db.session.commit()
+
+        flash("Blog post submitted sucessfully!")
+
+    return render_template("submit_post.html", logged_in=current_user.is_authenticated, form=form)
+
+
+# Seeing all submitted posts
+@app.route("/user_dashboard/submitted_posts")
+def submitted_posts():
+    all_blog_posts_submitted = Blog_Posts.query.order_by(Blog_Posts.id)
+    return render_template("submitted_blog_posts.html", logged_in=current_user.is_authenticated, all_blog_posts_submitted=all_blog_posts_submitted)
+
+# Previewing a post
+@app.route("/user_dashboard/preview_post/<int:id>")
+def preview_post(id):
+    post_to_preview = Blog_Posts.query.get_or_404(id)
+    return render_template("preview_post.html", logged_in=current_user.is_authenticated, post_to_preview=post_to_preview)
+
+# Editing a post
+@app.route("/user_dashboard/editting_post/<int:id>", methods=["GET", "POST"])
+def editing_posts(id):
+    post_to_edit = Blog_Posts.query.get_or_404(id)
+    form = The_Posts()
+    # changing the post
+    if form.validate_on_submit():
+        post_to_edit.theme = form.theme.data
+        post_to_edit.author = form.author.data
+        post_to_edit.date_to_post = form.date.data
+        post_to_edit.title = form.title.data
+        post_to_edit.intro = form.intro.data
+        post_to_edit.body = form.body.data
+        post_to_edit.picture_v = form.picture_v.data
+        post_to_edit.picture_v_source = form.picture_v_source.data
+        post_to_edit.picture_h = form.picture_h.data
+        post_to_edit.picture_h_source = form.picture_h_source.data
+        post_to_edit.picture_s = form.picture_s.data
+        post_to_edit.picture_s_source = form.picture_s_source.data
+        post_to_edit.picture_alt = form.picture_alt.data
+        post_to_edit.meta_tag = form.meta_tag.data
+        post_to_edit.title_tag = form.title_tag.data
+        # add to database:
+        db.session.add(post_to_edit)
+        db.session.commit()
+        flash("Post has been updated successfully!")
+        return redirect(url_for("submitted_posts", logged_in=current_user.is_authenticated))
+    # filling out the form with saved post data
+    form.theme.data = post_to_edit.theme
+    form.author.data = post_to_edit.author
+    form.date.data = post_to_edit.date_to_post
+    form.title.data = post_to_edit.title
+    form.intro.data = post_to_edit.intro
+    form.body.data = post_to_edit.body
+    form.picture_v.data = post_to_edit.picture_v
+    form.picture_v_source.data = post_to_edit.picture_v_source
+    form.picture_h.data = post_to_edit.picture_h
+    form.picture_h_source.data = post_to_edit.picture_h_source
+    form.picture_s.data = post_to_edit.picture_s
+    form.picture_s_source.data = post_to_edit.picture_s_source
+    form.picture_alt.data = post_to_edit.picture_alt
+    form.meta_tag.data = post_to_edit.meta_tag
+    form.title_tag.data = post_to_edit.title_tag
+    return render_template('editing_post.html', logged_in=current_user.is_authenticated, form=form)
+
+# Deleting a post
+@app.route("/user_dashboard/deleting_post/<int:id>", methods=["GET", "POST"])
+def deleting_posts(id):
+    post_to_delete = Blog_Posts.query.get_or_404(id)
+    if request.method == "POST":
+        try:
+            db.session.delete(post_to_delete)
+            db.session.commit()
+            flash("Post deleted successfully.")
+            return redirect(url_for('submitted_posts'))
+        except:
+            flash("There was a problem deleting this post.")
+            return render_template("manage_posts_delete.html", logged_in=current_user.is_authenticated, post_to_delete=post_to_delete)
+    else:
+        return render_template("manage_posts_delete.html", logged_in=current_user.is_authenticated, post_to_delete=post_to_delete)
+
+
 
 
 # ***********************************************************************************************

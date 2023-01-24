@@ -61,7 +61,7 @@
                     <td>{{user.blocked}}</td>
                     <td>
                         {% if user.id != 1: %}
-                        <a href="{{url_for('update_users', id=user.id)}}">edit</a> | <a href="#">delete</a>
+                        <a href="{{url_for('update_users', id=user.id)}}">edit</a> | <a href="{{url_for('delete_users', id=user.id)}}">delete</a>
                         {% endif %}
                     </td>
                 </tr>
