@@ -21,9 +21,13 @@
             {{form.theme.label (class="form-label")}}
             {{form.theme (class="form-control")}}
             <br>
-            {{form.author.label (class="form-label")}}
-            {{form.author (class="form-control")}}
-            <br>
+
+            {% if current_user.type == "super_admin" %}
+                {{form.author.label (class="form-label")}}
+                {{form.author (class="form-control")}}
+                <br>
+            {% endif %}
+
             {{form.date.label (class="form-label")}}
             {{form.date (class="form-control")}}
             <br>
@@ -35,6 +39,7 @@
             <br>
             {{form.body.label (class="form-label")}}
             {{form.body (class="form-control", rows="10")}}
+
             <br>
             {{form.picture_v.label (class="form-label")}}
             {{form.picture_v (class="form-control")}}
@@ -66,6 +71,8 @@
             {{form.submit(class="btn btn-light ALL-read-btn mb-2")}}
 
         </form>
+        {{ ckeditor.load() }}
+        {{ ckeditor.config(name='body') }}
 
     </div>
 

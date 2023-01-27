@@ -1,0 +1,45 @@
+{% extends "user_dashboard.html" %}
+{% block page %}
+
+<h1 class="mb-3 text-center">Blog users</h1>
+<h2 class="mb-3 text-center">Manage Account</h2>
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <p class="text-justify">Your acct details:</p>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="row justify-content-center">
+        <p class="text-justify">{{ message }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</section>
+<section class="mb-3 container-fluid">
+    <div class="justify-content-center">
+<div class="card" style="width: 18rem;">
+    <img class="card-img-top" src="..." alt="User image">
+    <div class="card-body">
+        <h5 class="card-title">{{current_user.name}}</h5>
+        <p class="card-text">Joined in {{current_user.date_created}}</p>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"></li>
+        <li class="list-group-item">{{current_user.email}}</li>
+        <li class="list-group-item">{{current_user.about}}</li>
+    </ul>
+    <div class="card-body">
+        <a href="#" class="card-link">Log out</a>
+        <a href="/user_dashboard/manage_acct/update/{{current_user.id}}" class="card-link">Update information</a>
+        <a href="/user_dashboard/manage_acct/delete/{{current_user.id}}" class="card-link">Delete Account</a>
+    </div>
+</div>
+    </div>
+</section>
+
+</div>
+</section>
+
+{% endblock %}
