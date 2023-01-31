@@ -1,4 +1,9 @@
-{% extends "dashboard_admin.html" %}
+{% if current_user.type == "admin" or current_user.type == "super_admin"%}
+    {% extends "dashboard_admin.html" %}
+{% else %}
+    {% extends "dashboard_author.html" %}
+{% endif %}
+
 {% block page %}
 
 <h1 class="mb-3 text-center">Edit Post</h1>
@@ -20,11 +25,14 @@
             {{form.theme.label (class="form-label")}}
             {{form.theme (class="form-control")}}
             <br>
+            {% if current_user.type == "super_admin" %}
             {{form.author.label (class="form-label")}}
             {{form.author (class="form-control")}}
             <br>
+            {% endif %}
+
             {{form.date.label (class="form-label")}}
-            {{form.date (class="form-control")}}
+            {{form.date (class="form-control", type="date")}}
             <br>
             {{form.title.label (class="form-label")}}
             {{form.title (class="form-control")}}
@@ -62,10 +70,10 @@
             {{form.title_tag.label (class="form-label")}}
             {{form.title_tag (class="form-control")}}
             <br>
-            {{form.submit(class="btn btn-light ALL-read-btn mb-2")}}
+            {{form.submit(class="btn ALL-green-btn-dark mb-2")}}
 
         </form>
-        {{ ckeditor.load() }}
+        {{ ckeditor.load(pkg_type="full") }}
         {{ ckeditor.config(name='body') }}
 
     </div>

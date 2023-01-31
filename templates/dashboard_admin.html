@@ -20,11 +20,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('posts_table') }}">Manage Posts</a>
             </li>
-            {% if current_user.type == "admin" or current_user.type == "super_admin" %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('users_table') }}">Manage Users</a>
             </li>
-            {% endif %}
         </ul>
     </div>
 </nav>

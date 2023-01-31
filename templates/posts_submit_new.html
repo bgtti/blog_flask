@@ -1,11 +1,5 @@
-{% extends "base.html" %}
-
-{% block meta %}
-<meta name="robots" content="noindex, follow">
-{% endblock %}
-{% block title %}Author Dashboard - Submit New Post{% endblock %}
-
-{% block content %}
+{% extends "dashboard_author.html" %}
+{% block page %}
 <!-- Content -->
 
 <h1 class="mb-3 text-center">Submit new post</h1>
@@ -36,7 +30,7 @@
             {% endif %}
 
             {{form.date.label (class="form-label")}}
-            {{form.date (class="form-control")}}
+            {{form.date (class="form-control", type="date")}}
             <br>
             {{form.title.label (class="form-label")}}
             {{form.title (class="form-control")}}
@@ -75,18 +69,14 @@
             {{form.title_tag.label (class="form-label")}}
             {{form.title_tag (class="form-control")}}
             <br>
-            {{form.submit(class="btn btn-light ALL-read-btn mb-2")}}
+            {{form.submit(class="btn ALL-green-btn-dark mb-2")}}
 
         </form>
-        {{ ckeditor.load() }}
+        {{ ckeditor.load(pkg_type="full") }}
         {{ ckeditor.config(name='body') }}
 
     </div>
 
-</section>
-
-
-</div>
 </section>
 
 {% endblock %}

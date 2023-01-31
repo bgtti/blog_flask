@@ -8,7 +8,7 @@ from datetime import datetime
 from flask_wtf import FlaskForm # login form
 from wtforms import StringField, PasswordField, SubmitField, DateTimeField, SelectField  # login form
 from wtforms.validators import DataRequired  # login form
-from wtforms.widgets import TextArea
+# from wtforms.widgets import TextArea, DateTimeInput
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from contact import send_email
 from helpers import hash_pw
@@ -302,7 +302,9 @@ def dashboard():
     if current_user.type == "user":
         return render_template('dashboard_user.html', name=current_user.name, logged_in=True)
     elif current_user.type == "author":
-        return render_template('dashboard_author.html', name=current_user.name, logged_in=True)
+        posts_pending_admin = Blog_Posts.query.filter(Blog_Posts.admin_approved == "FALSE").filter(
+            Blog_Posts.author_id == current_user.id).all()
+        return render_template('dashboard_author_dash.html', name=current_user.name, logged_in=True, posts_pending_admin=posts_pending_admin)
     else:
         posts_pending_approval= Blog_Posts.query.filter_by(admin_approved = "FALSE").all()
         return render_template('dashboard_admin_dash.html', name=current_user.name, logged_in=True, posts_pending_approval=posts_pending_approval)
@@ -563,15 +565,26 @@ def disallow_post(id):
     else:
         return render_template("posts_disallow_post.html", logged_in=current_user.is_authenticated, post_to_disallow=post_to_disallow)
 
+# POST MANAGEMENT - AUTHORS DASH 
+# View table with all posts this author has submitted
+@app.route("/dashboard/manage_posts_author")
+@login_required
+def posts_table_author():
+    all_blog_posts_submitted = Blog_Posts.query.filter(Blog_Posts.author_id == current_user.id).all()
+    return render_template("posts_table_author.html", logged_in=current_user.is_authenticated, all_blog_posts_submitted=all_blog_posts_submitted)
+
+
 # POST MANGEMENT -  ADMIN AND AUTHORS
 # Previewing a post
+@app.route("/dashboard/manage_posts_author/preview_post/<int:id>", endpoint='preview_post_author')
 @app.route("/dashboard/manage_posts/preview_post/<int:id>")
 @login_required
 def preview_post(id):
     post_to_preview = Blog_Posts.query.get_or_404(id)
     return render_template("posts_preview_post.html", logged_in=current_user.is_authenticated, post_to_preview=post_to_preview)
 
-# Editing a post (PENDING ADAPTATION FOR AUTHORS)
+# Editing a post --- MAKE AUTHORS AS A LIST
+@app.route("/dashboard/manage_posts_author/edit_post/<int:id>", endpoint='edit_post_author', methods=["GET", "POST"])
 @app.route("/dashboard/manage_posts/edit_post/<int:id>", methods=["GET", "POST"])
 @login_required
 def edit_post(id):
@@ -595,10 +608,13 @@ def edit_post(id):
         post_to_edit.meta_tag = form.meta_tag.data
         post_to_edit.title_tag = form.title_tag.data
         # add to database:
-        db.session.add(post_to_edit)
+        # db.session.add(post_to_edit)
         db.session.commit()
         flash("Post has been updated successfully!")
-        return redirect(url_for("posts_table", logged_in=current_user.is_authenticated))
+        if current_user.type == "admin" or current_user.type == "super_admin":
+            return redirect(url_for("posts_table", logged_in=current_user.is_authenticated))
+        else:
+            return redirect(url_for("posts_table_author", logged_in=current_user.is_authenticated))
     # filling out the form with saved post data
     form.theme.data = post_to_edit.theme
     form.author.data = post_to_edit.author.name
@@ -618,6 +634,7 @@ def edit_post(id):
     return render_template('posts_edit_post.html', logged_in=current_user.is_authenticated, form=form)
 
 # Deleting a post (PENDING ADAPTATION FOR AUTHORS)
+@app.route("/dashboard/manage_posts_author/delete_post/<int:id>", endpoint='delete_post_author', methods=["GET", "POST"])
 @app.route("/dashboard/manage_posts/delete_post/<int:id>", methods=["GET", "POST"])
 @login_required
 def delete_post(id):
@@ -627,7 +644,10 @@ def delete_post(id):
             db.session.delete(post_to_delete)
             db.session.commit()
             flash("Post deleted successfully.")
-            return redirect(url_for('posts_table'))
+            if current_user.type == "author":
+                return redirect(url_for('posts_table_author'))
+            else:
+                return redirect(url_for('posts_table'))
         except:
             flash("There was a problem deleting this post.")
             return render_template("posts_delete_post.html", logged_in=current_user.is_authenticated, post_to_delete=post_to_delete)
