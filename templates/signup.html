@@ -12,7 +12,7 @@
 
 <section class="mb-3 container-fluid">
     <div class="row justify-content-center">
-        <p class="text-justify">Sign up to save your favorite posts!</p>
+        <p class="text-justify">Sign up to keep informed with the Travel Blog <br> and save your favorite posts!</p>
     </div>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -42,7 +42,9 @@
                 <label for="password">Password</label>
                 <input type="password" name="password" placeholder="Password" required="required" class="form-control"/>
             </div>
-            <button type="submit" class="btn btn-light  ALL-read-btn mb-2">Sign up</button>
+            <div class="d-flex justify-content-center" >
+                <button type="submit" class="btn mb-2 ALL-green-btn" >Sign up</button>
+            </div>
         </form>
     </div>
 </section>

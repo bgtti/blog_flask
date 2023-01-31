@@ -27,7 +27,7 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ post["title"] }}</h5>
                         <p class="card-text text-justify">{{ post["intro"] }}</p>
-                        <a role="button" href="{{ url_for('blog_post', index=post['id']) }}" class="btn btn-light  ALL-read-btn mb-2">Read</a>
+                        <a role="button" href="{{ url_for('blog_post', index=post['id']) }}" class="btn ALL-green-btn mb-2" style="width: 150px;">Read</a>
                         <p class="card-text"><small class="text-muted"> by {{ post["author"] }} - {{ post["date"] }}</small></p>
                     </div>
                 </div>

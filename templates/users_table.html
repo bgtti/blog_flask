@@ -3,8 +3,8 @@
 
 <h1 class="mb-3 text-center">All blog users</h1>
 <section class="mb-3 container-fluid">
-    <div class="row justify-content-center">
-        <table class="col-lg-8 col-md-10 table table-striped table-bordered">
+    <div class="table-responsive w-100">
+        <table class="col-md-12 table table-striped table-bordered">
             <thead>
                 <tr>
                     <th scope="col"># id</th>
@@ -19,18 +19,29 @@
             <tbody>
                 {% for user in all_blog_users %}
                 <tr>
-                    <th scope="row">{{user.id}}</th>
-                    <td>{{user.name}}</td>
-                    <td>{{user.email}}</td>
-                    <td>{{user.type}}</td>
-                    <td>{{user.date_created}}</td>
-                    <td>{{user.blocked}}</td>
-                    <td>
-                        {% if user.id != 1: %}
-                        <a href="{{url_for('user_update', id=user.id)}}">edit</a> | <a
-                            href="{{url_for('user_delete', id=user.id)}}">delete</a>
-                        {% endif %}
+                    <th scope="row" class="align-middle">{{user.id}}</th>
+                    <td class="align-middle">{{user.name}}</td>
+                    <td class="align-middle">{{user.email}}</td>
+                    <td class="align-middle">{{user.type}}</td>
+                    <td class="align-middle">{{user.date_created.strftime('%d %b %Y')}}</td>
+                    <td class="align-middle">{{user.blocked}}</td>
+                    {% if (user.id != 1 and user.id != 2) and ((current_user.type == "super_admin") or (current_user.type == "admin" and user.type !="admin")): %}
+                    <td class="d-flex flex-column h-100" style="gap: 5px;">
+                        <div class="d-flex" style="gap: 5px;">
+                            <a href="{{url_for('user_preview', id=user.id)}}" target="_blank" class="btn btn-sm ALL-mini-btn"
+                                style="width: 70px; background-color: #728c6996;">preview</a>
+                            <a href="{{url_for('user_update', id=user.id)}}" class="btn btn-sm ALL-mini-btn"
+                                style="width: 70px; background-color: #728C69;">edit</a>
+                        </div>
+                        <div class="d-flex" style="gap: 5px;">
+                            <a href="{{url_for('user_block', id=user.id)}}" class="btn btn-secondary btn-sm"
+                                style="width: 70px !important;">block</a>
+                            <a href="{{url_for('user_delete', id=user.id)}}" class="btn btn-danger btn-sm" style="width: 70px;">delete</a>
+                        </div>
                     </td>
+                    {% else: %}
+                    <td class="align-middle"></td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
 

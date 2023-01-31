@@ -4,14 +4,8 @@
 <h1 class="mb-3 text-center">Delete Post</h1>
 <section class="mb-3 container-fluid">
     <div class="justify-content-center">
-        <p class="text-justify text-center">You are about to delete the following post:</p>
-        <p class="text-justify text-center">Title: {{post_to_delete.title}}</p>
-        <p class="text-justify text-center">Post ID: {{post_to_delete.id}}</p>
-        <p class="text-justify text-center">Theme: {{post_to_delete.theme}}</p>
-        <p class="text-justify text-center">Author: {{post_to_delete.author}}</p>
-        <p class="text-justify text-center">Likes: {{post_to_delete.likes}}</p>
-        <p class="text-justify text-center">Comments: {{post_to_delete.comments}}</p>
-        <p class="text-justify text-center">This action cannot be undone.</p>
+        <p class="text-justify text-center">The post you are about to delete has the admin approved status of {{post_to_delete.admin_approved}}.<br>
+            This post has {{ post_to_delete.likes }} likes and {{ post_to_delete.comments }} comments.
     </div>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -23,15 +17,35 @@
     {% endif %}
     {% endwith %}
 </section>
-<section class="mb-3 container-fluid">
+
+<section class="container-fluid mt-4 mb-3">
     <div class="row justify-content-center">
-        <form class="col-lg-2 col-md-10" action="/dashboard/manage_posts/delete_post/{{post_to_delete.id}}" method="POST">
-            <button type="submit" name="submit_delete" class="btn btn-light  ALL-read-btn mb-2">Delete Post</button>
-        </form>
+        <div class="row no-gutters ALL-box-preview-shadow" style="width: 57rem;">
+            <div class="col-md-6 card-img ALL-picture ">
+                <img src="/../static/Pictures_Users/Picture_default.jpg" class="card-img" alt="picture of blog post">
+            </div>
+            <div class="col-md-6">
+                <div class="card-body">
+                    <h5 class="card-title">{{post_to_delete.title}}</h5>
+                    <p class="card-text text-justify">{{post_to_delete.intro}}</p>
+                    <a role="button" href="{{url_for('preview_post', id=post_to_delete.id)}}"
+                        class="btn ALL-green-btn mb-2">Preview</a>
+                    <p class="card-text"><small class="text-muted"> by {{ post_to_delete.author.name }} - {{
+                            post_to_delete.date_to_post.strftime('%d %B %Y') }}</small>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
-</div>
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="col-lg-2 col-md-12" action="/dashboard/manage_posts/delete_post/{{post_to_delete.id}}"
+            method="POST">
+            <button type="submit" name="submit_delete_post" class="btn btn-danger mb-2" style="width:120px">Delete Post</button>
+        </form>
+    </div>
 </section>
 
 {% endblock %}

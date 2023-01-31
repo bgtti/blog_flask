@@ -14,6 +14,7 @@ from contact import send_email
 from helpers import hash_pw
 from werkzeug.security import generate_password_hash, check_password_hash  # used in login
 from flask_ckeditor import CKEditor, CKEditorField #add new blog posts
+import text #dummie strings
 
 app = Flask(__name__)
 ckeditor = CKEditor(app) #adding ck editor
@@ -50,6 +51,7 @@ class Blog_User(UserMixin, db.Model):
     # whether user has been blocked (future implementation)
     blocked = db.Column(db.String(5), default="FALSE")
     likes = db.Column(db.Integer, default=0)
+    admin_notes = db.Column(db.Text)
     # posts = db.Column(db.Integer, db.ForeignKey('blog_posts.id'))
     posts = db.relationship('Blog_Posts', backref='author')
 
@@ -107,29 +109,41 @@ with app.app_context():
     super_admin_exists = Blog_User.query.get(1)
     if not super_admin_exists:
         ADMIN_PW = hash_pw("admin123")
-        the_super_admin = Blog_User(
-            name="Super Admin", email="super@admin", password=ADMIN_PW, type="super_admin")
+        the_super_admin = Blog_User(name="Super Admin", email="super@admin", password=ADMIN_PW, type="super_admin")
+        DEFAULT_AUTHOR_PW = hash_pw("author123")
+        the_default_author = Blog_User(name="The Travel Blog Team", email="t@t", password=DEFAULT_AUTHOR_PW, type="author", about=text.dummie_text_author, picture=text.dummie_picture_author)
         db.session.add(the_super_admin)
+        db.session.add(the_default_author)
         # db.session.commit()
         # creating some dummie accounts (for testing, delete the bellow later):
         RANDOM_PW = hash_pw("user123")
-        random1 = Blog_User(name="Maria", email="m@m", password=RANDOM_PW, type="author")
-        random2 = Blog_User(name="John Meyers", email="j@m", password=RANDOM_PW, type="author")
-        random3 = Blog_User(name="Fabienne123", email="f@f", password=RANDOM_PW, type="user")
-        random4 = Blog_User(name="Kokaloka", email="k@k", password=RANDOM_PW, type="user")
-        random5 = Blog_User(name="SublimePoster", email="s@p", password=RANDOM_PW, type="user")
+        random1 = Blog_User(name="Roberta Sanstoms", email="r@r", password=RANDOM_PW, type="admin")
+        random2 = Blog_User(name="Elisa S.", email="e@e", password=RANDOM_PW, type="author", about=text.dummie_text_author, picture="/../static/Picture_author_1.jpg")
+        random3 = Blog_User(name="Ricardo J. F.", email="j@j", password=RANDOM_PW, type="author", about=text.dummie_text_author, picture="/../static/Picture_author_2.jpg")
+        random4 = Blog_User(name="Martha P.", email="m@m", password=RANDOM_PW, type="author", about=text.dummie_text_author, picture="/../static/Picture_author_3.jpg")
+        random5 = Blog_User(name="John Meyers", email="j@m", password=RANDOM_PW, type="user")
+        random6 = Blog_User(name="Fabienne123", email="f@f", password=RANDOM_PW, type="user")
+        random7 = Blog_User(name="Kokaloka", email="k@k", password=RANDOM_PW, type="user")
+        random8 = Blog_User(name="SublimePoster", email="s@p", password=RANDOM_PW, type="user")
         # creating dummie posts (for testing, delete the bellow later):
-        post1 = Blog_Posts(theme="Beach", title="Cool post", intro="About this", body="This is the body of the post.", author_id=2)
-        post2 = Blog_Posts(theme="City", title="Cool post 2", intro="About this again", body="This is the body of the 2nd post.", author_id=3)
-        post3 = Blog_Posts(theme="City", title="Kinda cool post", intro="About that", body="This is the body of another post.", author_id=2)
+        post1 = Blog_Posts(theme="Beach", title="Cool post", intro="About this", body="This is the body of the post.", author_id=6)
+        post2 = Blog_Posts(theme="City", title="Cool post 2", intro="About this again", body="This is the body of the 2nd post.", author_id=4)
+        post3 = Blog_Posts(theme="Beach", title="Kinda cool post", intro="About that", body="This is the body of another post.", author_id=4)
+        post4 = Blog_Posts(theme="City", title="Kinda cool post", intro="About that", body="This is the body of another post.", author_id=2)
+        post5 = Blog_Posts(theme="Beach", title="Kinda cool post", intro="About that", body="This is the body of another post.", author_id=5)
         db.session.add(random1)
         db.session.add(random2)
         db.session.add(random3)
         db.session.add(random4)
         db.session.add(random5)
+        db.session.add(random6)
+        db.session.add(random7)
+        db.session.add(random8)
         db.session.add(post1)
         db.session.add(post2)
         db.session.add(post3)
+        db.session.add(post4)
+        db.session.add(post5)
         db.session.commit()
     theadmin = Blog_User.query.all()
 
@@ -147,7 +161,6 @@ def home():
     posts_themes = [
         [post["theme"], f"../static/Pictures_Themes/{post['picture']}", post["id"]] for post in the_themes]
     return render_template('index.html', posts_all=posts_all, posts_themes=posts_themes, logged_in=current_user.is_authenticated)
-    # return render_template('index.html', posts_all=posts_all, posts_themes=posts_themes, logged_in=current_user.is_authenticated)
 
 @app.route("/all/<int:index>")
 def all(index):
@@ -264,6 +277,10 @@ def login():
         # wrong password:
         elif not check_password_hash(the_user.password, password):
             flash("Incorrect password, please try again.")
+            return redirect(url_for("login"))
+        # user is blocked:
+        elif the_user.blocked == "TRUE":
+            flash("Your account has been blocked. Please contact us for more information")
             return redirect(url_for("login"))
         # email exists and password is correct
         else:
@@ -393,7 +410,7 @@ def user_update(id):
     else:
         return render_template("users_user_update.html", logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
 
-
+# Deleting user
 @app.route("/dashboard/manage_users/delete/<int:id>", methods=["GET", "POST"])
 @login_required
 def user_delete(id):
@@ -413,6 +430,34 @@ def user_delete(id):
     else:
         return render_template("users_user_delete.html", logged_in=current_user.is_authenticated, user_to_delete=user_to_delete)
 
+# Blocking user
+@app.route("/dashboard/manage_users/block/<int:id>", methods=["GET", "POST"])
+@login_required
+def user_block(id):
+    user_to_block = Blog_User.query.get_or_404(id)
+    if request.method == "POST":
+        if id == 1:
+            flash("Authorization error: this user cannot be blocked")
+        else:
+            user_to_block.blocked = "TRUE"
+            try:
+                db.session.commit()
+                flash("User blocked successfully.")
+                return redirect(url_for('users_table'))
+            except:
+                flash("There was a problem blocking this user.")
+                return render_template("users_user_block.html", logged_in=current_user.is_authenticated, user_to_block=user_to_block)
+    else:
+        return render_template("users_user_block.html", logged_in=current_user.is_authenticated, user_to_block=user_to_block)
+
+# Previewing a user's account information
+
+
+@app.route("/dashboard/manage_users/preview/<int:id>")
+@login_required
+def user_preview(id):
+    user_to_preview = Blog_User.query.get_or_404(id)
+    return render_template("users_user_preview.html", logged_in=current_user.is_authenticated, user_to_preview=user_to_preview)
 
 # ***********************************************************************************************
 # POST MANGEMENT 
@@ -485,8 +530,6 @@ def posts_table():
     return render_template("posts_table.html", logged_in=current_user.is_authenticated, all_blog_posts_submitted=all_blog_posts_submitted)
 
 # Approve posts: Admin only
-
-
 @app.route("/dashboard/manage_posts/approve_post/<int:id>", methods=["GET", "POST"])
 @login_required
 def approve_post(id):
@@ -502,6 +545,23 @@ def approve_post(id):
             return render_template("posts_approve_post.html", logged_in=current_user.is_authenticated, post_to_approve=post_to_approve)
     else:
         return render_template("posts_approve_post.html", logged_in=current_user.is_authenticated, post_to_approve=post_to_approve)
+
+# Disapprove (disallow) posts: Admin only
+@app.route("/dashboard/manage_posts/disallow_post/<int:id>", methods=["GET", "POST"])
+@login_required
+def disallow_post(id):
+    post_to_disallow = Blog_Posts.query.get_or_404(id)
+    if request.method == "POST":
+        post_to_disallow.admin_approved = "FALSE"
+        try:
+            db.session.commit()
+            flash("This post is no longer admin approved.")
+            return redirect(url_for('posts_table'))
+        except:
+            flash("There was a problem disallowing this post.")
+            return render_template("posts_disallow_post.html", logged_in=current_user.is_authenticated, post_to_disallow=post_to_disallow)
+    else:
+        return render_template("posts_disallow_post.html", logged_in=current_user.is_authenticated, post_to_disallow=post_to_disallow)
 
 # POST MANGEMENT -  ADMIN AND AUTHORS
 # Previewing a post

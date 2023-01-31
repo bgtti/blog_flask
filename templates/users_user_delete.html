@@ -4,12 +4,15 @@
 <h1 class="mb-3 text-center">Delete user</h1>
 <section class="mb-3 container-fluid">
     <div class="justify-content-center">
-        <p class="text-justify text-center">You are about to delete the following user:</p>
-        <p class="text-justify text-center">Username: {{user_to_delete.name}}</p>
-        <p class="text-justify text-center">User ID: {{user_to_delete.id}}</p>
-        <p class="text-justify text-center">User's email: {{user_to_delete.email}}</p>
-        <p class="text-justify text-center">User's type: {{user_to_delete.type}}</p>
-        <p class="text-justify text-center">This action cannot be undone.</p>
+        <p class="text-justify text-center">The user you are about to delete has the block status of
+            {{user_to_delete.blocked}} and the user id {{user_to_delete.id}}.<br>
+            This user liked {{ user_to_delete.likes }} posts and made <b>0</b> comments on blog posts.
+        </p>
+        <p class="text-justify text-center"><b>This action cannot be undone.</b>
+        </p>
+        {% if user_to_delete.type == "author" %}
+        <p><b>This user is an author</b>. Check the author's posts before proceeding.</p>
+        {% endif %}
     </div>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -21,13 +24,41 @@
     {% endif %}
     {% endwith %}
 </section>
+
+<section class="container-fluid mt-4 mb-3">
+    <div class="row justify-content-center">
+        <div class="row no-gutters ALL-box-preview-shadow" style="width: 57rem;">
+            <div class="col-md-6 card-img ALL-picture ">
+                <img src="/../static/Pictures_Users/Picture_default.jpg" class="card-img" alt="picture of user">
+            </div>
+            <div class="col-md-6">
+                <div class="card-body">
+                    <h5 class="card-title">{{user_to_delete.name}}</h5>
+                    <p class="card-text text-justify">{{user_to_delete.email}}</p>
+                    <p class="card-text text-justify">{{user_to_delete.about}}</p>
+                    <!-- <a role="button" href="#"
+                        class="btn ALL-green-btn mb-2">Preview</a> -->
+                    <p class="card-text"><small class="text-muted"> User type: {{ user_to_delete.type }} - Joined: {{
+                            user_to_delete.date_created.strftime('%d %B %Y') }}</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="mb-3 container-fluid">
     <div class="row justify-content-center">
-        <form class="col-lg-2 col-md-10" action="/dashboard/manage_users/delete/{{user_to_delete.id}}"
+        <form class="col-lg-2 col-md-12" action="/dashboard/manage_users/delete/{{user_to_delete.id}}"
             method="POST">
-            <button type="submit" name="submit_delete" class="btn btn-light  ALL-read-btn mb-2">Delete User</button>
+            <button type="submit" name="submit_delete_user" class="btn btn-danger mb-2" style="width:120px">Delete
+                User</button>
         </form>
     </div>
 </section>
+
+
+
+
 
 {% endblock %}

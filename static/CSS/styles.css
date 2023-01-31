@@ -74,6 +74,17 @@ body {
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
     color: rgb(75, 75, 75);
 }
+.ALL-green-btn{
+    width: 120px;
+    background-color: #728c6996;
+}
+.ALL-green-btn-dark {
+    width: 120px;
+    background-color: #728C69;
+}
+.ALL-mini-btn{
+    color: white;
+}
 .ALL-no-hover{
     text-decoration: none !important;
     color: rgb(16, 16, 16);
@@ -85,6 +96,17 @@ body {
     .ALL-post-hover:hover {
         box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
     }
+    .ALL-green-btn:hover, .ALL-green-btn-dark:hover{
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        font-weight: bold;
+    }
+    .ALL-mini-btn:hover {
+        color: white;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+    }
+}
+.ALL-box-preview-shadow{
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 .ALL-msg-sent{
     color: #4b6046;
