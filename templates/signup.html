@@ -8,7 +8,7 @@
 {% block content %}
 
 <!-- Content -->
-<h1 class="ALL-special-font ALL-h1 text-center">Log in</h1>
+<h1 class="ALL-special-font ALL-h1 text-center">Sign up</h1>
 
 <section class="mb-3 container-fluid">
     <div class="row justify-content-center">
@@ -27,7 +27,7 @@
 
 <section class="mb-3 container-fluid">
     <div class="row justify-content-center">
-        <form class="col-lg-3 col-md-8" action="{{ url_for('user_signup') }}" method="POST">
+        <form class="col-lg-3 col-md-8" action="{{ url_for('signup') }}" method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="John Doe"

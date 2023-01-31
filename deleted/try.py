@@ -4,8 +4,8 @@ from themes import the_themes
 from authors import the_authors
 import copy
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime 
-from flask_wtf import FlaskForm # login form
+from datetime import datetime
+from flask_wtf import FlaskForm  # login form
 from wtforms import StringField, PasswordField, SubmitField, DateTimeField, SelectField  # login form
 from wtforms.validators import DataRequired  # login form
 from wtforms.widgets import TextArea
@@ -13,25 +13,28 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, cur
 from contact import send_email
 from helpers import hash_pw
 from werkzeug.security import generate_password_hash, check_password_hash  # used in login
-from flask_ckeditor import CKEditor, CKEditorField #add new blog posts
+from flask_ckeditor import CKEditor, CKEditorField  # add new blog posts
+
 
 app = Flask(__name__)
-ckeditor = CKEditor(app) #adding ck editor
+ckeditor = CKEditor(app)  # adding ck editor
 app.config['SECRET_KEY'] = "myFlaskApp4Fun"  # needed for login with wtforms
 
 # DATABASE
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///admin.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///admin.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # app.config['SQLALCHEMY_BINDS'] = {
 #     'blog_author': 'sqlite:///blog_author.db', 'blog_user': 'sqlite:///blog_user.db', 'blog_theme': 'sqlite:///blog_theme.db', 'blog_posts': 'sqlite:///blog_posts.db', 'blog_contact': 'sqlite:///blog_contact.db'}
-db = SQLAlchemy(app) #initializes database
+db = SQLAlchemy(app)  # initializes database
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return Blog_User.query.get(int(user_id))
+
 
 class Blog_User(UserMixin, db.Model):
     __tablename__ = "blog_user"
@@ -57,6 +60,8 @@ class Blog_User(UserMixin, db.Model):
         return f"<User: {self.id} {self.name} {self.email}>"
 
 # Blog Posts
+
+
 class Blog_Posts(db.Model):
     __tablename__ = "blog_posts"
     id = db.Column(db.Integer, primary_key=True)
@@ -87,6 +92,8 @@ class Blog_Posts(db.Model):
         return f"<Post: {self.id} {self.theme} {self.title}>"
 
 # Create DB module for contact (stores messages sent via contact form)
+
+
 class Blog_Contact(db.Model):
     __tablename__ = "blog_contact"
     # __bind_key__ = 'contact'
@@ -113,15 +120,23 @@ with app.app_context():
         # db.session.commit()
         # creating some dummie accounts (for testing, delete the bellow later):
         RANDOM_PW = hash_pw("user123")
-        random1 = Blog_User(name="Maria", email="m@m", password=RANDOM_PW, type="author")
-        random2 = Blog_User(name="John Meyers", email="j@m", password=RANDOM_PW, type="author")
-        random3 = Blog_User(name="Fabienne123", email="f@f", password=RANDOM_PW, type="user")
-        random4 = Blog_User(name="Kokaloka", email="k@k", password=RANDOM_PW, type="user")
-        random5 = Blog_User(name="SublimePoster", email="s@p", password=RANDOM_PW, type="user")
+        random1 = Blog_User(name="Maria", email="m@m",
+                            password=RANDOM_PW, type="author")
+        random2 = Blog_User(name="John Meyers", email="j@m",
+                            password=RANDOM_PW, type="author")
+        random3 = Blog_User(name="Fabienne123", email="f@f",
+                            password=RANDOM_PW, type="user")
+        random4 = Blog_User(name="Kokaloka", email="k@k",
+                            password=RANDOM_PW, type="user")
+        random5 = Blog_User(name="SublimePoster", email="s@p",
+                            password=RANDOM_PW, type="user")
         # creating dummie posts (for testing, delete the bellow later):
-        post1 = Blog_Posts(theme="Beach", title="Cool post", intro="About this", body="This is the body of the post.", author_id=2)
-        post2 = Blog_Posts(theme="City", title="Cool post 2", intro="About this again", body="This is the body of the 2nd post.", author_id=3)
-        post3 = Blog_Posts(theme="City", title="Kinda cool post", intro="About that", body="This is the body of another post.", author_id=2)
+        post1 = Blog_Posts(theme="Beach", title="Cool post", intro="About this",
+                           body="This is the body of the post.", author_id=2)
+        post2 = Blog_Posts(theme="City", title="Cool post 2", intro="About this again",
+                           body="This is the body of the 2nd post.", author_id=3)
+        post3 = Blog_Posts(theme="City", title="Kinda cool post", intro="About that",
+                           body="This is the body of another post.", author_id=2)
         db.session.add(random1)
         db.session.add(random2)
         db.session.add(random3)
@@ -149,6 +164,7 @@ def home():
     return render_template('index.html', posts_all=posts_all, posts_themes=posts_themes, logged_in=current_user.is_authenticated)
     # return render_template('index.html', posts_all=posts_all, posts_themes=posts_themes, logged_in=current_user.is_authenticated)
 
+
 @app.route("/all/<int:index>")
 def all(index):
     all_blog_posts = []
@@ -168,11 +184,12 @@ def all(index):
             post_at_hand.update(
                 {"picture_big": f"../static/Pictures_Posts/{post_at_hand['picture_big']}",
                  "picture_small": f"../static/Pictures_Posts/{post_at_hand['picture_small']}",
-                "intro": intro}
+                 "intro": intro}
             )
             all_blog_posts.append(post_at_hand)
-    
+
     return render_template('all_posts.html', all_blog_posts=all_blog_posts, chosen_theme=chosen_theme, logged_in=current_user.is_authenticated)
+
 
 @app.route("/about/")
 def about():
@@ -180,13 +197,13 @@ def about():
     for author in authors_all:
         author.update(
             {"picture": f"../static/Pictures_Users/{author['picture']}",
-        })
+             })
     return render_template('about.html', authors_all=authors_all, logged_in=current_user.is_authenticated)
 
 
 @app.route("/contact/", methods=['POST', 'GET'])
 def contact():
-    if request.method=="POST":
+    if request.method == "POST":
         contact_name = request.form['contact_name']
         contact_email = request.form['contact_email']
         contact_message = request.form['contact_message']
@@ -201,8 +218,9 @@ def contact():
             return render_template('contact.html', msg_sent=True)
         except:
             return "There was an error adding message to the database."
-    
+
     return render_template('contact.html', msg_sent=False, logged_in=current_user.is_authenticated)
+
 
 @app.route("/post/<int:index>")
 def blog_post(index):
@@ -224,7 +242,84 @@ def blog_post(index):
     return render_template('post.html', blog_posts=blog_posts, post_author=post_author, logged_in=current_user.is_authenticated)
 
 # ***********************************************************************************************
-# LOGIN, SIGN UP, LOG OUT
+# Admin Area (might be deleted)
+# class AdminSignInForm(FlaskForm):
+#     username = StringField(label='Username', validators=[DataRequired()])
+#     password = PasswordField(label='Password', validators=[DataRequired()])
+#     submit = SubmitField(label='Login')
+
+# @app.route("/adminlogin", methods=['GET', 'POST'])
+# def admin_login():
+#     form = AdminSignInForm()
+#     if form.validate_on_submit():
+#         if form.username.data == "admin" and form.password.data == "12345678":
+#             return render_template("admindashboard.html")
+#         else:
+#             return render_template('adminlogin.html', form=form, login_failure=True)
+#     return render_template('adminlogin.html', form=form, login_failure=False)
+
+# @app.route("/admindashboard")
+# def admin_dashboard():
+#     return render_template('admindashboard.html')
+
+# ***********************************************************************************************
+# LOGIN/SIGN UP
+
+# OLD (delete)
+# @app.route("/dashboard")
+# @login_required
+# def user_dashboard():
+#     if current_user.type == "user":
+#         return render_template('dashboard_user.html', name=current_user.name, logged_in=True)
+#     elif current_user.type == "author":
+#         return render_template('dashboard_author.html', name=current_user.name, logged_in=True)
+#     else:
+#         return render_template('dashboard_admin_dash.html', name=current_user.name, logged_in=True)
+
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    if current_user.type == "user":
+        return render_template('dashboard_user.html', name=current_user.name, logged_in=True)
+    elif current_user.type == "author":
+        return render_template('dashboard_author.html', name=current_user.name, logged_in=True)
+    else:
+        return render_template('dashboard_admin.html', name=current_user.name, logged_in=True)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
+
+# SIGN UP and LOG IN
+# OLD DELETE:
+# @app.route("/signup", methods=["GET", "POST"])
+# def user_signup():
+#     # in the future, check if username is unique
+#     if request.method == "POST":
+#         if Blog_User.query.filter_by(email=request.form.get("email")).first():
+#             #if user already exists:
+#             flash("This email is already registered with us. Log-in instead!")
+#             return redirect(url_for("user_login"))
+
+#         new_user = Blog_User(
+#             name=request.form.get("username"),
+#             email=request.form.get("email"),
+#             password=hash_pw(request.form.get("password")),
+#             type="user"
+#         )
+#         db.session.add(new_user)
+#         db.session.commit()
+
+#         login_user(new_user)
+
+#         return redirect(url_for('dashboard'))
+
+#     return render_template('signup.html', logged_in=current_user.is_authenticated)
+
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -251,6 +346,26 @@ def signup():
     return render_template('signup.html', logged_in=current_user.is_authenticated)
 
 
+# @app.route("/login", methods=["GET", "POST"])
+# def user_login():
+#     if request.method == "POST":
+#         email = request.form.get('email')
+#         password = request.form.get('password')
+#         the_user = Blog_User.query.filter_by(email=email).first()
+#         # wrong email:
+#         if not the_user:
+#             flash("This email does not exist in our database.")
+#             return redirect(url_for("user_login"))
+#         # wrong password:
+#         elif not check_password_hash(the_user.password, password):
+#             flash("Incorrect password, please try again.")
+#             return redirect(url_for("user_login"))
+#         # email exists and password is correct
+#         else:
+#             login_user(the_user)
+#             return redirect(url_for('user_dashboard'))
+#     return render_template("login.html", logged_in=current_user.is_authenticated)
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -271,101 +386,25 @@ def login():
             return redirect(url_for('dashboard'))
     return render_template("login.html", logged_in=current_user.is_authenticated)
 
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('home'))
-
 # ***********************************************************************************************
-# DASHBOARDs
-@app.route("/dashboard")
+# Super admin: ability to manage users
+
+
+@app.route("/user_dashboard/manage_users", methods=["GET", "POST"])
 @login_required
-def dashboard():
-    if current_user.type == "user":
-        return render_template('dashboard_user.html', name=current_user.name, logged_in=True)
-    elif current_user.type == "author":
-        return render_template('dashboard_author.html', name=current_user.name, logged_in=True)
-    else:
-        posts_pending_approval= Blog_Posts.query.filter_by(admin_approved = "FALSE").all()
-        return render_template('dashboard_admin_dash.html', name=current_user.name, logged_in=True, posts_pending_approval=posts_pending_approval)
-
-# ***********************************************************************************************
-# ACCOUNT MANAGEMENT, BOOKMARKS, HISTORY
-
-# OWN ACCOUNT MANAGEMENT - all users
-
-# Account information
-@app.route("/dashboard/manage_account")
-@login_required
-def manage_acct():
-    return render_template("account_mgmt.html", logged_in=current_user.is_authenticated)
-
-# Update account information
-@app.route("/dashboard/manage_account/update/<int:id>", methods=["GET", "POST"])
-@login_required
-def update_own_acct_info(id):
-    user_at_hand = Blog_User.query.get_or_404(id)
-
-    if request.method == "POST":
-        user_at_hand.name = request.form.get("username_update")
-        user_at_hand.email = request.form.get("email_update")
-        user_at_hand.about = request.form.get("about_update")
-        try:
-            db.session.commit()
-            flash("Acct info updated successfully!")
-            # no time for flash, change way of displaying success
-            return redirect(url_for('manage_acct'))
-        except:
-            flash("Oops, error, try again.")
-            return redirect(url_for('manage_acct'))
-    else:
-        return render_template("account_mgmt_update.html", logged_in=current_user.is_authenticated)
-
-# Delete account
-@app.route("/dashboard/manage_account/delete/<int:id>", methods=["GET", "POST"])
-@login_required
-def delete_own_acct(id):
-    user_at_hand = Blog_User.query.get_or_404(id)
-    if request.method == "POST":
-        if id == 1:
-            flash("Authorization denied: this user cannot be deleted")
-            return redirect(url_for('manage_acct'))
-        else:
-            try:
-                db.session.delete(user_at_hand)
-                db.session.commit()
-                flash("Your account was deleted successfully.")
-                return redirect(url_for("home"))
-            except:
-                flash("There was a problem deleting your account.")
-                return redirect(url_for('manage_acct'))
-    else:
-        return render_template("account_mgmt_delete.html", logged_in=current_user.is_authenticated)
-
-# BOOKMARKS
-
-# HISTORY
-
-# ***********************************************************************************************
-# USER MANAGEMENT: admin access only
-
-# Managing users: see all users
-@app.route("/dashboard/manage_users", methods=["GET", "POST"])
-@login_required
-def users_table():
+def manage_users():
     user_type = current_user.type
     if user_type == "admin" or user_type == "super_admin":
         all_blog_users = Blog_User.query.order_by(Blog_User.id)
-        return render_template("users_table.html", logged_in=current_user.is_authenticated, all_blog_users=all_blog_users)
+        return render_template("manage_users.html", logged_in=current_user.is_authenticated, all_blog_users=all_blog_users)
     else:
         flash("Access denied: admin access only.")
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('user_dashboard'))
 
-# Managing users: update user
-@app.route("/dashboard/manage_users/update/<int:id>", methods=["GET", "POST"])
+
+@app.route("/user_dashboard/manage_users/update/<int:id>", methods=["GET", "POST"])
 @login_required
-def user_update(id):
+def update_users(id):
     acct_types = ["admin", "author", "user"]
     acct_blocked = ["FALSE", "TRUE"]
     user_to_update = Blog_User.query.get_or_404(id)
@@ -373,10 +412,10 @@ def user_update(id):
     if request.method == "POST":
         if Blog_User.query.filter(Blog_User.id != id, Blog_User.email == request.form.get("email_update")).first():
             flash("This email is already registered with us.")
-            return render_template("users_user_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+            return render_template("manage_users_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
         elif Blog_User.query.filter(Blog_User.id != id, Blog_User.name == request.form.get("username_update")).first():
             flash("This username is already registered with us.")
-            return render_template("users_user_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+            return render_template("manage_users_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
         else:
             user_to_update.name = request.form.get("username_update")
             user_to_update.email = request.form.get("email_update")
@@ -386,17 +425,17 @@ def user_update(id):
                 db.session.commit()
                 flash("User updated successfully!")
                 # no time for flash, change way of displaying success
-                return redirect(url_for('users_table'))
+                return redirect(url_for('manage_users'))
             except:
                 flash("Error, try again.")
-                return render_template("users_user_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+                return render_template("manage_users_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
     else:
-        return render_template("users_user_update.html", logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+        return render_template("manage_users_update.html", logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
 
 
-@app.route("/dashboard/manage_users/delete/<int:id>", methods=["GET", "POST"])
+@app.route("/user_dashboard/manage_users/delete/<int:id>", methods=["GET", "POST"])
 @login_required
-def user_delete(id):
+def delete_users(id):
     user_to_delete = Blog_User.query.get_or_404(id)
     if request.method == "POST":
         if id == 1:
@@ -406,52 +445,57 @@ def user_delete(id):
                 db.session.delete(user_to_delete)
                 db.session.commit()
                 flash("User deleted successfully.")
-                return redirect(url_for('users_table'))
+                return redirect(url_for('manage_users'))
             except:
                 flash("There was a problem deleting this user.")
-                return render_template("users_user_delete.html", logged_in=current_user.is_authenticated, user_to_delete=user_to_delete)
+                return render_template("manage_users_delete.html", logged_in=current_user.is_authenticated, user_to_delete=user_to_delete)
     else:
-        return render_template("users_user_delete.html", logged_in=current_user.is_authenticated, user_to_delete=user_to_delete)
-
+        return render_template("manage_users_delete.html", logged_in=current_user.is_authenticated, user_to_delete=user_to_delete)
 
 # ***********************************************************************************************
-# POST MANGEMENT 
-
 # Blog posts form
+
+
 class The_Posts(FlaskForm):
-    theme = SelectField(u'Theme', choices=['Beach', 'City', 'Nature', 'Culture'])
+    theme = SelectField(u'Theme', choices=[
+                        'Beach', 'City', 'Nature', 'Culture'])
     author = StringField("Author")
     date = DateTimeField('Date', default=datetime.now, format='%Y-%m-%d')
     title = StringField("Title", validators=[DataRequired()])
     intro = StringField("Intro", validators=[DataRequired()])
+    # body = StringField("Body", validators=[DataRequired()], widget=TextArea())
     body = CKEditorField("Body", validators=[DataRequired()])
-    picture_v = StringField("Picture Vertical", default="Picture_v_XX.jpg", validators=[DataRequired()])
+    picture_v = StringField(
+        "Picture Vertical", default="Picture_v_XX.jpg", validators=[DataRequired()])
     picture_v_source = StringField("Picture Vertical", default="http://")
-    picture_h = StringField("Picture Horizontal", default="Picture_h_XX.jpg", validators=[DataRequired()])
+    picture_h = StringField(
+        "Picture Horizontal", default="Picture_h_XX.jpg", validators=[DataRequired()])
     picture_h_source = StringField("Picture Vertical", default="http://")
-    picture_s = StringField("Picture Squared", default="Picture_s_XX.jpg", validators=[DataRequired()])
+    picture_s = StringField(
+        "Picture Squared", default="Picture_s_XX.jpg", validators=[DataRequired()])
     picture_s_source = StringField("Picture Vertical", default="http://")
     picture_alt = StringField("Picture Alt Text", validators=[DataRequired()])
     meta_tag = StringField("Meta Tag", validators=[DataRequired()])
     title_tag = StringField("Title Tag", validators=[DataRequired()])
-    submit =  SubmitField()
+    submit = SubmitField()
 
-# POST MANGEMENT -  AUTHORS
+# Adding a new blog post
 
-# Adding a new blog post: Authors only
-@app.route("/dashboard/submit_new_post", methods=["GET", "POST"])
+
+@app.route("/user_dashboard/submit_posts", methods=["GET", "POST"])
 @login_required
 def submit_post():
     form = The_Posts()
     if form.validate_on_submit():
+        print("now here")
         author = current_user.id
         post = Blog_Posts(theme=form.theme.data,
-                            date_to_post=form.date.data, title=form.title.data, intro=form.intro.data,
-                            body=form.body.data, picture_v=form.picture_v.data, picture_v_source=form.picture_v_source.data,
-                            picture_h=form.picture_h.data, picture_h_source=form.picture_h_source.data,
-                            picture_s=form.picture_s.data, picture_s_source=form.picture_s_source.data, 
-                            picture_alt=form.picture_alt.data, meta_tag=form.meta_tag.data, title_tag=form.title_tag.data, 
-                            author_id=author)
+                          date_to_post=form.date.data, title=form.title.data, intro=form.intro.data,
+                          body=form.body.data, picture_v=form.picture_v.data, picture_v_source=form.picture_v_source.data,
+                          picture_h=form.picture_h.data, picture_h_source=form.picture_h_source.data,
+                          picture_s=form.picture_s.data, picture_s_source=form.picture_s_source.data,
+                          picture_alt=form.picture_alt.data, meta_tag=form.meta_tag.data, title_tag=form.title_tag.data,
+                          author_id=author)
         # clear form:
         form.theme.data = ""
         # form.author.data = ""
@@ -460,7 +504,7 @@ def submit_post():
         form.intro.data = ""
         form.body.data = ""
         form.picture_v.data = ""
-        form.picture_v_source.data= ""
+        form.picture_v_source.data = ""
         form.picture_h.data = ""
         form.picture_h_source.data = ""
         form.picture_s.data = ""
@@ -468,53 +512,37 @@ def submit_post():
         form.picture_alt.data = ""
         form.meta_tag.data = ""
         form.title_tag.data = ""
-        #add to database:
+        # add to database:
         db.session.add(post)
         db.session.commit()
 
         flash("Blog post submitted sucessfully!")
 
-    return render_template("posts_submit_new.html", logged_in=current_user.is_authenticated, form=form)
+    return render_template("submit_post.html", logged_in=current_user.is_authenticated, form=form)
 
-# POST MANGEMENT -  ADMIN
-# View table with all posts and manage posts: Admin only
-@app.route("/dashboard/manage_posts")
+
+# Seeing all submitted posts
+@app.route("/user_dashboard/submitted_posts")
 @login_required
-def posts_table():
-    all_blog_posts_submitted = Blog_Posts.query.order_by(Blog_Posts.id) 
-    return render_template("posts_table.html", logged_in=current_user.is_authenticated, all_blog_posts_submitted=all_blog_posts_submitted)
+def submitted_posts():
+    all_blog_posts_submitted = Blog_Posts.query.order_by(Blog_Posts.id)
+    return render_template("submitted_blog_posts.html", logged_in=current_user.is_authenticated, all_blog_posts_submitted=all_blog_posts_submitted)
 
-# Approve posts: Admin only
-
-
-@app.route("/dashboard/manage_posts/approve_post/<int:id>", methods=["GET", "POST"])
-@login_required
-def approve_post(id):
-    post_to_approve = Blog_Posts.query.get_or_404(id)
-    if request.method == "POST":
-        post_to_approve.admin_approved = "TRUE"
-        try:
-            db.session.commit()
-            flash("This post has been admin approved.")
-            return redirect(url_for('posts_table'))
-        except:
-            flash("There was a problem approving this post.")
-            return render_template("posts_approve_post.html", logged_in=current_user.is_authenticated, post_to_approve=post_to_approve)
-    else:
-        return render_template("posts_approve_post.html", logged_in=current_user.is_authenticated, post_to_approve=post_to_approve)
-
-# POST MANGEMENT -  ADMIN AND AUTHORS
 # Previewing a post
-@app.route("/dashboard/manage_posts/preview_post/<int:id>")
+
+
+@app.route("/user_dashboard/preview_post/<int:id>")
 @login_required
 def preview_post(id):
     post_to_preview = Blog_Posts.query.get_or_404(id)
-    return render_template("posts_preview_post.html", logged_in=current_user.is_authenticated, post_to_preview=post_to_preview)
+    return render_template("preview_post.html", logged_in=current_user.is_authenticated, post_to_preview=post_to_preview)
 
-# Editing a post (PENDING ADAPTATION FOR AUTHORS)
-@app.route("/dashboard/manage_posts/edit_post/<int:id>", methods=["GET", "POST"])
+# Editing a post
+
+
+@app.route("/user_dashboard/editting_post/<int:id>", methods=["GET", "POST"])
 @login_required
-def edit_post(id):
+def editing_posts(id):
     post_to_edit = Blog_Posts.query.get_or_404(id)
     form = The_Posts()
     # changing the post
@@ -538,7 +566,7 @@ def edit_post(id):
         db.session.add(post_to_edit)
         db.session.commit()
         flash("Post has been updated successfully!")
-        return redirect(url_for("posts_table", logged_in=current_user.is_authenticated))
+        return redirect(url_for("submitted_posts", logged_in=current_user.is_authenticated))
     # filling out the form with saved post data
     form.theme.data = post_to_edit.theme
     form.author.data = post_to_edit.author.name
@@ -555,35 +583,90 @@ def edit_post(id):
     form.picture_alt.data = post_to_edit.picture_alt
     form.meta_tag.data = post_to_edit.meta_tag
     form.title_tag.data = post_to_edit.title_tag
-    return render_template('posts_edit_post.html', logged_in=current_user.is_authenticated, form=form)
+    return render_template('editing_post.html', logged_in=current_user.is_authenticated, form=form)
 
-# Deleting a post (PENDING ADAPTATION FOR AUTHORS)
-@app.route("/dashboard/manage_posts/delete_post/<int:id>", methods=["GET", "POST"])
+# Deleting a post
+
+
+@app.route("/user_dashboard/deleting_post/<int:id>", methods=["GET", "POST"])
 @login_required
-def delete_post(id):
+def deleting_posts(id):
     post_to_delete = Blog_Posts.query.get_or_404(id)
     if request.method == "POST":
         try:
             db.session.delete(post_to_delete)
             db.session.commit()
             flash("Post deleted successfully.")
-            return redirect(url_for('posts_table'))
+            return redirect(url_for('submitted_posts'))
         except:
             flash("There was a problem deleting this post.")
-            return render_template("posts_delete_post.html", logged_in=current_user.is_authenticated, post_to_delete=post_to_delete)
+            return render_template("manage_posts_delete.html", logged_in=current_user.is_authenticated, post_to_delete=post_to_delete)
     else:
-        return render_template("posts_delete_post.html", logged_in=current_user.is_authenticated, post_to_delete=post_to_delete)
-
+        return render_template("manage_posts_delete.html", logged_in=current_user.is_authenticated, post_to_delete=post_to_delete)
 
 # ***********************************************************************************************
+# Manage Own Account
+
+
+@app.route("/user_dashboard/manage_account")
+@login_required
+def manage_acct():
+    return render_template("manage_acct.html", logged_in=current_user.is_authenticated)
+
+
+@app.route("/user_dashboard/manage_acct/update/<int:id>", methods=["GET", "POST"])
+@login_required
+def update_own_acct_info(id):
+    # for picture: video 38
+    user_at_hand = Blog_User.query.get_or_404(id)
+
+    if request.method == "POST":
+        user_at_hand.name = request.form.get("username_update")
+        user_at_hand.email = request.form.get("email_update")
+        user_at_hand.about = request.form.get("about_update")
+        try:
+            db.session.commit()
+            flash("Acct info updated successfully!")
+            # no time for flash, change way of displaying success
+            return redirect(url_for('manage_acct'))
+        except:
+            flash("Oops, error, try again.")
+            return redirect(url_for('manage_acct'))
+    else:
+        return render_template("manage_acct_update.html", logged_in=current_user.is_authenticated)
+
+
+@app.route("/user_dashboard/manage_acct/delete/<int:id>", methods=["GET", "POST"])
+@login_required
+def delete_own_acct(id):
+    user_at_hand = Blog_User.query.get_or_404(id)
+    if request.method == "POST":
+        if id == 1:
+            flash("Authorization error: this user cannot be deleted")
+        else:
+            try:
+                db.session.delete(user_at_hand)
+                db.session.commit()
+                flash("Your acct was deleted successfully.")
+                return redirect(url_for("home"))
+            except:
+                flash("There was a problem deleting your account.")
+                return redirect(url_for('manage_acct'))
+    else:
+        return render_template("manage_acct_delete.html", logged_in=current_user.is_authenticated)
+# ***********************************************************************************************
 # 404 and 500 Errors
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404
 
+
 @app.errorhandler(500)
 def server_error(e):
     return render_template("500.html"), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)

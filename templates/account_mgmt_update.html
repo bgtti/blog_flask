@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block meta %}
+<meta name="robots" content="noindex, follow">
+{% endblock %}
+{% block title %}User's Account - Update{% endblock %}
+
+{% block content %}
+<!-- Content -->
+
+<h1 class="mb-3 text-center">Change information</h1>
+<section class="mb-3 container-fluid">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="row justify-content-center">
+        <p class="text-justify">{{ message }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</section>
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="col-lg-8 col-md-10" action="/dashboard/manage_account/update/{{current_user.id}}" method="POST">
+            <div class="form-group">
+                <label for="username_update">Username</label>
+                <input type="text" class="form-control" id="username_update" name="username_update"
+                    value="{{current_user.name}}" maxlength="200" required>
+            </div>
+            <div class="form-group">
+                <label for="email_update">Email address</label>
+                <input type="email" class="form-control" id="email_update" name="email_update"
+                    value="{{current_user.email}}" maxlength="200" required>
+            </div>
+            <div class="form-group">
+                <label for="about_update">About</label>
+                <input type="text" class="form-control" id="about_update" name="about_update"
+                    value="{{current_user.about}}" maxlength="200" rows="3">
+            </div>
+
+            <button type="submit" name="submit_update" class="btn btn-light  ALL-read-btn mb-2">Save Changes</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

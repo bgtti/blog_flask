@@ -1,0 +1,33 @@
+{% extends "dashboard_admin.html" %}
+{% block page %}
+
+<h1 class="mb-3 text-center">Delete user</h1>
+<section class="mb-3 container-fluid">
+    <div class="justify-content-center">
+        <p class="text-justify text-center">You are about to delete the following user:</p>
+        <p class="text-justify text-center">Username: {{user_to_delete.name}}</p>
+        <p class="text-justify text-center">User ID: {{user_to_delete.id}}</p>
+        <p class="text-justify text-center">User's email: {{user_to_delete.email}}</p>
+        <p class="text-justify text-center">User's type: {{user_to_delete.type}}</p>
+        <p class="text-justify text-center">This action cannot be undone.</p>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="row justify-content-center">
+        <p class="text-justify">{{ message }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</section>
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="col-lg-2 col-md-10" action="/dashboard/manage_users/delete/{{user_to_delete.id}}"
+            method="POST">
+            <button type="submit" name="submit_delete" class="btn btn-light  ALL-read-btn mb-2">Delete User</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

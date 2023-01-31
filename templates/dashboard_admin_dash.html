@@ -1,0 +1,87 @@
+{% extends "dashboard_admin.html" %}
+{% block page %}
+
+<section class="my-3 container-fluid">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">100</h5>
+                    <p class="card-text">Users</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">100</h5>
+                    <p class="card-text">Posts</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">100</h5>
+                    <p class="card-text">Comments</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">100</h5>
+                    <p class="card-text">Likes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-3 container-fluid w-100">
+    <h2 class="mb-3 text-center">Posts pending approval</h2>
+    <div class="table-responsive w-100 ">
+        <table class="col-md-12 table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col"># id</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Theme</th>
+                    <th scope="col">Date to post</th>
+                    <th scope="col">Submitted</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts_pending_approval %}
+                <tr>
+                    <th scope="row" class="align-middle">{{post.id}}</th>
+                    <td class="align-middle">{{post.title}}</td>
+                    <td class="align-middle">{{post.theme}}</td>
+                    <td class="align-middle">{{post.date_to_post.strftime('%d %b %Y')}}</td>
+                    <td class="align-middle">{{post.date_submitted.strftime('%d %b %Y')}}</td>
+                    <td class="align-middle">{{post.author.name}}</td>
+                    <td class="d-flex flex-column" style="gap: 5px;">
+                        <div class="d-flex"  style="gap: 5px;">
+                            <a href="{{url_for('preview_post', id=post.id)}}" target="_blank" class="btn btn-info btn-sm" style="width: 70px;">preview</a> 
+                        <a href="{{url_for('approve_post', id=post.id)}}" class="btn btn-success btn-sm" style="width: 70px;">approve</a>
+                        </div>
+                        <div class="d-flex" style="gap: 5px;">
+                            <a href="{{url_for('edit_post', id=post.id)}}" class="btn btn-secondary btn-sm" style="width: 70px !important;">edit</a>
+                        <a href="{{url_for('delete_post', id=post.id)}}" class="btn btn-danger btn-sm" style="width: 70px;">delete</a>
+                        </div>
+                        
+                        
+                    </td>
+                </tr>
+                {% endfor %}
+    
+            </tbody>
+        </table>
+    
+    </div>
+
+</section>
+
+{% endblock %}

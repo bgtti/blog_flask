@@ -20,7 +20,7 @@
 <section class="mb-3 container-fluid">
     <div class="justify-content-center">
 <div class="card" style="width: 18rem;">
-    <img class="card-img-top" src="..." alt="User image">
+    <img class="card-img-top" src="{{ url_for('static', filename='Pictures_Users/Picture_default.jpg') }}" alt="User image">
     <div class="card-body">
         <h5 class="card-title">{{current_user.name}}</h5>
         <p class="card-text">Joined in {{current_user.date_created}}</p>
