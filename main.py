@@ -6,13 +6,17 @@ import copy
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime 
 from flask_wtf import FlaskForm # login form
-from wtforms import StringField, PasswordField, SubmitField, DateTimeField, SelectField  # login form
-from wtforms.validators import DataRequired  # login form
+from flask_wtf.file import FileField  
+from wtforms import StringField, PasswordField, SubmitField, DateTimeField, SelectField, TextAreaField  # login form
+from wtforms.validators import DataRequired, Length  # login form
 # from wtforms.widgets import TextArea, DateTimeInput
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from contact import send_email
 from helpers import hash_pw
 from werkzeug.security import generate_password_hash, check_password_hash  # used in login
+from werkzeug.utils import secure_filename
+import uuid as uuid
+import os
 from flask_ckeditor import CKEditor, CKEditorField #add new blog posts
 import text #dummie strings
 
@@ -42,9 +46,9 @@ class Blog_User(UserMixin, db.Model):
     email = db.Column(db.String(200), nullable=False, unique=True)
     password = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    about = db.Column(db.String(700), default="")
+    about = db.Column(db.String(385), default="")
     # in future, change picture to BLOB
-    picture = db.Column(db.String(200), default="Picture_default.jpg")
+    picture = db.Column(db.String(), default="Picture_default.jpg")
     # type can be: admin, super_admin, author, or user
     type = db.Column(db.String(100), nullable=False, default="user")
     comment = db.Column(db.String(700), default="")
@@ -313,33 +317,111 @@ def dashboard():
 # ACCOUNT MANAGEMENT, BOOKMARKS, HISTORY
 
 # OWN ACCOUNT MANAGEMENT - all users
-
 # Account information
 @app.route("/dashboard/manage_account")
 @login_required
 def manage_acct():
     return render_template("account_mgmt.html", logged_in=current_user.is_authenticated)
 
-# Update account information
+# Account information form
+class The_Accounts(FlaskForm):
+    username = StringField("Username", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired()])
+    about = TextAreaField("About", validators=[Length(max=385)])
+    picture = FileField("Profile picture")
+    submit = SubmitField()
+
+#Update account information
 @app.route("/dashboard/manage_account/update/<int:id>", methods=["GET", "POST"])
 @login_required
 def update_own_acct_info(id):
+    form = The_Accounts()
     user_at_hand = Blog_User.query.get_or_404(id)
 
-    if request.method == "POST":
-        user_at_hand.name = request.form.get("username_update")
-        user_at_hand.email = request.form.get("email_update")
-        user_at_hand.about = request.form.get("about_update")
+    if form.validate_on_submit():
+        user_at_hand.name = form.username.data
+        user_at_hand.email = form.email.data
+        user_at_hand.about = form.about.data
+
         try:
             db.session.commit()
-            flash("Acct info updated successfully!")
+            flash("Account information updated successfully!")
             # no time for flash, change way of displaying success
             return redirect(url_for('manage_acct'))
         except:
-            flash("Oops, error, try again.")
+            flash("Oops, error updating account information, try again.")
             return redirect(url_for('manage_acct'))
+
+    # filling out the form with saved post data
+    form.username.data = user_at_hand.name
+    form.email.data = user_at_hand.email  
+    form.about.data = user_at_hand.about 
+    return render_template("account_mgmt_update.html", logged_in=current_user.is_authenticated, form=form)
+
+# Update account information
+
+
+@app.route("/dashboard/manage_account/update_picture/<int:id>", methods=["GET", "POST"])
+@login_required
+def update_own_acct_picture(id):
+    form = The_Accounts()
+    user_at_hand = Blog_User.query.get_or_404(id)
+    if user_at_hand.picture == "" or user_at_hand.picture == "Picture_default.jpg":
+        profile_picture = None
     else:
-        return render_template("account_mgmt_update.html", logged_in=current_user.is_authenticated)
+        profile_picture = user_at_hand.picture
+
+    if form.validate_on_submit():
+        print(f"HERE")
+        if form.picture.data != "":
+            # get name from image file:
+            pic_filename = secure_filename(form.picture.data.filename)
+            # insert a unique id to the filename to make sure there arent two picutes with the same name:
+            pic_filename_unique = str(uuid.uuid1()) + "_" + pic_filename
+            # save to database:
+            user_at_hand.picture = pic_filename_unique
+
+            #if want to save image to the static folder (may give permission error):
+            #place this on the top of this file:
+            # UPLOAD_FOLDER='static/images/
+            # app.config['UPLOAD_FOLDER']= UPLOAD_FOLDER
+            #then:
+            # the_prof_pic = form.picture.data.filename
+            # the_prof_pic.save(os.path.join(app.config['UPLOAD_FOLDER']), pic_filename_unique)
+
+        try:
+            db.session.commit()
+            flash("Picture updated successfully!")
+            print(f"name: {pic_filename_unique}")
+            # no time for flash, change way of displaying success
+            return redirect(url_for('manage_acct'))
+        except:
+            flash("Oops, error updating profile picture, try again.")
+            return redirect(url_for('manage_acct'))
+
+    return render_template("account_mgmt_picture.html", logged_in=current_user.is_authenticated, form=form, profile_picture=profile_picture)
+
+
+# Update account information
+# @app.route("/dashboard/manage_account/update/<int:id>", methods=["GET", "POST"])
+# @login_required
+# def update_own_acct_info(id):
+#     user_at_hand = Blog_User.query.get_or_404(id)
+
+#     if request.method == "POST":
+#         user_at_hand.name = request.form.get("username_update")
+#         user_at_hand.email = request.form.get("email_update")
+#         user_at_hand.about = request.form.get("about_update")
+#         try:
+#             db.session.commit()
+#             flash("Acct info updated successfully!")
+#             # no time for flash, change way of displaying success
+#             return redirect(url_for('manage_acct'))
+#         except:
+#             flash("Oops, error, try again.")
+#             return redirect(url_for('manage_acct'))
+#     else:
+#         return render_template("account_mgmt_update.html", logged_in=current_user.is_authenticated)
 
 # Delete account
 @app.route("/dashboard/manage_account/delete/<int:id>", methods=["GET", "POST"])
@@ -478,13 +560,14 @@ class The_Posts(FlaskForm):
     picture_h_source = StringField("Picture Vertical", default="http://")
     picture_s = StringField("Picture Squared", default="Picture_s_XX.jpg", validators=[DataRequired()])
     picture_s_source = StringField("Picture Vertical", default="http://")
+    # picture_s = FileField("Picture Squared")
+    # picture_s_source = StringField("Picture Vertical", default="http://")
     picture_alt = StringField("Picture Alt Text", validators=[DataRequired()])
     meta_tag = StringField("Meta Tag", validators=[DataRequired()])
     title_tag = StringField("Title Tag", validators=[DataRequired()])
     submit =  SubmitField()
 
 # POST MANGEMENT -  AUTHORS
-
 # Adding a new blog post: Authors only
 @app.route("/dashboard/submit_new_post", methods=["GET", "POST"])
 @login_required

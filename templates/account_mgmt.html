@@ -21,11 +21,11 @@
     {% endwith %}
 </section>
 
-<section class="container-fluid mt-4 mb-3">
+<section class="container-fluid mt-5 mb-3">
     <div class="row justify-content-center">
         <div class="row no-gutters ALL-box-preview-shadow" style="width: 57rem;">
             <div class="col-md-6 card-img ALL-picture ">
-                <img src="{{ url_for('static', filename='Pictures_Users/Picture_default.jpg') }}" class="card-img" alt="picture of user">
+                <img src="{{ url_for('static', filename='Pictures_Users/Picture_default.jpg') }}" class="card-img All-acct-prof-pic" alt="picture of user">
             </div>
             <div class="col-md-6">
                 <div class="card-body">
@@ -36,12 +36,26 @@
                     <hr>
                     <p class="card-text text-justify">{{current_user.about}}</p>
                 </div>
-                <div class="card-body">
-                    <a href="/dashboard/manage_account/update/{{current_user.id}}" class="btn ALL-green-btn-dark mb-2" style="width:180px">Update
-                        information</a>
-                    <a href="/dashboard/manage_account/delete/{{current_user.id}}" class="btn btn-danger mb-2" style="width:180px">Delete Account</a>
-                </div>
             </div>
+        </div>
+    </div>
+</section>
+<section class="container-fluid mt-5 mb-2">
+    <div class="row justify-content-center">
+        <div class="justify-content-center">
+            <a href="/dashboard/manage_account/update_picture/{{current_user.id}}" class="btn ALL-green-btn-dark mb-2" style="width:367px" role="button">Update
+                Profile Picture</a>
+        </div>
+    </div>
+</section>
+<section class="container-fluid mb-5">
+    <div class="row justify-content-center">
+        <div class="justify-content-center">
+            <a href="/dashboard/manage_account/update/{{current_user.id}}" class="btn ALL-green-btn mb-2"
+                style="width:180px" role="button">Update
+                Information</a>
+            <a href="/dashboard/manage_account/delete/{{current_user.id}}" class="btn btn-danger mb-2"
+                style="width:180px" role="button">Delete Account</a>
         </div>
     </div>
 </section>
