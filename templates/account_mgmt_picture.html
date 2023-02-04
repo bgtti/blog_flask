@@ -28,10 +28,12 @@
         {% else %}
         <p>You do not have a profile picture yet. You can upload one bellow!</p>
         {% endif %}
+        <p>Accepted files types: .png, .jpg, and .jpeg.</p>
+        <div id="messageFileSizeDisapproved"></div>
         <form action="" method="POST" enctype="multipart/form-data">
             {{form.hidden_tag()}}
             {{form.picture.label (class="form-label")}}
-            {{form.picture (class="form-control", value="Browse computer")}}
+            {{form.picture (class="form-control", oninput="checkFileSize(this)")}}
             <br>
             {{form.submit(class="btn ALL-green-btn-dark mb-2")}}
         </form>

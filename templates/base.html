@@ -57,7 +57,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        <img src="/../static/Pictures_Users/Picture_default.jpg" class="rounded-circle mr-1" height="20"
+                        <img src="{{ url_for('static', filename='Pictures_Users/{}'.format(current_user.picture)) }}" class="rounded-circle mr-1" height="20"
                             alt="User" loading="lazy" />
                         {{ current_user.name }}
                     </a>
@@ -86,9 +86,6 @@
         © 2023 Copyright:
         <a class="text-dark" href="https://github.com/bgtti">Bgtti</a>
     </p>
-    <!-- <p class="text-center ALL-login-link">
-        Log-in section: <a class="text-dark ALL-login-link-link" href="/adminlogin">click here</a>
-    </p> -->
 </footer>
 
 <!-- Optional JavaScript; choose one of the two! -->
@@ -100,6 +97,10 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
     crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='/JS/app.js') }}">
+
+</script>
+
 
 <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

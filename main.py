@@ -24,12 +24,31 @@ app = Flask(__name__)
 ckeditor = CKEditor(app) #adding ck editor
 app.config['SECRET_KEY'] = "myFlaskApp4Fun"  # needed for login with wtforms
 
+
+
 # DATABASE
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///admin.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # app.config['SQLALCHEMY_BINDS'] = {
 #     'blog_author': 'sqlite:///blog_author.db', 'blog_user': 'sqlite:///blog_user.db', 'blog_theme': 'sqlite:///blog_theme.db', 'blog_posts': 'sqlite:///blog_posts.db', 'blog_contact': 'sqlite:///blog_contact.db'}
 db = SQLAlchemy(app) #initializes database
+
+# uploading profile pictures
+ABSOLUTE_PATH = os.path.dirname(__file__)
+RELATIVE_PATH = "static/Pictures_Users"
+PROFILE_IMAGE_PATH = os.path.join(ABSOLUTE_PATH, RELATIVE_PATH)
+app.config["PROFILE_IMG_FOLDER"] = PROFILE_IMAGE_PATH
+ALLOWED_EXTENSIONS = ['PNG', 'JPG', 'JPEG']
+app.config["ALLOWED_IMG_EXTENSIONS"] = ALLOWED_EXTENSIONS
+
+def allowed_imgs(filename):
+    if not "." in filename:
+        return False
+    extension = filename.rsplit(".",1)[1]
+    if extension.upper() in app.config["ALLOWED_IMG_EXTENSIONS"]:
+        return True
+    else:
+        return False
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -115,16 +134,16 @@ with app.app_context():
         ADMIN_PW = hash_pw("admin123")
         the_super_admin = Blog_User(name="Super Admin", email="super@admin", password=ADMIN_PW, type="super_admin")
         DEFAULT_AUTHOR_PW = hash_pw("author123")
-        the_default_author = Blog_User(name="The Travel Blog Team", email="t@t", password=DEFAULT_AUTHOR_PW, type="author", about=text.dummie_text_author, picture=text.dummie_picture_author)
+        the_default_author = Blog_User(name="The Travel Blog Team", email="t@t", password=DEFAULT_AUTHOR_PW, type="author", about=text.dummie_text_author, picture="Picture_default.jpg")
         db.session.add(the_super_admin)
         db.session.add(the_default_author)
         # db.session.commit()
         # creating some dummie accounts (for testing, delete the bellow later):
         RANDOM_PW = hash_pw("user123")
         random1 = Blog_User(name="Roberta Sanstoms", email="r@r", password=RANDOM_PW, type="admin")
-        random2 = Blog_User(name="Elisa S.", email="e@e", password=RANDOM_PW, type="author", about=text.dummie_text_author, picture="/../static/Picture_author_1.jpg")
-        random3 = Blog_User(name="Ricardo J. F.", email="j@j", password=RANDOM_PW, type="author", about=text.dummie_text_author, picture="/../static/Picture_author_2.jpg")
-        random4 = Blog_User(name="Martha P.", email="m@m", password=RANDOM_PW, type="author", about=text.dummie_text_author, picture="/../static/Picture_author_3.jpg")
+        random2 = Blog_User(name="Elisa S.", email="e@e", password=RANDOM_PW, type="author", about=text.dummie_text_author, picture="Picture_author_1.jpg")
+        random3 = Blog_User(name="Ricardo J. F.", email="j@j", password=RANDOM_PW, type="author", about=text.dummie_text_author, picture="Picture_author_2.jpg")
+        random4 = Blog_User(name="Martha P.", email="m@m", password=RANDOM_PW, type="author", about=text.dummie_text_author, picture="Picture_author_3.jpg")
         random5 = Blog_User(name="John Meyers", email="j@m", password=RANDOM_PW, type="user")
         random6 = Blog_User(name="Fabienne123", email="f@f", password=RANDOM_PW, type="user")
         random7 = Blog_User(name="Kokaloka", email="k@k", password=RANDOM_PW, type="user")
@@ -361,6 +380,8 @@ def update_own_acct_info(id):
 # Update account information
 
 
+# app.config["IMAGE_UPLOADS"] = "C: \Users\bruna\Desktop\python_ex\blog_flask\static\Pictures_Users"
+
 @app.route("/dashboard/manage_account/update_picture/<int:id>", methods=["GET", "POST"])
 @login_required
 def update_own_acct_picture(id):
@@ -371,28 +392,38 @@ def update_own_acct_picture(id):
     else:
         profile_picture = user_at_hand.picture
 
-    if form.validate_on_submit():
+    if request.method == "POST":
+    # if form.validate_on_submit():
         print(f"HERE")
-        if form.picture.data != "":
+        if form.picture.data:
             # get name from image file:
             pic_filename = secure_filename(form.picture.data.filename)
+
+            #check if extension is allowed:
+            if not allowed_imgs(pic_filename):
+                flash("Sorry, this image extension is not allowed.")
+                return redirect(url_for('update_own_acct_picture', id=id))
+            
             # insert a unique id to the filename to make sure there arent two picutes with the same name:
             pic_filename_unique = str(uuid.uuid1()) + "_" + pic_filename
-            # save to database:
+            # defining path and saving to user's database:
+            # pic_path = f"{PROFILE_IMAGE_PATH}/{pic_filename_unique}"
+            # user_at_hand.picture = pic_path
             user_at_hand.picture = pic_filename_unique
 
-            #if want to save image to the static folder (may give permission error):
-            #place this on the top of this file:
-            # UPLOAD_FOLDER='static/images/
-            # app.config['UPLOAD_FOLDER']= UPLOAD_FOLDER
-            #then:
-            # the_prof_pic = form.picture.data.filename
-            # the_prof_pic.save(os.path.join(app.config['UPLOAD_FOLDER']), pic_filename_unique)
+            # get the new image
+            the_img_file = request.files['picture']
+            
 
         try:
+            #save the img to folder and path to user
+            the_img_file.save(os.path.join(app.config["PROFILE_IMG_FOLDER"], pic_filename_unique))
+            #delete the old picture from folder
+            if profile_picture != None and os.path.exists(os.path.join(app.config["PROFILE_IMG_FOLDER"], profile_picture)):
+                os.remove(os.path.join(app.config["PROFILE_IMG_FOLDER"], profile_picture))
+
             db.session.commit()
             flash("Picture updated successfully!")
-            print(f"name: {pic_filename_unique}")
             # no time for flash, change way of displaying success
             return redirect(url_for('manage_acct'))
         except:

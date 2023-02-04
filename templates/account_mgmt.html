@@ -25,7 +25,8 @@
     <div class="row justify-content-center">
         <div class="row no-gutters ALL-box-preview-shadow" style="width: 57rem;">
             <div class="col-md-6 card-img ALL-picture ">
-                <img src="{{ url_for('static', filename='Pictures_Users/Picture_default.jpg') }}" class="card-img All-acct-prof-pic" alt="picture of user">
+                <!-- <img src="{{ url_for('static', filename='Pictures_Users/Picture_default.jpg') }}" class="card-img All-acct-prof-pic" alt="picture of user"> -->
+                <img src="{{ url_for('static', filename='Pictures_Users/{}'.format(current_user.picture)) }}" class="card-img All-acct-prof-pic" alt="user profile picture">
             </div>
             <div class="col-md-6">
                 <div class="card-body">
@@ -60,6 +61,5 @@
     </div>
 </section>
 
-
-
 {% endblock %}
+
