@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block meta %}
+<meta name="robots" content="noindex, follow">
+{% endblock %}
+{% block title %}User's Account - Update{% endblock %}
+
+{% block content %}
+<!-- Content -->
+
+<h1 class="mb-3 text-center">Change information</h1>
+<section class="mb-3 container-fluid">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="row justify-content-center">
+        <p class="text-justify">{{ message }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</section>
+<section class="mb-3 container-fluid">
+    <div class="justify-content-center">
+        <form action="" method="POST">
+            {{form.hidden_tag()}}
+            {{form.username.label (class="form-label")}}
+            {{form.username (class="form-control")}}
+            <br>
+            {{form.email.label (class="form-label")}}
+            {{form.email (class="form-control")}}
+            <br>
+            {{form.about.label (class="form-label")}}
+            {{form.about (class="form-control", rows="4")}}
+            <br>
+            {{form.submit(class="btn ALL-green-btn-dark mb-2")}}
+        </form>
+
+    </div>
+</section>
+
+
+
+
+{% endblock %}

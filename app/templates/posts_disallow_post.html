@@ -1,0 +1,57 @@
+{% extends "dashboard_admin.html" %}
+{% block page %}
+
+<h1 class="mb-3 text-center">Disallow Post</h1>
+<section class="mb-3 container-fluid">
+    <div class="justify-content-center">
+        <p class="text-justify text-center">You are about to roll back the approval of this post. This post will no longer be published on the blog. This post's date is
+            <b>{{post_to_disallow.date_to_post.strftime('%d %b %Y')}}</b> and would habe been published under the theme
+            <b>{{post_to_disallow.theme}}.</b></p>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="row justify-content-center">
+        <p class="text-justify">{{ message }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</section>
+
+<section class="container-fluid mt-4 mb-3">
+    <div class="row justify-content-center">
+        <div class="row no-gutters" style="width: 57rem;">
+            <div class="col-md-6 card-img ALL-picture ">
+                <img src="/../static/Pictures_Users/Picture_default.jpg" class="card-img" alt="picture of blog post">
+            </div>
+            <div class="col-md-6">
+                <div class="card-body">
+                    <h5 class="card-title">{{post_to_disallow.title}}</h5>
+                    <p class="card-text text-justify">{{post_to_disallow.intro}}</p>
+                    <a role="button" href="{{url_for('dashboard.preview_post', id=post_to_disallow.id)}}"
+                        class="btn ALL-green-btn mb-2">Preview</a>
+                    <p class="card-text"><small class="text-muted"> by {{ post_to_disallow.author.name }} - {{
+                            post_to_disallow.date_to_post.strftime('%d %B %Y') }}</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="col-lg-2 col-md-12" action="/dashboard/manage_posts/disallow_post/{{post_to_disallow.id}}"
+            method="POST">
+            <button type="submit" name="submit_disallow" class="btn ALL-green-btn-dark mb-2" style="width: 150px;">Disallow
+                Post</button>
+        </form>
+    </div>
+</section>
+
+</div>
+</section>
+
+{% endblock %}

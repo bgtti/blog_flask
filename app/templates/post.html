@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block meta %}
+<meta name="description" content="Travel blog - Blog Post">
+{% endblock %}
+
+{% block title %}{{blog_posts['title']}}{% endblock %}
+
+{% block content %}
+
+    <!-- Content -->
+    <section class="mb-3 container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <p class="ALL-special-font ALL-h1 text-center" style="margin-bottom: -20px;">in {{blog_posts.theme_group.theme}}</p>
+            </div>
+            <div class="col-lg-8 col-md-10">
+                <h1 class="text-center">{{blog_posts.title}}</h1>
+            </div>
+            <div class="col-lg-8 col-md-10">
+                <p class="text-center">by {{blog_posts.author.name}} - {{blog_posts.date_to_post.strftime('%d %B %Y')}}</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-3 container-fluid">
+        <div class="row justify-content-center">
+            <p class="col-lg-8 col-md-10 text-justify">{{blog_posts.intro}}</p>
+        </div>
+    </section>
+    
+    <section class="mb-3 container-fluid">
+        <div class="row justify-content-center">
+            <img class="col-lg-8 col-md-10" src="{{blog_posts.picture_h}}" alt="{{blog_posts['picture_alt']}}">
+        </div>
+    </section>
+
+    <section class="mb-3 container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10" style="text-align: justify;">
+                {{blog_posts.body|safe}}
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-3 container-fluid">
+        <div class="row justify-content-center">
+            <div class="row no-gutters" style="width: 57rem;">
+                <div class="col-3 card-img ALL-picture">
+                    <img src="{{ blog_posts.author.picture }}" class="card-img" style="border-radius: 90%;"
+                        alt="{{ blog_posts.author.name }}">
+                </div>
+                <div class="col-9">
+                    <div class="card-body">
+                        <p class="card-text"><small class="text-muted">ABOUT THE AUTHOR</small></p>
+                        <h5 class="card-title">{{ blog_posts.author.name }}</h5>
+                        <p class="card-text">A writer, a creator, a blogger, but most importantly: a traveller! Follow the Travel Blog to keep up with this and many other bloggers, travelling the world to bring you tips, ideas, and
+                        inspiration!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

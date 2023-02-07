@@ -1,0 +1,156 @@
+/* Box-shadows: from https: //getcssscan.com/css-box-shadow-examples*/
+
+html,
+body {
+    overflow-x: hidden;
+}
+.HOME-special-font, .ALL-special-font {
+    font-family: 'La Belle Aurore', cursive;
+}
+/* HOME */
+.HOME-title {
+    font-size: 4em;
+    padding-top: 25px;
+}
+.HOME-sub-title {
+    font-size: 1.5em;
+    color: rgb(68, 68, 68);
+    margin-left: 5px;
+}
+@media screen and (min-width: 600px) {
+    .HOME-title {
+        font-size: 7em;
+    }
+    .HOME-sub-title {
+        font-size: 2.5em;
+    }
+}
+/* Picture_01 from: https: //pixabay.com/photos/people-woman-travel-adventure-trek-2591874/ */
+.HOME-img-main{
+    height: 94vh;
+    background-image: url("../Pictures_Blog/Picture_01.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+@media (hover: hover) {
+    .HOME-theme-btn:hover {
+        border-radius: 5%;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        cursor: pointer;
+    }
+}
+.HOME-round-img{
+    border-radius: 10%;
+}
+.HOME-txt-background{
+    background-color: rgba(255, 255, 255, 0.495);
+}
+.HOME-card{
+    border:none;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+.HOME-card-footer{
+    border:none;
+    background-color: white;
+}
+
+/* ALL OTHER HTML FILES as well as HOME*/
+.ALL-h1{
+    margin: 30px;
+    font-size: 3em;
+}
+@media screen and (min-width: 600px) {
+    .ALL-h1 {
+        font-size: 5em;
+    }
+}
+.ALL-picture {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ALL-read-btn{
+    width: 150px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    color: rgb(75, 75, 75);
+}
+.ALL-green-btn{
+    width: 120px;
+    background-color: #728c6996;
+}
+.ALL-green-btn-dark {
+    width: 120px;
+    background-color: #728C69;
+}
+.ALL-mini-btn{
+    color: white;
+}
+.ALL-no-hover{
+    text-decoration: none !important;
+    color: rgb(16, 16, 16);
+}
+.ALL-no-hover:hover {
+    text-decoration: none !important;
+}
+@media (hover: hover) {
+    .ALL-post-hover:hover {
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    }
+    .ALL-green-btn:hover, .ALL-green-btn-dark:hover{
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        font-weight: bold;
+    }
+    .ALL-mini-btn:hover {
+        color: white;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+    }
+}
+.ALL-box-preview-shadow{
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+.ALL-msg-sent{
+    color: #4b6046;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+.ALL-login-link{
+    color: rgb(150, 150, 150);
+}
+.ALL-login-link-link{
+    color: rgb(150, 150, 150) !important;
+    text-decoration: underline !important;
+}
+.All-error{
+    color: #8E1600;
+}
+
+@media (min-width: 765px) {
+    .All-acct-prof-pic{
+        margin: 0.5rem 0 0.5rem 1rem;
+    }
+}
+
+/* Form input type = file */
+/* (because Bootstrap class not working) */
+
+input[type=file]::file-selector-button {
+    border: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+input[type=file]::file-selector-button {
+    background: #728c6946;
+    margin: -3rem 1rem 0 -1rem;
+    height: 50px;
+    padding: 0 10px 0 10px;
+    border-right: 1px solid #ced4da;
+}
+
+@media (hover: hover) {
+    input[type=file]::file-selector-button:hover {
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+    }
+}
