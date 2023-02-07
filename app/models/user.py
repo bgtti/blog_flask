@@ -12,7 +12,8 @@ class Blog_User(UserMixin, db.Model):
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     about = db.Column(db.String(385), default="")
     # in future, change picture to BLOB
-    picture = db.Column(db.String(), default="Picture_default.jpg")
+    picture = db.Column(
+        db.String(), default="Picture_default.jpg")
     # type can be: admin, super_admin, author, or user
     type = db.Column(db.String(100), nullable=False, default="user")
     comment = db.Column(db.String(700), default="")

@@ -1,7 +1,7 @@
 # Blog posts
 
 post_data = [{
-    "theme": "Beach",
+    "theme": 1,
     "title": "Phang Nga Bay: a day in paradise",
     "author_id": 4,
     "picture_v": "Picture_s_01.jpg",
@@ -13,7 +13,7 @@ post_data = [{
     "picture_alt": "Phang Nga Bay",
     },
     {
-    "theme": "Beach",
+    "theme": 1,
     "title": "A waterfall trail in the Californian Coast is what you need right now",
     "author_id": 5,
     "picture_v": "Picture_s_02.jpg",
@@ -25,7 +25,7 @@ post_data = [{
     "picture_alt": "Californian Coast",
     },
     {
-    "theme": "Beach",
+    "theme": 1,
     "title": "What brought me to Cape Town's Boulder Beach in 2022",
     "author_id": 6,
     "picture_v": "Picture_s_03.jpg",
@@ -37,7 +37,7 @@ post_data = [{
     "picture_alt": "Boulder Beach",
     },
     {
-    "theme": "City",
+    "theme": 2,
     "title": "The ancient city of Dubrovnik is a stunner",
     "author_id": 6,
     "picture_v": "",
@@ -49,7 +49,7 @@ post_data = [{
     "picture_alt": "Dubrovnik",
     },
     {
-    "theme": "Culture",
+    "theme": 4,
     "title": "Petra is the way Jordan reminds the world of the roots of civilization",
     "author_id": 4,
     "picture_v": "",
@@ -61,7 +61,7 @@ post_data = [{
     "picture_alt": "Petra",
     },
     {
-    "theme": "City",
+    "theme": 2,
     "title": "And I quote 'half of my heart is in Havana, ooh na-na",
     "author_id": 6,
     "picture_v": "",
@@ -73,7 +73,7 @@ post_data = [{
     "picture_alt": "Havana",
     },
     {
-    "theme": "Culture",
+    "theme": 4,
     "title": "The Cambodian trip to renew your energies and clean your soul",
     "author_id": 4,
     "picture_v": "",
@@ -85,7 +85,7 @@ post_data = [{
     "picture_alt": "Cambodja",
     },
     {
-    "theme": "Culture",
+    "theme": 3,
     "title": "Kenya is perfect for that Safari you had in mind",
     "author_id": 5,
     "picture_v": "",
@@ -97,7 +97,7 @@ post_data = [{
     "picture_alt": "Kenya safari",
     },
     {
-    "theme": "Nature",
+    "theme": 3,
     "title": "The Andes like you've never seen before: a spetacular setting",
     "author_id": 5,
     "picture_v": "",
@@ -109,7 +109,7 @@ post_data = [{
     "picture_alt": "Andes in Ecuador",
     },
     {
-    "theme": "Nature",
+    "theme": 3,
     "title": "Touring the Rio Negro is not for the faint of heart",
     "author_id": 5,
     "picture_v": "",
@@ -121,7 +121,7 @@ post_data = [{
     "picture_alt": "Amazon forest",
     },
     {
-    "theme": "City",
+    "theme": 2,
     "title": "Tokio is where the ultramodern and the traditional mix under the opulent Mount Fuji",
     "author_id": 6,
     "picture_v": "",
@@ -133,7 +133,7 @@ post_data = [{
     "picture_alt": "Tokio",
     },
     {
-    "theme": "Culture",
+    "theme": 4,
     "title": "I've been to the 'Land of Kings' and this is what I learned - a girl in Rajasthan",
     "author_id": 4,
     "picture_v": "",
@@ -143,6 +143,30 @@ post_data = [{
     "picture_b": "Picture_b_12.jpg",
     "picture_b_source": "https://pixabay.com/photos/india-rajastan-strong-amber-1457098/",
     "picture_alt": "Rajasthan",
+    },
+    {
+    "theme": 4,
+    "title": "Egypt: travelling in time",
+    "author_id": 4,
+    "picture_v": "",
+    "picture_v_source": "",
+    "picture_s": "Picture_s_13.jpg",
+    "picture_s_source": "https://pixabay.com/photos/egypt-desert-egyptian-temple-giza-1179193/",
+    "picture_b": "Picture_b_13.jpg",
+    "picture_b_source": "https://pixabay.com/photos/hieroglyphs-pharaohs-egypt-luxor-429863/",
+    "picture_alt": "Egypt",
+    },
+    {
+    "theme": 2,
+    "title": "Digital nomads should check out these Budapest coffee shops",
+    "author_id": 4,
+    "picture_v": "",
+    "picture_v_source": "",
+    "picture_s": "Picture_s_14.jpg",
+    "picture_s_source": "https://pixabay.com/photos/budapest-hungary-632851/",
+    "picture_b": "Picture_b_14.jpg",
+    "picture_b_source": "https://pixabay.com/photos/matthias-church-church-night-lights-4516471/",
+    "picture_alt": "Budapest",
     }
 ]
 

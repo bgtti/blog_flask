@@ -3,6 +3,7 @@ from app.extensions import db
 from app.models.user import Blog_User
 from app.models.posts import Blog_Posts
 from app.dashboard.forms import The_Posts
+from app.models.themes import Blog_Theme
 from datetime import datetime
 from flask_login import login_required, current_user
 
@@ -126,16 +127,18 @@ def user_preview(id):
 @dashboard.route("/dashboard/submit_new_post", methods=["GET", "POST"])
 @login_required
 def submit_post():
-    form = The_Posts()
+    themes_list = [(u.id, u.theme) for u in db.session.query(Blog_Theme).all()]
+    form = The_Posts(obj=themes_list)
+    form.theme.choices = themes_list
     if form.validate_on_submit():
         author = current_user.id
-        post = Blog_Posts(theme=form.theme.data,
-                          date_to_post=form.date.data, title=form.title.data, intro=form.intro.data,
-                          body=form.body.data, picture_v=form.picture_v.data, picture_v_source=form.picture_v_source.data,
-                          picture_h=form.picture_h.data, picture_h_source=form.picture_h_source.data,
-                          picture_s=form.picture_s.data, picture_s_source=form.picture_s_source.data,
-                          picture_alt=form.picture_alt.data, meta_tag=form.meta_tag.data, title_tag=form.title_tag.data,
-                          author_id=author)
+        post = Blog_Posts(theme_id=form.theme.data,
+                            date_to_post=form.date.data, title=form.title.data, intro=form.intro.data,
+                            body=form.body.data, picture_v=form.picture_v.data, picture_v_source=form.picture_v_source.data,
+                            picture_h=form.picture_h.data, picture_h_source=form.picture_h_source.data,
+                            picture_s=form.picture_s.data, picture_s_source=form.picture_s_source.data,
+                            picture_alt=form.picture_alt.data, meta_tag=form.meta_tag.data, title_tag=form.title_tag.data,
+                            author_id=author)
         # clear form:
         form.theme.data = ""
         # form.author.data = ""
@@ -237,10 +240,12 @@ def preview_post(id):
 @login_required
 def edit_post(id):
     post_to_edit = Blog_Posts.query.get_or_404(id)
-    form = The_Posts()
+    themes_list = [(u.id, u.theme) for u in db.session.query(Blog_Theme).all()]
+    form = The_Posts(obj=themes_list)
+    form.theme.choices = themes_list
     # changing the post
     if form.validate_on_submit():
-        post_to_edit.theme = form.theme.data
+        post_to_edit.theme_id = form.theme.data
         # post_to_edit.author = form.author.data #author not available anymore, use author_id
         post_to_edit.date_to_post = form.date.data
         post_to_edit.title = form.title.data
@@ -264,7 +269,7 @@ def edit_post(id):
         else:
             return redirect(url_for("dashboard.posts_table_author", logged_in=current_user.is_authenticated))
     # filling out the form with saved post data
-    form.theme.data = post_to_edit.theme
+    form.theme.data = post_to_edit.theme_id
     form.author.data = post_to_edit.author.name
     form.date.data = post_to_edit.date_to_post
     form.title.data = post_to_edit.title

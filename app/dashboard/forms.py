@@ -6,8 +6,7 @@ from wtforms.validators import DataRequired
 from flask_ckeditor import CKEditorField
 
 class The_Posts(FlaskForm):
-    theme = SelectField(u'Theme', choices=[
-                        'Beach', 'City', 'Nature', 'Culture'])
+    theme = SelectField(u'Theme', coerce=int)
     author = StringField("Author")
     date = DateTimeField('Date', default=datetime.now, format='%Y-%m-%d')
     title = StringField("Title", validators=[DataRequired()])

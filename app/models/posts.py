@@ -4,8 +4,6 @@ from datetime import datetime
 class Blog_Posts(db.Model):
     __tablename__ = "blog_posts"
     id = db.Column(db.Integer, primary_key=True)
-    theme = db.Column(db.String(200), nullable=False)
-    # author = db.Column(db.String(200), nullable=False)
     date_submitted = db.Column(db.DateTime, default=datetime.utcnow)
     date_to_post = db.Column(db.DateTime, default=datetime.utcnow)
     title = db.Column(db.String(200), nullable=False)
@@ -24,8 +22,8 @@ class Blog_Posts(db.Model):
     featured = db.Column(db.String(5), default="FALSE")
     likes = db.Column(db.Integer, default=0)
     comments = db.Column(db.Integer, default=0)
-    # blog_user = db.relationship('Blog_User', backref='the_author')
     author_id = db.Column(db.Integer, db.ForeignKey('blog_user.id'))
+    theme_id = db.Column(db.Integer, db.ForeignKey('blog_theme.id'))
 
     def __repr__(self):
-        return f"<Post: {self.id} {self.theme} {self.title}>"
+        return f"<Post {self.id}: {self.title}, Theme: {self.theme_id}>"
