@@ -1,0 +1,51 @@
+{% extends "dashboard_admin.html" %}
+{% block page %}
+
+<h1 class="mb-3 text-center">Delete Post</h1>
+<section class="mb-3 container-fluid">
+    <div class="justify-content-center">
+        <p class="text-justify text-center">The post you are about to delete has the admin approved status of {{post_to_delete.admin_approved}}.<br>
+            This post has {{ post_to_delete.likes }} likes and {{ post_to_delete.comments }} comments.
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="row justify-content-center">
+        <p class="text-justify">{{ message }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</section>
+
+<section class="container-fluid mt-4 mb-3">
+    <div class="row justify-content-center">
+        <div class="row no-gutters ALL-box-preview-shadow" style="width: 57rem;">
+            <div class="col-md-6 card-img ALL-picture ">
+                <img src="/../static/Pictures_Users/Picture_default.jpg" class="card-img" alt="picture of blog post">
+            </div>
+            <div class="col-md-6">
+                <div class="card-body">
+                    <h5 class="card-title">{{post_to_delete.title}}</h5>
+                    <p class="card-text text-justify">{{post_to_delete.intro}}</p>
+                    <a role="button" href="{{url_for('dashboard.preview_post', id=post_to_delete.id)}}"
+                        class="btn ALL-green-btn mb-2">Preview</a>
+                    <p class="card-text"><small class="text-muted"> by {{ post_to_delete.author.name }} - {{
+                            post_to_delete.date_to_post.strftime('%d %B %Y') }}</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="col-lg-2 col-md-12" action="/dashboard/manage_posts/delete_post/{{post_to_delete.id}}"
+            method="POST">
+            <button type="submit" name="submit_delete_post" class="btn btn-danger mb-2" style="width:120px">Delete Post</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

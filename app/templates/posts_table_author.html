@@ -1,0 +1,54 @@
+{% extends "dashboard_author.html" %}
+{% block page %}
+<!-- Content -->
+
+<h1 class="mb-3 text-center">Submit new post</h1>
+<h2 class="mb-3 text-center">All submitted posts</h2>
+<section class="mb-3 container-fluid">
+    <div class="table-responsive w-100">
+        <table class="col-md-12 table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col" class="align-middle"># id</th>
+                    <th scope="col" class="align-middle">Title</th>
+                    <th scope="col" class="align-middle">Theme</th>
+                    <th scope="col" class="align-middle">Date to post</th>
+                    <th scope="col" class="align-middle">Date submitted</th>
+                    <th scope="col" class="align-middle">Likes</th>
+                    <th scope="col" class="align-middle">Comments</th>
+                    <th scope="col" class="align-middle">Admin Approved</th>
+                    <th scope="col" class="align-middle">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in all_blog_posts_submitted %}
+                <tr>
+                    <th scope="row" class="align-middle">{{post.id}}</th>
+                    <td class="align-middle">{{post.title}}</td>
+                    <td class="align-middle">{{post.theme}}</td>
+                    <td class="align-middle">{{post.date_to_post.strftime('%d %b %Y')}}</td>
+                    <td class="align-middle">{{post.date_submitted.strftime('%d %b %Y')}}</td>
+                    <td class="align-middle">{{post.likes}}</td>
+                    <td class="align-middle">{{post.comments}}</td>
+                    <td class="align-middle">{{post.admin_approved}}</td>
+                    <td class="d-flex flex-column" style="gap: 5px;">
+                        <div class="d-flex" style="gap: 5px;">
+                            <a href="{{url_for('dashboard.preview_post_author', id=post.id)}}" target="_blank" class="btn btn-sm ALL-mini-btn"
+                                style="width: 147px; background-color: #728c6996;">preview</a>
+                        </div>
+                        <div class="d-flex" style="gap: 5px;">
+                            <a href="{{url_for('dashboard.edit_post_author', id=post.id)}}" class="btn btn-secondary btn-sm" style="width: 70px !important;">edit</a>
+                            <a href="{{url_for('dashboard.delete_post_author', id=post.id)}}" class="btn btn-danger btn-sm" style="width: 70px;">delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+</section>
+
+
+{% endblock %}

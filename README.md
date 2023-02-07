@@ -26,3 +26,8 @@ Validation using WTforms
 The required dependencies are stored in requirements.txt.
 pip freeze > requirements.txt will output a list of all installed Python modules with their versions, shall you make changes to the project.
 Use pip install -r requirements.txt to install all the modules.
+
+Python 3.x
+Flask
+Jinja2
+
