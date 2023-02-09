@@ -3,7 +3,7 @@
 post_data = [{
     "theme": 1,
     "title": "Phang Nga Bay: a day in paradise",
-    "author_id": 4,
+    "author_id": 5,
     "picture_v": "Picture_s_01.jpg",
     "picture_v_source": "https://pixabay.com/photos/phang-nga-bay-phuket-province-2076833/",
     "picture_s": "Picture_b_01.jpg",
@@ -15,7 +15,7 @@ post_data = [{
     {
     "theme": 1,
     "title": "A waterfall trail in the Californian Coast is what you need right now",
-    "author_id": 5,
+    "author_id": 6,
     "picture_v": "Picture_s_02.jpg",
     "picture_v_source": "https://pixabay.com/photos/beach-waterfall-coastal-california-1630472/",
     "picture_s": "Picture_b_02.jpg",
@@ -27,7 +27,7 @@ post_data = [{
     {
     "theme": 1,
     "title": "What brought me to Cape Town's Boulder Beach in 2022",
-    "author_id": 6,
+    "author_id": 7,
     "picture_v": "Picture_s_03.jpg",
     "picture_v_source": "https://pixabay.com/photos/cape-town-boulder-beach-penguin-5741110/",
     "picture_s": "Picture_b_03.jpg",
@@ -39,7 +39,7 @@ post_data = [{
     {
     "theme": 2,
     "title": "The ancient city of Dubrovnik is a stunner",
-    "author_id": 6,
+    "author_id": 7,
     "picture_v": "",
     "picture_v_source": "",
     "picture_s": "Picture_s_04.jpg",
@@ -51,7 +51,7 @@ post_data = [{
     {
     "theme": 4,
     "title": "Petra is the way Jordan reminds the world of the roots of civilization",
-    "author_id": 4,
+    "author_id": 5,
     "picture_v": "",
     "picture_v_source": "",
     "picture_s": "Picture_s_05.jpg",
@@ -63,7 +63,7 @@ post_data = [{
     {
     "theme": 2,
     "title": "And I quote 'half of my heart is in Havana, ooh na-na",
-    "author_id": 6,
+    "author_id": 7,
     "picture_v": "",
     "picture_v_source": "",
     "picture_s": "Picture_s_06.jpg",
@@ -75,7 +75,7 @@ post_data = [{
     {
     "theme": 4,
     "title": "The Cambodian trip to renew your energies and clean your soul",
-    "author_id": 4,
+    "author_id": 5,
     "picture_v": "",
     "picture_v_source": "",
     "picture_s": "Picture_s_07.jpg",
@@ -87,7 +87,7 @@ post_data = [{
     {
     "theme": 3,
     "title": "Kenya is perfect for that Safari you had in mind",
-    "author_id": 5,
+    "author_id": 6,
     "picture_v": "",
     "picture_v_source": "",
     "picture_s": "Picture_s_08.jpg",
@@ -99,7 +99,7 @@ post_data = [{
     {
     "theme": 3,
     "title": "The Andes like you've never seen before: a spetacular setting",
-    "author_id": 5,
+    "author_id": 6,
     "picture_v": "",
     "picture_v_source": "",
     "picture_s": "Picture_s_09.jpg",
@@ -111,7 +111,7 @@ post_data = [{
     {
     "theme": 3,
     "title": "Touring the Rio Negro is not for the faint of heart",
-    "author_id": 5,
+    "author_id": 6,
     "picture_v": "",
     "picture_v_source": "",
     "picture_s": "Picture_s_10.jpg",
@@ -123,7 +123,7 @@ post_data = [{
     {
     "theme": 2,
     "title": "Tokio is where the ultramodern and the traditional mix under the opulent Mount Fuji",
-    "author_id": 6,
+    "author_id": 7,
     "picture_v": "",
     "picture_v_source": "",
     "picture_s": "Picture_s_11.jpg",
@@ -135,7 +135,7 @@ post_data = [{
     {
     "theme": 4,
     "title": "I've been to the 'Land of Kings' and this is what I learned - a girl in Rajasthan",
-    "author_id": 4,
+    "author_id": 5,
     "picture_v": "",
     "picture_v_source": "",
     "picture_s": "Picture_s_12.jpg",
@@ -147,7 +147,7 @@ post_data = [{
     {
     "theme": 4,
     "title": "Egypt: travelling in time",
-    "author_id": 4,
+    "author_id": 5,
     "picture_v": "",
     "picture_v_source": "",
     "picture_s": "Picture_s_13.jpg",
@@ -159,7 +159,7 @@ post_data = [{
     {
     "theme": 2,
     "title": "Digital nomads should check out these Budapest coffee shops",
-    "author_id": 4,
+    "author_id": 5,
     "picture_v": "",
     "picture_v_source": "",
     "picture_s": "Picture_s_14.jpg",

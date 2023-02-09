@@ -21,7 +21,9 @@ class Blog_Posts(db.Model):
     admin_approved = db.Column(db.String(5), default="FALSE")
     featured = db.Column(db.String(5), default="FALSE")
     likes = db.Column(db.Integer, default=0)
-    comments = db.Column(db.Integer, default=0)
+    # comments = db.Column(db.Integer, default=0)
+    comments = db.relationship('Blog_Comments', backref='target_post')
+    replies = db.relationship('Blog_Replies', backref='target_post')
     author_id = db.Column(db.Integer, db.ForeignKey('blog_user.id'))
     theme_id = db.Column(db.Integer, db.ForeignKey('blog_theme.id'))
 

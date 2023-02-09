@@ -1,13 +1,16 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, flash
 from app.extensions import db
 from app.website.contact import send_email
+from app.website.forms import The_Comments
 from app.models.contact import Blog_Contact
 from app.models.themes import Blog_Theme
 from app.models.posts import Blog_Posts
 from app.models.user import Blog_User
+from app.models.comments import Blog_Comments, Blog_Replies
 from flask_login import current_user
 from datetime import datetime
 from sqlalchemy import desc
+
 
 
 website = Blueprint('website', __name__)
@@ -37,9 +40,6 @@ def home():
             for this_query in query:
                 forth_theme_post_ids.append(this_query.id)
     posts_all = posts_all[0] + posts_all[1] + posts_all[2] + posts_all[3]
-
-    for r in posts_all:
-        print(r.theme_group.theme)
 
     return render_template('index.html', posts_all=posts_all, posts_themes=posts_themes, logged_in=current_user.is_authenticated, forth_theme_post_ids=forth_theme_post_ids)
 
@@ -100,13 +100,35 @@ def contact():
     return render_template('contact.html', msg_sent=False, logged_in=current_user.is_authenticated)
 
 
-@website.route("/post/<int:index>")
+@website.route("/post/<int:index>", methods=["GET", "POST"])
 def blog_post(index):
-    blog_posts = db.session.query(Blog_Posts).filter(Blog_Posts.id == index,
+    # get the post
+    blog_post = db.session.query(Blog_Posts).filter(Blog_Posts.id == index,
         Blog_Posts.admin_approved == "TRUE", Blog_Posts.date_to_post <= datetime.utcnow(),
-        ).first()
+                                                    ).order_by(Blog_Posts.date_submitted.desc()).first()
 
-    return render_template('post.html', blog_posts=blog_posts, logged_in=current_user.is_authenticated)
+    # get the comments
+    comments = db.session.query(Blog_Comments).filter(
+                Blog_Comments.post_id == index).limit(25)
 
+    # get the replies
+    replies = db.session.query(Blog_Replies).filter(Blog_Replies.post_id == index,
+                ).order_by(Blog_Replies.date_submitted.asc()).limit(100)
+    
+    # main comments --- order by date
+    form = The_Comments()
+    if request.method == "POST":
+        if form.validate_on_submit():
+            this_comment = Blog_Comments(
+                text=form.comment.data, post_id=index, user_id=current_user.id)
+            #clear form:
+            form.comment.data = ""
+            # add to database:
+            db.session.add(this_comment)
+            db.session.commit()
+            flash("Comment submitted sucessfully!")
+            return render_template('post.html', blog_posts=blog_post, logged_in=current_user.is_authenticated, form=form, comments=comments, replies=replies)
+
+    return render_template('post.html', blog_posts=blog_post, logged_in=current_user.is_authenticated, form=form, comments=comments, replies=replies)
 
 

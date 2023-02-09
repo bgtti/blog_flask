@@ -57,7 +57,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        <img src="{{ url_for('static', filename='Pictures_Users/{}'.format(current_user.picture)) }}" class="rounded-circle mr-1" height="20"
+                        <img src="{{ current_user.picture }}" class="rounded-circle mr-1" height="20"
                             alt="User" loading="lazy" />
                         {{ current_user.name }}
                     </a>

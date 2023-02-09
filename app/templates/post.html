@@ -25,29 +25,37 @@
 
     <section class="mb-3 container-fluid">
         <div class="row justify-content-center">
-            <p class="col-lg-8 col-md-10 text-justify">{{blog_posts.intro}}</p>
+            <div class="row no-gutters col-12 .col-md-10" style="max-width: 57rem;">
+                <div class="col-12 text-justify">
+                    <p>{{blog_posts.intro}}</p>
+                </div>
+            </div>
         </div>
     </section>
     
     <section class="mb-3 container-fluid">
         <div class="row justify-content-center">
-            <img class="col-lg-8 col-md-10" src="{{blog_posts.picture_h}}" alt="{{blog_posts['picture_alt']}}">
-        </div>
-    </section>
-
-    <section class="mb-3 container-fluid">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 col-md-10" style="text-align: justify;">
-                {{blog_posts.body|safe}}
+            <div class="row no-gutters col-12 .col-md-10" ></div>
+                <img class="col-12" src="{{blog_posts.picture_h}}" alt="{{blog_posts['picture_alt']}}" style="max-width: 57rem; ">
             </div>
         </div>
     </section>
 
     <section class="mb-3 container-fluid">
         <div class="row justify-content-center">
-            <div class="row no-gutters" style="width: 57rem;">
+            <div class="row no-gutters col-12 .col-md-10" style="max-width: 57rem;">
+                <div class="col-12 text-justify" >
+                    {{blog_posts.body|safe}}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-3 container-fluid">
+        <div class="row justify-content-center">
+            <div class="row no-gutters col-12 .col-md-10" style="max-width: 57rem; ">
                 <div class="col-3 card-img ALL-picture">
-                    <img src="{{ blog_posts.author.picture }}" class="card-img" style="border-radius: 90%;"
+                    <img src="{{ blog_posts.author.picture }}" class="card-img" style="border-radius: 10%;"
                         alt="{{ blog_posts.author.name }}">
                 </div>
                 <div class="col-9">
@@ -61,5 +69,264 @@
             </div>
         </div>
     </section>
+
+    <section class="mb-3 container-fluid">
+        <div class="row justify-content-center">
+            <div class="row no-gutters" style="width: 57rem;">
+                <div class="col-12">
+                    <hr style="border-width: 3px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comment section -->
+    <section class="mb-3 container-fluid">
+        <div class="row justify-content-center">
+            <div class="row no-gutters" style="max-width: 57rem;">
+                <div class="col-1">
+                    <div class="card-body">
+                        <img 
+                        {% if logged_in: %}
+                        src="{{ current_user.picture }}" 
+                        {% else: %}
+                        src="{{ url_for('static', filename='Pictures_Users/Picture_default.jpg') }}"
+                        {% endif %}
+                        class="card-img" style="border-radius: 10% !important;"  alt="{{ current_user.name }}">
+                    </div>
+                </div>
+                <div class="col-11">
+                    <div class="card-body">
+                        <form action="" method="POST">
+                        {{form.hidden_tag()}}
+                        {{form.comment(class="form-control text-muted", rows="4", col="1", placeholder="Add a comment...")}}
+                        <br>
+                        {% if logged_in: %}
+                        {{form.submit(class="btn ALL-green-btn-dark mb-2")}}
+                        {% else: %}
+                        <a href="{{ url_for('account.login') }}" class="btn ALL-green-btn-dark mb-2" style="width: 170px;">Log in to comment</a>
+                        {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Comments -->
+        {% for comment in comments %}
+        <section class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="row no-gutters" style="max-width: 57rem;">
+                    <div class="col-1">
+                        <div class="card-body">
+                            <img
+                            {% if comment.blocked == "FALSE" %}
+                            src="{{ comment.user.picture }}" alt="{{ comment.user.name }}"
+                            {% else %}
+                            src="../static/Pictures_Users/Picture_default.jpg" alt="blocked user"
+                            {% endif %}
+                            class="card-img" style="border-radius: 10% !important;">
+                        </div>
+        
+                    </div>
+                    <div class="col-11">
+                        <div class="card-body">
+                            <div style="display: flex; justify-content: space-between;">
+                                <p class="card-text"><b class="text-muted">
+                                    {% if comment.blocked == "FALSE" %}
+                                        {{ comment.user.name }}
+                                    {% else %}
+                                        [removed]
+                                    {% endif %}
+                                </b></p>
+                                <p class="card-text"><small class="text-muted">{{ comment.date_submitted.strftime('%d %B %Y') }}</small></p>
+                            </div>
+                            <p class="card-text">
+                                {% if comment.blocked == "FALSE" %}
+                                    {{ comment.text }}
+                                {% else %}
+                                    {{ comment.if_blocked }}
+                                {% endif %}
+                            </p>
+                                <p class="card-text"><small class="text-muted">
+                                    {% if logged_in: %}
+                                    <a href="#" role="button">reply</a>
+                                    {% endif %}
+                                    • {{ comment.likes }} likes • 
+                                    <a href="#" role="button">thumbs up</a></small></p>
+                            <!-- replies here -->
+                            {% for reply in replies %}
+                            {% if reply.comment_id == comment.id %}
+                            <div>
+                                <div class="row no-gutters">
+                                    <div class="col-1">
+                                        <div class="card-body">
+                                            {% if reply.blocked == "FALSE" %}
+                                            <img  src="{{ reply.user.picture }}" alt="{{ reply.user.name }}"class="card-img" style="border-radius: 10% !important;">
+                                            {% else %}
+                                            <img src="../static/Pictures_Users/Picture_default.jpg" alt="blocked user" class="card-img" style="border-radius: 10% !important;">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-11">
+                                        <div class="card-body">
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <p class="card-text"><b class="text-muted">
+                                                    {% if reply.blocked == "FALSE" %}
+                                                        {{ reply.user.name }}
+                                                    {% else %}
+                                                        [removed]
+                                                    {% endif %}
+                                                </b></p>
+                                            </div>
+                                            <p class="card-text">
+                                                {% if reply.blocked == "FALSE" %}
+                                                    {{ reply.text }}
+                                                {% else %}
+                                                    {{ reply.if_blocked }}
+                                                {% endif %}
+                                            </p>
+                                            <a href="#">
+                                                <p class="card-text"><small class="text-muted">{{ reply.date_submitted.strftime('%d %B %Y')}} • {{ reply.likes }} likes • thumbs up</small></p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="mb-1 container-fluid">
+            <div class="row justify-content-center">
+                <div class="row no-gutters" style="width: 57rem;">
+                    <div class="col-12">
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endfor %}
+    
+
+<!-- reply: -->
+
+<!-- <hr>
+<div>
+    <div class="row no-gutters">
+        <div class="col-1">
+            <div class="card-body">
+                <img src="{{ blog_posts.author.picture }}" class="card-img" style="border-radius: 10% !important;"
+                    alt="{{ blog_posts.author.name }}">
+            </div>
+
+        </div>
+        <div class="col-11">
+            <div class="card-body">
+                <div style="display: flex; justify-content: space-between;">
+                    <p class="card-text"><b class="text-muted">Username 2</b></p>
+                    <p class="card-text"><small class="text-muted">08 February 2022</small></p>
+                </div>
+                <p class="card-text">This is a reply comment example.....but most importantly: a
+                    traveller! Follow the
+                    Travel Blog to keep up with this and many other bloggers, travelling the world
+                    to bring you
+                    tips, ideas, and
+                    inspiration!</p>
+                <a href="#">
+                    <p class="card-text"><small class="text-muted">12 likes • thumbs up</small></p>
+                </a>
+                <hr>
+                <div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Comment example with reply comment -->
+
+    <!-- <section class="mb-3 container-fluid">
+        <div class="row justify-content-center">
+            <div class="row no-gutters" style="width: 57rem;">
+                <div class="col-1">
+                    <div class="card-body" >
+                        <img src="{{ blog_posts.author.picture }}" class="card-img" style="border-radius: 10% !important;"
+                        alt="{{ blog_posts.author.name }}">
+                    </div>
+                    
+                </div>
+                <div class="col-11">
+                    <div class="card-body">
+                        <div style = "display: flex; justify-content: space-between;">
+                            <p class="card-text"><b class="text-muted">Username</b></p>
+                            <p class="card-text"><small class="text-muted">08 February 2022</small></p>
+                        </div>
+                        <p class="card-text">This is a comment example.....but most importantly: a traveller! Follow the
+                            Travel Blog to keep up with this and many other bloggers, travelling the world to bring you
+                            tips, ideas, and
+                            inspiration!</p>
+                        <a href="#">
+                            <p class="card-text"><small class="text-muted">reply • 12 likes • thumbs up</small></p>
+                        </a>
+                        <hr>
+                        <div>
+                            <div class="row no-gutters" >
+                                <div class="col-1">
+                                    <div class="card-body">
+                                        <img src="{{ blog_posts.author.picture }}" class="card-img" style="border-radius: 10% !important;"
+                                            alt="{{ blog_posts.author.name }}">
+                                    </div>
+                            
+                                </div>
+                                <div class="col-11" >
+                                    <div class="card-body">
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <p class="card-text"><b class="text-muted">Username 2</b></p>
+                                            <p class="card-text"><small class="text-muted">08 February 2022</small></p>
+                                        </div>
+                                        <p class="card-text">This is a reply comment example.....but most importantly: a traveller! Follow the
+                                            Travel Blog to keep up with this and many other bloggers, travelling the world to bring you
+                                            tips, ideas, and
+                                            inspiration!</p>
+                                        <a href="#">
+                                            <p class="card-text"><small class="text-muted">12 likes • thumbs up</small></p>
+                                        </a>
+                                        <hr>
+                                        <div>
+                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+    
 
 {% endblock %}

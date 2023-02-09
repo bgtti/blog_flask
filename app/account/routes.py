@@ -4,12 +4,12 @@ from app.models.user import Blog_User
 from app.models.posts import Blog_Posts
 from app.account.forms import The_Accounts
 from app.account.helpers import hash_pw, allowed_imgs
+from app.models.helpers import update_stats_comments_total, update_stats_users_total, pic_src_user
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import check_password_hash  # used in login
 from werkzeug.utils import secure_filename
 import uuid as uuid
 import os
-
 
 account = Blueprint('account', __name__)
 
@@ -39,6 +39,7 @@ def signup():
         )
         db.session.add(new_user)
         db.session.commit()
+        update_stats_users_total()
 
         login_user(new_user)
 
@@ -80,15 +81,7 @@ def logout():
 
 
 
-
-
-
-
-
-
-
 # DASHBOARDs
-
 
 @account.route("/dashboard")
 @login_required
@@ -109,7 +102,6 @@ def dashboard():
 
 # OWN ACCOUNT MANAGEMENT - all users
 # Account information
-
 
 @account.route("/dashboard/manage_account")
 @login_required
@@ -147,17 +139,14 @@ def update_own_acct_info(id):
     form.about.data = user_at_hand.about
     return render_template("account_mgmt_update.html", logged_in=current_user.is_authenticated, form=form)
 
-# Update account information
-
-
-# app.config["IMAGE_UPLOADS"] = "C: \Users\bruna\Desktop\python_ex\blog_flask\static\Pictures_Users"
+# Update account information: changing the picture
 
 @account.route("/dashboard/manage_account/update_picture/<int:id>", methods=["GET", "POST"])
 @login_required
 def update_own_acct_picture(id):
     form = The_Accounts()
     user_at_hand = Blog_User.query.get_or_404(id)
-    if user_at_hand.picture == "" or user_at_hand.picture == "Picture_default.jpg":
+    if user_at_hand.picture == "" or user_at_hand.picture == pic_src_user("Picture_default.jpg"):
         profile_picture = None
     else:
         profile_picture = user_at_hand.picture
@@ -176,14 +165,10 @@ def update_own_acct_picture(id):
 
             # insert a unique id to the filename to make sure there arent two picutes with the same name:
             pic_filename_unique = str(uuid.uuid1()) + "_" + pic_filename
-            # defining path and saving to user's database:
-            # pic_path = f"{PROFILE_IMAGE_PATH}/{pic_filename_unique}"
-            # user_at_hand.picture = pic_path
             user_at_hand.picture = pic_filename_unique
 
             # get the new image
             the_img_file = request.files['picture']
-
         try:
             # save the img to folder and path to user
             the_img_file.save(os.path.join(
@@ -203,27 +188,6 @@ def update_own_acct_picture(id):
 
     return render_template("account_mgmt_picture.html", logged_in=current_user.is_authenticated, form=form, profile_picture=profile_picture)
 
-
-# Update account information
-# @account.route("/dashboard/manage_account/update/<int:id>", methods=["GET", "POST"])
-# @login_required
-# def update_own_acct_info(id):
-#     user_at_hand = Blog_User.query.get_or_404(id)
-
-#     if request.method == "POST":
-#         user_at_hand.name = request.form.get("username_update")
-#         user_at_hand.email = request.form.get("email_update")
-#         user_at_hand.about = request.form.get("about_update")
-#         try:
-#             db.session.commit()
-#             flash("Acct info updated successfully!")
-#             # no time for flash, change way of displaying success
-#             return redirect(url_for('manage_acct'))
-#         except:
-#             flash("Oops, error, try again.")
-#             return redirect(url_for('manage_acct'))
-#     else:
-#         return render_template("account_mgmt_update.html", logged_in=current_user.is_authenticated)
 
 # Delete account
 @account.route("/dashboard/manage_account/delete/<int:id>", methods=["GET", "POST"])

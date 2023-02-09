@@ -3,41 +3,62 @@ from app.extensions import db
 from app.models.user import Blog_User
 from app.models.posts import Blog_Posts
 from app.models.themes import Blog_Theme
+from app.models.comments import Blog_Comments, Blog_Replies
+from app.models.stats import Blog_Stats
 # from app.models.text import about_text_author, about_text_user  # dummie strings
 from app.dummie_data import authors, posts, themes
 from app.account.helpers import hash_pw
-from app.models.helpers import pic_src_author, pic_src_post, pic_src_theme
+from app.models.helpers import pic_src_user, pic_src_post, pic_src_theme, update_stats_comments_total, update_stats_users_total
+from datetime import datetime
 
 
 # Creating a super_admin and a default author account
 # The super_admin is important as this will enable the management of all other users.
 # The default author is created for the case of an author having his/her account deleted: the posts
 # created by this user will be passed onto the default author's account, to avoid loss of online content.
+# the default user will 'gain ownership' of deleted comments to prevent mismatch.
 # you can re-define the log-in credentials for these users by changing the variables bellow.
 ADMIN_PW = "admin123"
 ADMIN_EMAIL = "super@admin"
 ADMIN_NAME = "Super Admin"
+ADMIN_PICTURE = "Picture_default.jpg"
 DEFAULT_AUTHOR_PW = "author123"
 DEFAULT_AUTHOR_EMAIL = "t@t"
 DEFAULT_AUTHOR_NAME = "The Travel Blog Team"
 DEFAULT_AUTHOR_ABOUT = authors.authors_about
 DEFAULT_AUTHOR_PICTURE = "Picture_default_author.jpg"
+DEFAULT_USER_PW = "user123"
+DEFAULT_USER_EMAIL = "d@d"
+DEFAULT_USER_NAME = "[Deleted]"
+DEFAULT_USER_ABOUT = ""
+DEFAULT_USER_PICTURE = "Picture_default.jpg"
 
 def create_admin_acct():
     # Check if a super_admin exists in the database, if not, add it:
     super_admin_exists = Blog_User.query.get(1)
     if not super_admin_exists:
         the_super_admin = Blog_User(
-            name=ADMIN_NAME, email=ADMIN_EMAIL, password=hash_pw(ADMIN_PW), type="super_admin")
+            name=ADMIN_NAME, email=ADMIN_EMAIL, password=hash_pw(ADMIN_PW), type="super_admin", picture=pic_src_user(ADMIN_PICTURE))
         the_default_author = Blog_User(name=DEFAULT_AUTHOR_NAME, email=DEFAULT_AUTHOR_EMAIL, password=hash_pw(DEFAULT_AUTHOR_PW),
-                                    type="author", about=DEFAULT_AUTHOR_ABOUT, picture=pic_src_author(DEFAULT_AUTHOR_PICTURE))
+                                    type="author", about=DEFAULT_AUTHOR_ABOUT, picture=pic_src_user(DEFAULT_AUTHOR_PICTURE))
+        the_default_user = Blog_User(name=DEFAULT_USER_NAME, email=DEFAULT_USER_EMAIL, password=hash_pw(DEFAULT_USER_PW),
+                                    type="user", about=DEFAULT_USER_ABOUT, picture=pic_src_user(DEFAULT_USER_PICTURE))
         db.session.add(the_super_admin)
         db.session.add(the_default_author)
+        db.session.add(the_default_user)
         db.session.commit()
         # theadmin = Blog_User.query.all()
 
-# Creating the themes
+# Creating the stats
+def create_stats():
+    # Check if stats table exists, if not, then add it:
+    stats_exists = Blog_Stats.query.get(1)
+    if not stats_exists:
+        the_stats_table = Blog_Stats()
+        db.session.add(the_stats_table)
+        db.session.commit()
 
+# Creating the themes
 def create_themes():
     # Check if themes exist in the database, if not, add themes:
     dummies_exists = Blog_Theme.query.get(1)
@@ -65,16 +86,16 @@ USER_ABOUT = authors.authors_about
 
 def create_dummie_accts():
     # Check if dummies exists in the database, if not, add dummie accounts:
-    dummies_exists = Blog_User.query.get(3)
+    dummies_exists = Blog_User.query.get(4)
     if not dummies_exists:
         random1 = Blog_User(name="Roberta Sanstoms",
                             email="r@r", password=hash_pw(USER_PW), type="admin")
         random2 = Blog_User(name=authors.authors_data[0]["name"], email="e@e", password=hash_pw(USER_PW),
-                            type="author", about=USER_ABOUT, picture=pic_src_author(authors.authors_data[0]["picture"]))
+                            type="author", about=USER_ABOUT, picture=pic_src_user(authors.authors_data[0]["picture"]))
         random3 = Blog_User(name=authors.authors_data[1]["name"], email="j@j", password=hash_pw(USER_PW),
-                            type="author", about=USER_ABOUT, picture=pic_src_author(authors.authors_data[1]["picture"]))
+                            type="author", about=USER_ABOUT, picture=pic_src_user(authors.authors_data[1]["picture"]))
         random4 = Blog_User(name=authors.authors_data[2]["name"], email="m@m", password=hash_pw(USER_PW),
-                            type="author", about=USER_ABOUT, picture=pic_src_author(authors.authors_data[2]["picture"]))
+                            type="author", about=USER_ABOUT, picture=pic_src_user(authors.authors_data[2]["picture"]))
         random5 = Blog_User(name="John Meyers", email="j@m",
                             password=hash_pw(USER_PW), type="user")
         random6 = Blog_User(name="Fabienne123", email="f@f",
@@ -92,6 +113,8 @@ def create_dummie_accts():
         db.session.add(random7)
         db.session.add(random8)
         db.session.commit()
+        for i in range(8):
+            update_stats_users_total()
 
 
 # Creating dummie posts: to test and use the app as example
@@ -199,3 +222,28 @@ def create_posts():
         db.session.add(post13)
         db.session.add(post14)
         db.session.commit()
+
+def create_comments():
+    comments_exist = Blog_Comments.query.get(1)
+    if not comments_exist:
+        comment1 = Blog_Comments(text="I am a test comment", post_id=1, user_id=1)
+        comment2 = Blog_Comments(text="I am a test comment", post_id=2, user_id=2)
+        comment3 = Blog_Comments(text="I am another test comment", post_id=2, user_id=4, date_submitted=datetime.strptime("2023-02-01 00:10:00", '%Y-%m-%d %H:%M:%S'))
+        comment4 = Blog_Comments(text="I am a blocked comment", post_id=2, user_id=4, blocked="TRUE")
+        comment5 = Blog_Replies(text="I am a reply comment", post_id=2, user_id=5, comment_id=3, date_submitted=datetime.strptime("2023-02-02 00:10:00", '%Y-%m-%d %H:%M:%S'))
+        comment6 = Blog_Replies(text="Replying again", post_id=2, user_id=4, comment_id=3, date_submitted=datetime.strptime("2023-02-03 00:10:00", '%Y-%m-%d %H:%M:%S'))
+        comment7 = Blog_Replies(text="Replying", post_id=2, user_id=5, comment_id=3, date_submitted=datetime.strptime("2023-02-04 00:10:00", '%Y-%m-%d %H:%M:%S'))
+        comment8 = Blog_Replies(text="Replying back", post_id=2, user_id=5, comment_id=3, blocked="TRUE", date_submitted=datetime.strptime("2023-02-05 00:10:00", '%Y-%m-%d %H:%M:%S'))
+        db.session.add(comment1)
+        db.session.add(comment2)
+        db.session.add(comment3)
+        db.session.add(comment4)
+        db.session.add(comment5)
+        db.session.add(comment6)
+        db.session.add(comment7)
+        db.session.add(comment8)
+        db.session.commit()
+        for i in range(8):
+            update_stats_comments_total()
+    
+
