@@ -15,6 +15,9 @@ def create_app(config_class=Config):
     from app.dashboard.routes import dashboard
     from app.website.routes import website
     from app.error_handlers.routes import error_handler
+
+    from app.models import user, posts, themes, contact, bookmarks, comments, stats
+
     app.register_blueprint(account)
     app.register_blueprint(dashboard)
     app.register_blueprint(website)

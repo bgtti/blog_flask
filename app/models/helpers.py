@@ -25,3 +25,36 @@ def update_stats_users_total():
     stats.user_total = modify_stats
     db.session.commit()
 
+# takes -1 or 1 as arguments: whether user likes or un-likes a post
+def update_likes(num):
+    """
+    Takes -1 or 1 as arguments. -1 if user un-likes a post, and 1 if user likes a post.
+    """
+    if num != -1 or num != 1:
+        return print("Invalid arguments")
+    else:
+        stats = Blog_Stats.query.get_or_404(1)
+        if num == 1:
+            modify_stats = int(stats.likes_total) + 1
+            stats.likes_total = modify_stats
+        else:
+            modify_stats = int(stats.likes_total) - 1
+            stats.likes_total = modify_stats
+            db.session.commit()
+
+# takes -1 or 1 as arguments: whether user bookmarks or un-bookmarks a post
+def update_bookmarks(num):
+    """
+    Takes -1 or 1 as arguments. -1 if user un-bookmarks a post, and 1 if user bookmarks a post.
+    """
+    if num != -1 or num != 1:
+        return print("Invalid arguments")
+    else:
+        stats = Blog_Stats.query.get_or_404(1)
+        if num == 1:
+            modify_stats = int(stats.bookmarks_total) + 1
+            stats.bookmarks_total = modify_stats
+        else:
+            modify_stats = int(stats.bookmarks_total) - 1
+            stats.bookmarks_total = modify_stats
+            db.session.commit()

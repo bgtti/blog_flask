@@ -5,6 +5,8 @@ from app.models.posts import Blog_Posts
 from app.models.themes import Blog_Theme
 from app.models.comments import Blog_Comments, Blog_Replies
 from app.models.stats import Blog_Stats
+from app.models.bookmarks import Blog_Bookmarks
+from app.models.likes import Blog_Likes
 # from app.models.text import about_text_author, about_text_user  # dummie strings
 from app.dummie_data import authors, posts, themes
 from app.account.helpers import hash_pw
@@ -246,4 +248,13 @@ def create_comments():
         for i in range(8):
             update_stats_comments_total()
     
-
+def create_likes_and_bookmarks():
+    likes_exist = Blog_Likes.query.get(1)
+    if not likes_exist:
+        like1 = Blog_Likes(post_id=2, user_id=4)
+        like2 = Blog_Likes(post_id=2, user_id=5)
+        bookmark1 = Blog_Bookmarks(post_id=2, user_id=1)
+        db.session.add(like1)
+        db.session.add(like2)
+        db.session.add(bookmark1)
+        db.session.commit()

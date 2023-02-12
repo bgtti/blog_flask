@@ -51,6 +51,76 @@
         </div>
     </section>
 
+    <section class="mb-1 container-fluid">
+        <div class="row justify-content-center">
+            <div class="row no-gutters" style="width: 57rem;">
+                <div class="col-12">
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Show Posts likes and option to bookmark -->
+    <section class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="row no-gutters" style="max-width: 57rem;">
+                <div class="col-12">
+                    <p class="ALL-no-m-p ALL-grey text-center">
+                        <b>
+                            <span id="likes-count-{{ blog_posts.id }}">{{ post_likes|length }}</span>
+                            users have liked this post
+                        </b>
+                    </p>
+                    {% if logged_in: %}
+                    <div class="ALL-svg-parent ALL-no-m-p">
+                        <p class="ALL-no-m-p ALL-grey">Liked this post? give it the thumbs up:</p>
+                        <svg 
+                            {% if user_liked == True %}
+                            class="ALL-svg ALL-grey All-svg-clicked" 
+                            {% else %}
+                            class="ALL-svg ALL-grey" 
+                            {% endif %}
+                            id="thumbs-up-{{blog_posts.id}}" onclick="likeOrBookmark({{ blog_posts.id }}, 'like')" 
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="512" height="512">
+                            <path
+                                d="M22.773,7.721A4.994,4.994,0,0,0,19,6H15.011l.336-2.041A3.037,3.037,0,0,0,9.626,2.122L7.712,6H5a5.006,5.006,0,0,0-5,5v5a5.006,5.006,0,0,0,5,5H18.3a5.024,5.024,0,0,0,4.951-4.3l.705-5A5,5,0,0,0,22.773,7.721ZM2,16V11A3,3,0,0,1,5,8H7V19H5A3,3,0,0,1,2,16Zm19.971-4.581-.706,5A3.012,3.012,0,0,1,18.3,19H9V7.734a1,1,0,0,0,.23-.292l2.189-4.435A1.07,1.07,0,0,1,13.141,2.8a1.024,1.024,0,0,1,.233.84l-.528,3.2A1,1,0,0,0,13.833,8H19a3,3,0,0,1,2.971,3.419Z" />
+                        </svg>
+                    </div>
+
+                    <div class="ALL-svg-parent ALL-no-m-p">
+                        <p class="ALL-no-m-p ALL-grey">Bookmark it to read later:</p>
+                            <svg 
+                                {% if user_bookmarked==True %} 
+                                class="ALL-svg ALL-grey All-svg-clicked" 
+                                {% else %}
+                                class="ALL-svg ALL-grey" 
+                                {% endif %} 
+                                id="bookmark-{{blog_posts.id}}" onclick="likeOrBookmark({{ blog_posts.id }},'bookmark')" 
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="512" height="512">
+                                <path
+                                    d="M20.137,24a2.8,2.8,0,0,1-1.987-.835L12,17.051,5.85,23.169a2.8,2.8,0,0,1-3.095.609A2.8,2.8,0,0,1,1,21.154V5A5,5,0,0,1,6,0H18a5,5,0,0,1,5,5V21.154a2.8,2.8,0,0,1-1.751,2.624A2.867,2.867,0,0,1,20.137,24ZM6,2A3,3,0,0,0,3,5V21.154a.843.843,0,0,0,1.437.6h0L11.3,14.933a1,1,0,0,1,1.41,0l6.855,6.819a.843.843,0,0,0,1.437-.6V5a3,3,0,0,0-3-3Z" />
+                            </svg>
+                    </div>
+                </div>
+                    {% else: %}
+                <p class="ALL-no-m-p ALL-grey text-center">Sign in to like or bookmark!</p>
+                <a href="{{ url_for('account.login') }}" class="btn ALL-green-btn-dark mb-2" style="width: 170px;">Log in to comment</a>
+                    {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-1 container-fluid">
+        <div class="row justify-content-center">
+            <div class="row no-gutters" style="width: 57rem;">
+                <div class="col-12">
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- About the author -->
     <section class="mb-3 container-fluid">
         <div class="row justify-content-center">
             <div class="row no-gutters col-12 .col-md-10" style="max-width: 57rem; ">
@@ -80,7 +150,7 @@
         </div>
     </section>
 
-    <!-- Comment section -->
+    <!-- Comment section: form -->
     <section class="mb-3 container-fluid">
         <div class="row justify-content-center">
             <div class="row no-gutters" style="max-width: 57rem;">
@@ -96,237 +166,147 @@
                     </div>
                 </div>
                 <div class="col-11">
+                    
                     <div class="card-body">
-                        <form action="" method="POST">
-                        {{form.hidden_tag()}}
-                        {{form.comment(class="form-control text-muted", rows="4", col="1", placeholder="Add a comment...")}}
-                        <br>
-                        {% if logged_in: %}
-                        {{form.submit(class="btn ALL-green-btn-dark mb-2")}}
-                        {% else: %}
-                        <a href="{{ url_for('account.login') }}" class="btn ALL-green-btn-dark mb-2" style="width: 170px;">Log in to comment</a>
-                        {% endif %}
+                        <form action="" method="" id="postCommentForm">
+                            <textarea class="form-control text-muted" col="1" rows="4" id="comment-{{ blog_posts.id }}" name="comment" placeholder="Add a comment..." required=""
+                                rows="4" maxlength ="500"></textarea>
+                            <br>
+                            {% if logged_in: %}
+                            <input onclick="commentOrReply(event,{{ blog_posts.id }}, 'true')" class="btn ALL-green-btn-dark mb-2" id="submit-comment-{{ blog_posts.id }}" name="submit-comment-{{ blog_posts.id }}" type="submit" value="Submit">
+                            {% else: %}
+                            <a href="{{ url_for('account.login') }}" class="btn ALL-green-btn-dark mb-2" style="width: 170px;">Log in to
+                                comment</a>
+                            {% endif %}
                         </form>
+                        <p class="All-display-none ALL-msg-sent" id="Msg-sent">Comment submitted!</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
     <!-- Comments -->
-        {% for comment in comments %}
-        <section class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="row no-gutters" style="max-width: 57rem;">
-                    <div class="col-1">
-                        <div class="card-body">
-                            <img
-                            {% if comment.blocked == "FALSE" %}
-                            src="{{ comment.user.picture }}" alt="{{ comment.user.name }}"
-                            {% else %}
-                            src="../static/Pictures_Users/Picture_default.jpg" alt="blocked user"
-                            {% endif %}
-                            class="card-img" style="border-radius: 10% !important;">
-                        </div>
-        
-                    </div>
-                    <div class="col-11">
-                        <div class="card-body">
-                            <div style="display: flex; justify-content: space-between;">
-                                <p class="card-text"><b class="text-muted">
-                                    {% if comment.blocked == "FALSE" %}
-                                        {{ comment.user.name }}
-                                    {% else %}
-                                        [removed]
-                                    {% endif %}
-                                </b></p>
-                                <p class="card-text"><small class="text-muted">{{ comment.date_submitted.strftime('%d %B %Y') }}</small></p>
-                            </div>
-                            <p class="card-text">
-                                {% if comment.blocked == "FALSE" %}
-                                    {{ comment.text }}
-                                {% else %}
-                                    {{ comment.if_blocked }}
-                                {% endif %}
-                            </p>
-                                <p class="card-text"><small class="text-muted">
-                                    {% if logged_in: %}
-                                    <a href="#" role="button">reply</a>
-                                    {% endif %}
-                                    • {{ comment.likes }} likes • 
-                                    <a href="#" role="button">thumbs up</a></small></p>
-                            <!-- replies here -->
-                            {% for reply in replies %}
-                            {% if reply.comment_id == comment.id %}
-                            <div>
-                                <div class="row no-gutters">
-                                    <div class="col-1">
-                                        <div class="card-body">
-                                            {% if reply.blocked == "FALSE" %}
-                                            <img  src="{{ reply.user.picture }}" alt="{{ reply.user.name }}"class="card-img" style="border-radius: 10% !important;">
-                                            {% else %}
-                                            <img src="../static/Pictures_Users/Picture_default.jpg" alt="blocked user" class="card-img" style="border-radius: 10% !important;">
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    <div class="col-11">
-                                        <div class="card-body">
-                                            <div style="display: flex; justify-content: space-between;">
-                                                <p class="card-text"><b class="text-muted">
-                                                    {% if reply.blocked == "FALSE" %}
-                                                        {{ reply.user.name }}
-                                                    {% else %}
-                                                        [removed]
-                                                    {% endif %}
-                                                </b></p>
-                                            </div>
-                                            <p class="card-text">
-                                                {% if reply.blocked == "FALSE" %}
-                                                    {{ reply.text }}
-                                                {% else %}
-                                                    {{ reply.if_blocked }}
-                                                {% endif %}
-                                            </p>
-                                            <a href="#">
-                                                <p class="card-text"><small class="text-muted">{{ reply.date_submitted.strftime('%d %B %Y')}} • {{ reply.likes }} likes • thumbs up</small></p>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="mb-1 container-fluid">
-            <div class="row justify-content-center">
-                <div class="row no-gutters" style="width: 57rem;">
-                    <div class="col-12">
-                        <hr>
-                    </div>
-                </div>
-            </div>
-        </section>
-        {% endfor %}
-    
-
-<!-- reply: -->
-
-<!-- <hr>
-<div>
-    <div class="row no-gutters">
-        <div class="col-1">
-            <div class="card-body">
-                <img src="{{ blog_posts.author.picture }}" class="card-img" style="border-radius: 10% !important;"
-                    alt="{{ blog_posts.author.name }}">
-            </div>
-
-        </div>
-        <div class="col-11">
-            <div class="card-body">
-                <div style="display: flex; justify-content: space-between;">
-                    <p class="card-text"><b class="text-muted">Username 2</b></p>
-                    <p class="card-text"><small class="text-muted">08 February 2022</small></p>
-                </div>
-                <p class="card-text">This is a reply comment example.....but most importantly: a
-                    traveller! Follow the
-                    Travel Blog to keep up with this and many other bloggers, travelling the world
-                    to bring you
-                    tips, ideas, and
-                    inspiration!</p>
-                <a href="#">
-                    <p class="card-text"><small class="text-muted">12 likes • thumbs up</small></p>
-                </a>
-                <hr>
-                <div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- Comment example with reply comment -->
-
-    <!-- <section class="mb-3 container-fluid">
+    {% for comment in comments %}
+    <section class="container-fluid">
         <div class="row justify-content-center">
-            <div class="row no-gutters" style="width: 57rem;">
+            <div class="row no-gutters" style="max-width: 57rem;">
                 <div class="col-1">
-                    <div class="card-body" >
-                        <img src="{{ blog_posts.author.picture }}" class="card-img" style="border-radius: 10% !important;"
-                        alt="{{ blog_posts.author.name }}">
+                    <div class="card-body">
+                        <img
+                        {% if comment.blocked == "FALSE" %}
+                        src="{{ comment.user.picture }}" alt="{{ comment.user.name }}"
+                        {% else %}
+                        src="../static/Pictures_Users/Picture_default.jpg" alt="blocked user"
+                        {% endif %}
+                        class="card-img" style="border-radius: 10% !important;">
                     </div>
-                    
                 </div>
                 <div class="col-11">
                     <div class="card-body">
-                        <div style = "display: flex; justify-content: space-between;">
-                            <p class="card-text"><b class="text-muted">Username</b></p>
-                            <p class="card-text"><small class="text-muted">08 February 2022</small></p>
+                        <div style="display: flex; justify-content: space-between;">
+                            <p class="card-text"><b class="text-muted">
+                                {% if comment.blocked == "FALSE" %}
+                                    {{ comment.user.name }}
+                                {% else %}
+                                    [removed]
+                                {% endif %}
+                            </b></p>
+                            <p class="card-text"><small class="text-muted">{{ comment.date_submitted.strftime('%d %B %Y') }}</small></p>
                         </div>
-                        <p class="card-text">This is a comment example.....but most importantly: a traveller! Follow the
-                            Travel Blog to keep up with this and many other bloggers, travelling the world to bring you
-                            tips, ideas, and
-                            inspiration!</p>
-                        <a href="#">
-                            <p class="card-text"><small class="text-muted">reply • 12 likes • thumbs up</small></p>
-                        </a>
-                        <hr>
-                        <div>
-                            <div class="row no-gutters" >
+                        <p class="card-text">
+                            {% if comment.blocked == "FALSE" %}
+                                {{ comment.text }}
+                            {% else %}
+                                {{ comment.if_blocked }}
+                            {% endif %}
+                        </p>
+                        <p class="card-text"><small class="text-muted">
+                            {% if logged_in: %}
+                            Click to reply:  
+                            <svg onclick="toggleReplyForm(event, {{ comment.id }})" class="ALL-svg ALL-grey" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24" width="512" height="512">
+                                <path
+                                    d="M12.009,23.665c-.476,0-.955-.168-1.337-.507l-3.748-3.157h-2.923c-2.206,0-4-1.794-4-4V4C0,1.794,1.794,0,4,0H20c2.206,0,4,1.794,4,4v12c0,2.206-1.794,4-4,4h-2.852l-3.847,3.18c-.362,.322-.825,.484-1.293,.484ZM4,2c-1.103,0-2,.897-2,2v12c0,1.103,.897,2,2,2h3.289c.236,0,.464,.083,.645,.235l4.047,3.41,4.17-3.416c.18-.148,.405-.229,.638-.229h3.212c1.103,0,2-.897,2-2V4c0-1.103-.897-2-2-2H4Z" />
+                            </svg>
+                            {% endif %}
+                            </small></p>
+                        <!-- reply form here -->
+                        <div class="row justify-content-center All-display-none" id="reply-form-{{ comment.id }}">
+                            <div class="row no-gutters" style="max-width: 57rem;">
                                 <div class="col-1">
                                     <div class="card-body">
-                                        <img src="{{ blog_posts.author.picture }}" class="card-img" style="border-radius: 10% !important;"
-                                            alt="{{ blog_posts.author.name }}">
+                                        <img {% if logged_in: %} src="{{ current_user.picture }}" {% else: %}
+                                            src="{{ url_for('static', filename='Pictures_Users/Picture_default.jpg') }}" {% endif %}
+                                            class="card-img" style="border-radius: 10% !important;" alt="{{ current_user.name }}">
                                     </div>
-                            
                                 </div>
-                                <div class="col-11" >
+                                <div class="col-11">
                                     <div class="card-body">
-                                        <div style="display: flex; justify-content: space-between;">
-                                            <p class="card-text"><b class="text-muted">Username 2</b></p>
-                                            <p class="card-text"><small class="text-muted">08 February 2022</small></p>
-                                        </div>
-                                        <p class="card-text">This is a reply comment example.....but most importantly: a traveller! Follow the
-                                            Travel Blog to keep up with this and many other bloggers, travelling the world to bring you
-                                            tips, ideas, and
-                                            inspiration!</p>
-                                        <a href="#">
-                                            <p class="card-text"><small class="text-muted">12 likes • thumbs up</small></p>
-                                        </a>
-                                        <hr>
-                                        <div>
-                            
-                                        </div>
+                                        <form action="" method="" id="postReplyForm-{{ comment.id }}">
+                                            <textarea name="reply-area-{{comment.id}}" id="reply-area-{{comment.id}}" class="form-control text-muted", rows="4", col="1", placeholder="Add a reply..."></textarea>
+                                            <br>
+                                            <input onclick="commentOrReply(event,{{ blog_posts.id }}, {{ comment.id }})" type="submit" class="btn ALL-green-btn-dark mb-2" name="submit-reply-{{ comment.id }}", id="submit-reply-{{ comment.id }}" value="Reply">
+                                        </form>
+                                        <p class="All-display-none ALL-msg-sent" id="Reply-sent-{{ comment.id }}">Comment submitted!</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- replies here -->
+                        {% for reply in replies %}
+                        {% if reply.comment_id == comment.id %}
+                        <div>
+                            <div class="row no-gutters">
+                                <div class="col-1">
+                                    <div class="card-body">
+                                        {% if reply.blocked == "FALSE" %}
+                                        <img  src="{{ reply.user.picture }}" alt="{{ reply.user.name }}"class="card-img" style="border-radius: 10% !important;">
+                                        {% else %}
+                                        <img src="../static/Pictures_Users/Picture_default.jpg" alt="blocked user" class="card-img" style="border-radius: 10% !important;">
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-11">
+                                    <div class="card-body">
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <p class="card-text"><b class="text-muted">
+                                                {% if reply.blocked == "FALSE" %}
+                                                    {{ reply.user.name }}
+                                                {% else %}
+                                                    [removed]
+                                                {% endif %}
+                                            </b></p>
+                                        </div>
+                                        <p class="card-text">
+                                            {% if reply.blocked == "FALSE" %}
+                                                {{ reply.text }}
+                                            {% else %}
+                                                {{ reply.if_blocked }}
+                                            {% endif %}
+                                        </p>
+                                        <a href="#">
+                                            <p class="card-text"><small class="text-muted">{{ reply.date_submitted.strftime('%d %B %Y')}}</small></p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
-    </section> -->
-    
+    </section>
+    <section class="mb-1 container-fluid">
+        <div class="row justify-content-center">
+            <div class="row no-gutters" style="width: 57rem;">
+                <div class="col-12">
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endfor %}
 
 {% endblock %}

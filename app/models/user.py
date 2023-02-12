@@ -2,6 +2,7 @@ from app.extensions import db
 from flask_login import UserMixin
 from datetime import datetime
 
+
 class Blog_User(UserMixin, db.Model):
     __tablename__ = "blog_user"
     # __bind_key__ = 'user'
@@ -25,6 +26,8 @@ class Blog_User(UserMixin, db.Model):
     posts = db.relationship('Blog_Posts', backref='author')
     comments = db.relationship('Blog_Comments', backref='user')
     replies = db.relationship('Blog_Replies', backref='user')
+    likes = db.relationship('Blog_Likes', backref='user')
+    bookmarks = db.relationship('Blog_Bookmarks', backref='user')
 
     def __repr__(self):
         return f"<User: {self.id} {self.name} {self.email}>"

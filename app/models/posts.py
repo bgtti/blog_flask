@@ -1,6 +1,9 @@
 from app.extensions import db
 from datetime import datetime
 
+# note the Blog_Posts class has two fields: all_likes and likes
+# likes are used to track registered user's posts likes, while all_likes registers the likes from non-registed users as well.
+# the latter is tracked with the use of cookies.
 class Blog_Posts(db.Model):
     __tablename__ = "blog_posts"
     id = db.Column(db.Integer, primary_key=True)
@@ -20,12 +23,13 @@ class Blog_Posts(db.Model):
     title_tag = db.Column(db.String(200))
     admin_approved = db.Column(db.String(5), default="FALSE")
     featured = db.Column(db.String(5), default="FALSE")
-    likes = db.Column(db.Integer, default=0)
-    # comments = db.Column(db.Integer, default=0)
+    # all_likes = db.Column(db.Integer, default=0)
+    likes = db.relationship('Blog_Likes', backref='post')
     comments = db.relationship('Blog_Comments', backref='target_post')
     replies = db.relationship('Blog_Replies', backref='target_post')
+    bookmarks = db.relationship('Blog_Bookmarks', backref='post')
     author_id = db.Column(db.Integer, db.ForeignKey('blog_user.id'))
     theme_id = db.Column(db.Integer, db.ForeignKey('blog_theme.id'))
-
+    
     def __repr__(self):
         return f"<Post {self.id}: {self.title}, Theme: {self.theme_id}>"

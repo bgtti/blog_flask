@@ -162,3 +162,40 @@ input[type=file]::file-selector-button {
         flex-direction: column;
     }
 }
+
+
+/* SVG like and bookmark: posts.html */
+.ALL-svg{
+    height: 2em;
+    width: 20px;
+    cursor:pointer
+}
+.ALL-svg-parent{
+    max-height: 2em;
+    display:flex;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+}
+.ALL-no-m-p {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* filter colour from: https: //codepen.io/sosuke/pen/Pjoqqp*/
+.ALL-grey{
+    color: #808080;
+    filter: invert(55%) sepia(0%) saturate(0%) hue-rotate(24deg) brightness(91%) contrast(84%);
+}
+
+@media (hover: hover) {
+    .ALL-svg:hover {
+        filter: invert(34%) sepia(17%) saturate(706%) hue-rotate(63deg) brightness(92%) contrast(83%);
+    }
+}
+.All-svg-clicked{
+    filter: invert(65%) sepia(93%) saturate(578%) hue-rotate(2deg) brightness(91%) contrast(99%);
+}
+.All-display-none{
+    display: none;
+}
