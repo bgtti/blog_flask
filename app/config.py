@@ -13,3 +13,5 @@ class Config:
     RELATIVE_PATH = "static/Pictures_Users"
     PROFILE_IMG_FOLDER = os.path.join(ABSOLUTE_PATH, RELATIVE_PATH)
     ALLOWED_IMG_EXTENSIONS = ['PNG', 'JPG', 'JPEG']
+    STATIC_URL_PATH = "../static"
+    STATIC_FOLDER = "../static"

@@ -14,7 +14,6 @@ dashboard = Blueprint('dashboard', __name__)
 
 
 # USER MANAGEMENT: admin access only
-
 # Managing users: see all users
 @dashboard.route("/dashboard/manage_users", methods=["GET", "POST"])
 @login_required
@@ -28,11 +27,10 @@ def users_table():
         return redirect(url_for('website.home'))
 
 # Managing users: update user
-
-
 @dashboard.route("/dashboard/manage_users/update/<int:id>", methods=["GET", "POST"])
 @login_required
 def user_update(id):
+    print(current_user.picture)
     acct_types = ["admin", "author", "user"]
     acct_blocked = ["FALSE", "TRUE"]
     user_to_update = Blog_User.query.get_or_404(id)
@@ -60,8 +58,8 @@ def user_update(id):
     else:
         return render_template("users_user_update.html", logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
 
-# Deleting user
 
+# Deleting user
 
 @dashboard.route("/dashboard/manage_users/delete/<int:id>", methods=["GET", "POST"])
 @login_required

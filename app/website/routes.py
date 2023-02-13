@@ -18,8 +18,8 @@ from datetime import timedelta
 from config import Config
 
 
-
-website = Blueprint('website', __name__)
+website = Blueprint('website', __name__,
+                    static_folder="../static", template_folder="../template")
 
 
 # Blog website pages: Home Page, All posts, About, Contact page

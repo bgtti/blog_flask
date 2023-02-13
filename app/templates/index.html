@@ -21,7 +21,7 @@
             <div class="col col-auto mb-3 HOME-theme-btn">
                 <a class="ALL-no-hover" href="{{ url_for('website.all', index=theme[2]) }}">
                     <div class="card h-100" style="width: 13rem; border:none;">
-                        <img src="{{ theme[1] }}" class="card-img-top HOME-round-img" alt="Theme" />
+                        <img src="{{ url_for('static', filename='Picture_Themes/'+theme[1]) }}" class="card-img-top HOME-round-img" alt="Theme" />
                         <div class="card-body" style="display:flex; justify-content: center;">
                             <h5 class="card-title ALL-no-hover">{{theme[0]}}</h5>
                         </div>

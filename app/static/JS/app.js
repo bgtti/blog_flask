@@ -1,3 +1,19 @@
+//Closing aler message
+function alertDisplayNone() {
+    alert_div = document.getElementById("alertMsgJs");
+    alert_div.classList.add("All-display-none")
+}
+//Alert messages JS: in base.html
+function alert(message){
+    alert_div = document.getElementById("alertMsgJs");
+    alert_div.firstElementChild.textContent = message;
+    alert_div.classList.remove("All-display-none")
+    //add 'display none' class automatically after 20 seconds
+    setTimeout(()=>{
+        alertDisplayNone()
+    }, 20000)
+}
+
 
 // Check picture's size prior to submitting:
 function checkFileSize(theInput) {
@@ -7,7 +23,8 @@ function checkFileSize(theInput) {
     }
     
     if (theInput.files[0].size > 582000){
-        
+        alert("Your image file is too big. Maximum image size: 582'000 bytes")
+        //CHECK IF NECESSARY
         let theP = document.createElement('p');
         theP.innerText = "Your image file is too big. Maximum image size: 582'000 bytes";
         parentDiv.append(theP);
@@ -105,6 +122,8 @@ function commentOrReply(event, postId, isComment) {
                 msgSentP.textContent == "You cannot send an empty comment or reply. Request failed."
             } else {
                 msgSentP.classList.remove("All-display-none")
+                isComment == "true" ? alert("Comment sent! Refresh the page to see the changes") : alert("Reply sent! Refresh the page to see the changes")
+
             }
         })
 }
@@ -144,6 +163,7 @@ function deleteCommentOrReply(event, postId, isComment, commentOrReplyId) {
             deletedMsgP.removeChild(deletedMsgP.lastElementChild)
             if (data['message'] == "Successfully deleted") {
                 deletedMsgP.firstElementChild.textContent = "Deleted!"
+                alert("Successfully deleted! Refresh the page to see the changes.")
             } else {
                 deletedMsgP.firstElementChild.textContent = "Request failed."
             }

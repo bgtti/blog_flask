@@ -6,19 +6,10 @@
     <div class="row justify-content-center">
         <p class="text-justify">You are about to change the following user:</p>
     </div>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    {% for message in messages %}
-    <div class="row justify-content-center">
-        <p class="text-justify">{{ message }}</p>
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
 </section>
 <section class="mb-3 container-fluid">
     <div class="row justify-content-center">
-        <form class="col-lg-8 col-md-10" action="/dashboard/manage_users/update/{{user_to_update.id}}"
+        <form class="col-lg-8 col-md-10" action="{{url_for('dashboard.user_update',id=user_to_update.id)}}"
             method="POST">
             <div class="form-group">
                 <label for="username_update">Username</label>
