@@ -9,7 +9,7 @@ from app.models.user import Blog_User
 from app.models.likes import Blog_Likes
 from app.models.bookmarks import Blog_Bookmarks
 from app.models.comments import Blog_Comments, Blog_Replies
-from app.models.helpers import update_likes, update_bookmarks
+from app.models.helpers import update_likes, update_bookmarks, delete_comment, delete_reply
 from flask_login import current_user
 from datetime import datetime
 from sqlalchemy import desc
@@ -166,6 +166,34 @@ def post_comment(index):
     else:
         return make_response(jsonify({"message": "Content type not supported"}), 412)
 
+# Delete comment or reply
+@website.route("/delete_comment_or_reply/<int:index>", methods=["POST"])
+def post_delete_comment(index):
+    data = request.get_json()
+    print(data)
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json'):
+        data = request.get_json()
+        if not data.get('commentId') and not data.get('replyId'):
+            return make_response(jsonify({"message": "Nothing to delete"}), 400)
+        if data.get('replyId') and not data.get('commentId'):
+            # delete reply
+            res = delete_reply(int(data.get('replyId')))
+            if res == "success":
+                return make_response(jsonify({"message": "Successfully deleted"}), 200)
+            else:
+                return make_response(jsonify({"message": "Reply not found"}), 404)
+        elif data.get('commentId') and not data.get('replyId'):
+            # delete comment
+            res = delete_comment(int(data.get('commentId')))
+            if res == "success":
+                return make_response(jsonify({"message": "Successfully deleted"}), 200)
+            else:
+                return make_response(jsonify({"message": "Comment not found"}), 404)
+        else:
+            return make_response(jsonify({"message": "Must be either a commentId or a replyId"}), 400)
+    else:
+        return make_response(jsonify({"message": "Content type not supported"}), 412)
 
 # Like post request sent by JavaScript
 @website.route("/like_post/<int:index>", methods=["POST"])

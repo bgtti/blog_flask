@@ -72,7 +72,6 @@ function commentOrReply(event, postId, isComment) {
         "reply": "",
         "commentId": ""
     }
-    // let entry = new FormData
     if (isComment == "true"){
         theCommentOrReply = document.getElementById(`comment-${postId}`);
         commentOrReplyForm = document.getElementById(`postCommentForm`);
@@ -83,7 +82,6 @@ function commentOrReply(event, postId, isComment) {
         entry["reply"] = theCommentOrReply.value
         entry["commentId"] = `${isComment}`
     }
-    // ADD REPLY LOGIC HERE AS WELL: isComment can be true or have a comment id
     if (theCommentOrReply.value == "") {
         console.warn("Empty comment cannot be sent")
         return
@@ -107,6 +105,47 @@ function commentOrReply(event, postId, isComment) {
                 msgSentP.textContent == "You cannot send an empty comment or reply. Request failed."
             } else {
                 msgSentP.classList.remove("All-display-none")
+            }
+        })
+}
+
+// delete comments or replies
+// Comment in Post or replies to comments in post(post.html)
+// isComment can either be "true" or be a comment id
+function deleteCommentOrReply(event, postId, isComment, commentOrReplyId) {
+    event.preventDefault()
+    let theCommentOrReply;
+    let entry = {
+        "commentId": "",
+        "replyId": ""
+    }
+    if (isComment == "true") {
+        theCommentOrReply = document.getElementById(`comment-id-${commentOrReplyId}`);
+        entry["commentId"] = `${commentOrReplyId}`
+    } else {
+        theCommentOrReply = document.getElementById(`reply-id-${commentOrReplyId}`);
+        entry["replyId"] = `${commentOrReplyId}`
+    }
+    let thePId;
+    isComment == "true" ? thePId = `p-parent-of-${commentOrReplyId}-comment` : thePId = `p-parent-of-${commentOrReplyId}-reply`
+    let deletedMsgP = document.getElementById(thePId);
+    url = `/delete_comment_or_reply/${postId}`
+    fetch(url, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(entry),
+        cache: "no-cache",
+        headers: new Headers({
+            "content-type": "application/json"
+        })
+    }).then((res) => res.json())
+        .then((data) => {
+            console.log((deletedMsgP.firstElementChild))
+            deletedMsgP.removeChild(deletedMsgP.lastElementChild)
+            if (data['message'] == "Successfully deleted") {
+                deletedMsgP.firstElementChild.textContent = "Deleted!"
+            } else {
+                deletedMsgP.firstElementChild.textContent = "Request failed."
             }
         })
 }

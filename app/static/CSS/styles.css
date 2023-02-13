@@ -199,3 +199,14 @@ input[type=file]::file-selector-button {
 .All-display-none{
     display: none;
 }
+
+.ALL-svg-delete {
+    height: 13px;
+    width: 15px;
+    cursor: pointer
+}
+@media (hover: hover) {
+    .ALL-svg-delete:hover {
+        filter: invert(12%) sepia(57%) saturate(5140%) hue-rotate(4deg) brightness(92%) contrast(101%);
+    }
+}
