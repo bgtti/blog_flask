@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block meta %}
+<meta name="description" content="Travel blog - Login">
+{% endblock %}
+{% block title %}Log into Travel Blog{% endblock %}
+
+{% block content %}
+
+<!-- Content -->
+<h1 class="ALL-special-font ALL-h1 text-center">Log in</h1>
+
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <p class="text-justify">Log in to save your favorite posts!</p>
+    </div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="row justify-content-center">
+                    <p class="text-justify">{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</section>
+
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="col-lg-3 col-md-8" action="{{ url_for('account.login') }}" method="POST">
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com"
+                    maxlength="200" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" placeholder="Password" required="required"
+                    class="form-control" />
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn ALL-green-btn-dark mb-2">Log in</button>
+            </div>
+        </form>
+    </div>
+</section>
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <p class="text-justify">Don't have an account yet? Sign up!</p>
+    </div>
+    <div class="row justify-content-center">
+        <a role="button" href="/signup" class="btn ALL-green-btn mb-2">Sign up</a>
+    </div>
+</section>
+
+{% endblock %}

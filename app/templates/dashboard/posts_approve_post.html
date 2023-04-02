@@ -1,0 +1,39 @@
+{% extends "account/dashboard_admin.html" %}
+{% block page %}
+
+<h1 class="mb-3 text-center">Approve Post</h1>
+<section class="mb-3 container-fluid">
+    <div class="justify-content-center">
+        <p class="text-justify text-center">Approved posts will be published on the blog. This post's date is <b>{{post_to_approve.date_to_post.strftime('%d %b %Y')}}</b> and will be published under the theme <b>{{post_to_approve.theme_group.theme}}.</b></p>         
+    </div>
+</section>
+
+<section class="container-fluid mt-4 mb-3">
+    <div class="row justify-content-center">
+        <div class="row no-gutters ALL-box-preview-shadow" style="width: 57rem;">
+            <div class="col-md-6 card-img ALL-picture ">
+                <img src="{{ url_for('static', filename='Pictures_Posts/'+post_to_approve.picture_h) }}" class="card-img" alt="picture of blog post">
+            </div>
+            <div class="col-md-6">
+                <div class="card-body">
+                    <h5 class="card-title">{{post_to_approve.title}}</h5>
+                    <p class="card-text text-justify">{{post_to_approve.intro}}</p>
+                    <a role="button" href="{{url_for('dashboard.preview_post', id=post_to_approve.id)}}"
+                        class="btn ALL-green-btn mb-2">Preview</a>
+                    <p class="card-text"><small class="text-muted"> by {{ post_to_approve.author.name }} - {{ post_to_approve.date_to_post.strftime('%d %B %Y') }}</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="col-lg-2 col-md-12" action="/dashboard/manage_posts/approve_post/{{post_to_approve.id}}" method="POST">
+            <button type="submit" name="submit_approve" class="btn ALL-green-btn-dark mb-2" style="width:150px">Approve Post</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}
