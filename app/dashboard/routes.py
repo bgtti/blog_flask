@@ -14,7 +14,6 @@ dashboard = Blueprint('dashboard', __name__)
 
 
 # USER MANAGEMENT: admin access only
-
 # Managing users: see all users
 @dashboard.route("/dashboard/manage_users", methods=["GET", "POST"])
 @login_required
@@ -22,17 +21,16 @@ def users_table():
     user_type = current_user.type
     if user_type == "admin" or user_type == "super_admin":
         all_blog_users = Blog_User.query.order_by(Blog_User.id)
-        return render_template("users_table.html", logged_in=current_user.is_authenticated, all_blog_users=all_blog_users)
+        return render_template("dashboard/users_table.html", logged_in=current_user.is_authenticated, all_blog_users=all_blog_users)
     else:
         flash("Access denied: admin access only.")
         return redirect(url_for('website.home'))
 
 # Managing users: update user
-
-
 @dashboard.route("/dashboard/manage_users/update/<int:id>", methods=["GET", "POST"])
 @login_required
 def user_update(id):
+    print(current_user.picture)
     acct_types = ["admin", "author", "user"]
     acct_blocked = ["FALSE", "TRUE"]
     user_to_update = Blog_User.query.get_or_404(id)
@@ -40,10 +38,10 @@ def user_update(id):
     if request.method == "POST":
         if Blog_User.query.filter(Blog_User.id != id, Blog_User.email == request.form.get("email_update")).first():
             flash("This email is already registered with us.")
-            return render_template("users_user_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+            return render_template("dashboard/users_user_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
         elif Blog_User.query.filter(Blog_User.id != id, Blog_User.name == request.form.get("username_update")).first():
             flash("This username is already registered with us.")
-            return render_template("users_user_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+            return render_template("dashboard/users_user_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
         else:
             user_to_update.name = request.form.get("username_update")
             user_to_update.email = request.form.get("email_update")
@@ -56,12 +54,12 @@ def user_update(id):
                 return redirect(url_for('dashboard.users_table'))
             except:
                 flash("Error, try again.")
-                return render_template("users_user_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+                return render_template("dashboard/users_user_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
     else:
-        return render_template("users_user_update.html", logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+        return render_template("dashboard/users_user_update.html", logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
+
 
 # Deleting user
-
 
 @dashboard.route("/dashboard/manage_users/delete/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -78,9 +76,9 @@ def user_delete(id):
                 return redirect(url_for('dashboard.users_table'))
             except:
                 flash("There was a problem deleting this user.")
-                return render_template("users_user_delete.html", logged_in=current_user.is_authenticated, user_to_delete=user_to_delete)
+                return render_template("dashboard/users_user_delete.html", logged_in=current_user.is_authenticated, user_to_delete=user_to_delete)
     else:
-        return render_template("users_user_delete.html", logged_in=current_user.is_authenticated, user_to_delete=user_to_delete)
+        return render_template("dashboard/users_user_delete.html", logged_in=current_user.is_authenticated, user_to_delete=user_to_delete)
 
 # Blocking user
 
@@ -100,9 +98,9 @@ def user_block(id):
                 return redirect(url_for('dashboard.users_table'))
             except:
                 flash("There was a problem blocking this user.")
-                return render_template("users_user_block.html", logged_in=current_user.is_authenticated, user_to_block=user_to_block)
+                return render_template("dashboard/users_user_block.html", logged_in=current_user.is_authenticated, user_to_block=user_to_block)
     else:
-        return render_template("users_user_block.html", logged_in=current_user.is_authenticated, user_to_block=user_to_block)
+        return render_template("dashboard/users_user_block.html", logged_in=current_user.is_authenticated, user_to_block=user_to_block)
 
 # Previewing a user's account information
 
@@ -111,7 +109,7 @@ def user_block(id):
 @login_required
 def user_preview(id):
     user_to_preview = Blog_User.query.get_or_404(id)
-    return render_template("users_user_preview.html", logged_in=current_user.is_authenticated, user_to_preview=user_to_preview)
+    return render_template("dashboard/users_user_preview.html", logged_in=current_user.is_authenticated, user_to_preview=user_to_preview)
 
 # ***********************************************************************************************
 # POST MANGEMENT
@@ -161,7 +159,7 @@ def submit_post():
 
         flash("Blog post submitted sucessfully!")
 
-    return render_template("posts_submit_new.html", logged_in=current_user.is_authenticated, form=form)
+    return render_template("dashboard/posts_submit_new.html", logged_in=current_user.is_authenticated, form=form)
 
 # POST MANGEMENT -  ADMIN
 # View table with all posts and manage posts: Admin only
@@ -171,7 +169,7 @@ def submit_post():
 @login_required
 def posts_table():
     all_blog_posts_submitted = Blog_Posts.query.order_by(Blog_Posts.id)
-    return render_template("posts_table.html", logged_in=current_user.is_authenticated, all_blog_posts_submitted=all_blog_posts_submitted)
+    return render_template("dashboard/posts_table.html", logged_in=current_user.is_authenticated, all_blog_posts_submitted=all_blog_posts_submitted)
 
 # Approve posts: Admin only
 
@@ -188,9 +186,9 @@ def approve_post(id):
             return redirect(url_for('dashboard.posts_table'))
         except:
             flash("There was a problem approving this post.")
-            return render_template("posts_approve_post.html", logged_in=current_user.is_authenticated, post_to_approve=post_to_approve)
+            return render_template("dashboard/posts_approve_post.html", logged_in=current_user.is_authenticated, post_to_approve=post_to_approve)
     else:
-        return render_template("posts_approve_post.html", logged_in=current_user.is_authenticated, post_to_approve=post_to_approve)
+        return render_template("dashboard/posts_approve_post.html", logged_in=current_user.is_authenticated, post_to_approve=post_to_approve)
 
 # Disapprove (disallow) posts: Admin only
 
@@ -207,9 +205,9 @@ def disallow_post(id):
             return redirect(url_for('dashboard.posts_table'))
         except:
             flash("There was a problem disallowing this post.")
-            return render_template("posts_disallow_post.html", logged_in=current_user.is_authenticated, post_to_disallow=post_to_disallow)
+            return render_template("dashboard/posts_disallow_post.html", logged_in=current_user.is_authenticated, post_to_disallow=post_to_disallow)
     else:
-        return render_template("posts_disallow_post.html", logged_in=current_user.is_authenticated, post_to_disallow=post_to_disallow)
+        return render_template("dashboard/posts_disallow_post.html", logged_in=current_user.is_authenticated, post_to_disallow=post_to_disallow)
 
 # POST MANAGEMENT - AUTHORS DASH
 # View table with all posts this author has submitted
@@ -220,7 +218,7 @@ def disallow_post(id):
 def posts_table_author():
     all_blog_posts_submitted = Blog_Posts.query.filter(
         Blog_Posts.author_id == current_user.id).all()
-    return render_template("posts_table_author.html", logged_in=current_user.is_authenticated, all_blog_posts_submitted=all_blog_posts_submitted)
+    return render_template("dashboard/posts_table_author.html", logged_in=current_user.is_authenticated, all_blog_posts_submitted=all_blog_posts_submitted)
 
 
 # POST MANGEMENT -  ADMIN AND AUTHORS
@@ -230,7 +228,7 @@ def posts_table_author():
 @login_required
 def preview_post(id):
     post_to_preview = Blog_Posts.query.get_or_404(id)
-    return render_template("posts_preview_post.html", logged_in=current_user.is_authenticated, post_to_preview=post_to_preview)
+    return render_template("dashboard/posts_preview_post.html", logged_in=current_user.is_authenticated, post_to_preview=post_to_preview)
 
 # Editing a post --- MAKE AUTHORS AS A LIST
 
@@ -284,7 +282,7 @@ def edit_post(id):
     form.picture_alt.data = post_to_edit.picture_alt
     form.meta_tag.data = post_to_edit.meta_tag
     form.title_tag.data = post_to_edit.title_tag
-    return render_template('posts_edit_post.html', logged_in=current_user.is_authenticated, form=form)
+    return render_template('dashboard/posts_edit_post.html', logged_in=current_user.is_authenticated, form=form)
 
 # Deleting a post (PENDING ADAPTATION FOR AUTHORS)
 
@@ -305,6 +303,6 @@ def delete_post(id):
                 return redirect(url_for('dashboard.posts_table'))
         except:
             flash("There was a problem deleting this post.")
-            return render_template("posts_delete_post.html", logged_in=current_user.is_authenticated, post_to_delete=post_to_delete)
+            return render_template("dashboard/posts_delete_post.html", logged_in=current_user.is_authenticated, post_to_delete=post_to_delete)
     else:
-        return render_template("posts_delete_post.html", logged_in=current_user.is_authenticated, post_to_delete=post_to_delete)
+        return render_template("dashboard/posts_delete_post.html", logged_in=current_user.is_authenticated, post_to_delete=post_to_delete)
