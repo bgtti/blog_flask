@@ -45,7 +45,7 @@ def signup():
 
         return redirect(url_for('account.dashboard'))
 
-    return render_template('signup.html', logged_in=current_user.is_authenticated)
+    return render_template('account/signup.html', logged_in=current_user.is_authenticated)
 
 
 @account.route("/login", methods=["GET", "POST"])
@@ -70,7 +70,7 @@ def login():
         else:
             login_user(the_user)
             return redirect(url_for('account.dashboard'))
-    return render_template("login.html", logged_in=current_user.is_authenticated)
+    return render_template("account/login.html", logged_in=current_user.is_authenticated)
 
 
 @account.route('/logout')
@@ -82,20 +82,20 @@ def logout():
 
 
 # DASHBOARDs
-
+# displaying user dashboard after log-in according to the account type: user, author, or admin
 @account.route("/dashboard")
 @login_required
 def dashboard():
     if current_user.type == "user":
-        return render_template('dashboard_user.html', name=current_user.name, logged_in=True)
+        return render_template('account/dashboard_user.html', name=current_user.name, logged_in=True)
     elif current_user.type == "author":
         posts_pending_admin = Blog_Posts.query.filter(Blog_Posts.admin_approved == "FALSE").filter(
             Blog_Posts.author_id == current_user.id).all()
-        return render_template('dashboard_author_dash.html', name=current_user.name, logged_in=True, posts_pending_admin=posts_pending_admin)
+        return render_template('account/dashboard_author_dash.html', name=current_user.name, logged_in=True, posts_pending_admin=posts_pending_admin)
     else:
         posts_pending_approval = Blog_Posts.query.filter_by(
             admin_approved="FALSE").all()
-        return render_template('dashboard_admin_dash.html', name=current_user.name, logged_in=True, posts_pending_approval=posts_pending_approval)
+        return render_template('account/dashboard_admin_dash.html', name=current_user.name, logged_in=True, posts_pending_approval=posts_pending_approval)
 
 # ***********************************************************************************************
 # ACCOUNT MANAGEMENT, BOOKMARKS, HISTORY
@@ -106,7 +106,7 @@ def dashboard():
 @account.route("/dashboard/manage_account")
 @login_required
 def manage_acct():
-    return render_template("account_mgmt.html", logged_in=current_user.is_authenticated)
+    return render_template("account/account_mgmt.html", logged_in=current_user.is_authenticated)
 
 # Account information form: moved from here
 
@@ -137,7 +137,7 @@ def update_own_acct_info(id):
     form.username.data = user_at_hand.name
     form.email.data = user_at_hand.email
     form.about.data = user_at_hand.about
-    return render_template("account_mgmt_update.html", logged_in=current_user.is_authenticated, form=form)
+    return render_template("account/account_mgmt_update.html", logged_in=current_user.is_authenticated, form=form)
 
 # Update account information: changing the picture
 
@@ -186,7 +186,7 @@ def update_own_acct_picture(id):
             flash("Oops, error updating profile picture, try again.")
             return redirect(url_for('account.manage_acct'))
 
-    return render_template("account_mgmt_picture.html", logged_in=current_user.is_authenticated, form=form, profile_picture=profile_picture)
+    return render_template("account/account_mgmt_picture.html", logged_in=current_user.is_authenticated, form=form, profile_picture=profile_picture)
 
 
 # Delete account
@@ -208,7 +208,7 @@ def delete_own_acct(id):
                 flash("There was a problem deleting your account.")
                 return redirect(url_for('account.manage_acct'))
     else:
-        return render_template("account_mgmt_delete.html", logged_in=current_user.is_authenticated)
+        return render_template("account/account_mgmt_delete.html", logged_in=current_user.is_authenticated)
 
 # BOOKMARKS
 
