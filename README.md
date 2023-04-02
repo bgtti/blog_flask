@@ -96,8 +96,11 @@ Create a .gitignore file inside the blog_flask folder.
 You should add the following to it:
 
 instance/
+
 .env
+
 \__pycache__/
+
 
 Alternatively, you may also find online a better and more complete template to use.
 
