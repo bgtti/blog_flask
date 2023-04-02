@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block meta %}
+<meta name="description" content="Travel blog - Contact">
+{% endblock %}
+{% block title %}Contact the Travel Blog{% endblock %}
+
+{% block content %}
+
+<!-- Content -->
+<h1 class="ALL-special-font ALL-h1 text-center">Contact Us</h1>
+
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <p class="col-lg-8 col-md-10 text-justify">Got any ideas, concearns or wishes? Share your thoughts!</p>
+    </div>
+</section>
+
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="col-lg-8 col-md-10" action="/contact" method="POST">
+            <div class="form-group">
+                <label for="contact_name">Name</label>
+                <input type="text" class="form-control" id="contact_name" name="contact_name" placeholder="John Doe" maxlength="200" required>
+            </div>
+            <div class="form-group">
+                <label for="contact_email">Email address</label>
+                <input type="email" class="form-control" id="contact_email" name="contact_email" placeholder="name@example.com" maxlength="100" required>
+            </div>
+            <div class="form-group">
+                <label for="contact_message">Message</label>
+                <textarea class="form-control" id="contact_message" name="contact_message" rows="3" maxlength="700"></textarea>
+            </div>
+            <button type="submit" class="btn ALL-green-btn mb-2">Submit</button>
+        </form>
+    </div>
+</section>
+
+{% if msg_sent == True: %}
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <p class="ALL-msg-sent">Message sent! Thank you!</p>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

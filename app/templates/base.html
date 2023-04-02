@@ -57,9 +57,9 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        <img src="{{ current_user.picture }}" class="rounded-circle mr-1" height="20"
+                        <img src="{{ url_for('static', filename='Pictures_Users/'+current_user.picture) }}" class="rounded-circle mr-1" height="20"
                             alt="User" loading="lazy" />
-                        {{ current_user.name }}
+                        {{ current_user.name }} 
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{{ url_for('account.dashboard')}}">Dashboard</a>
@@ -74,6 +74,22 @@
             </ul>
         </div>
     </nav>
+    <!-- Flash alert messages -->
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+    <!-- JS alert messages -->
+    <div id="alertMsgJs" class="alert alert-secondary alert-dismissible fade show All-display-none" role="alert">
+        <span></span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
 
 
 <!-- Content -->
