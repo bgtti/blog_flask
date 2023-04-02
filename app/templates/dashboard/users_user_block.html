@@ -1,0 +1,24 @@
+{% extends "account/dashboard_admin.html" %}
+{% block page %}
+
+<h1 class="mb-3 text-center">Block user</h1>
+<section class="mb-3 container-fluid">
+    <div class="justify-content-center">
+        <p class="text-justify text-center">You are about to block the following user:</p>
+        <p class="text-justify text-center">Username: {{user_to_block.name}}</p>
+        <p class="text-justify text-center">User ID: {{user_to_block.id}}</p>
+        <p class="text-justify text-center">User's email: {{user_to_block.email}}</p>
+        <p class="text-justify text-center">User's type: {{user_to_block.type}}</p>
+    </div>
+</section>
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="col-lg-2 col-md-10" action="/dashboard/manage_users/block/{{user_to_block.id}}" method="POST">
+            <div class="d-flex justify-content-center">
+                <button type="submit" name="submit_block" class="btn btn-danger mb-2">Block User</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

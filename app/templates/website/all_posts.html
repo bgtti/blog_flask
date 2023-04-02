@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block meta %}
+<meta name="description" content="Travel blog - All Posts">
+{% endblock %}
+{% block title %}Travel posts{% endblock %}
+
+{% block content %}
+
+    <!-- Content -->
+    {% if chosen_theme == "": %}
+    <h1 class="ALL-special-font ALL-h1 text-center">All Blog Posts</h1>
+    {% else: %}
+    <h1 class="ALL-special-font ALL-h1 text-center">{{chosen_theme}}: Blog Posts</h1>
+    {% endif %}
+
+    <!-- Cards: all posts-->
+    {% set i = 0 %}
+    {% for post in all_blog_posts: %}
+    {% set i = i + 1 %}
+    <section class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="row no-gutters" style="width: 57rem;">
+                <div class="col-md-6 card-img ALL-picture ">
+                    <img src="{{ url_for('static', filename='Pictures_Posts/'+post.picture_h) }}" class="card-img"
+                        alt="{{ post.picture_alt }}">
+                </div>
+                <div class="col-md-6">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        
+                        <p class="card-text text-justify">{{ intros[i] }}</p>
+                        
+                        <a role="button" href="{{ url_for('website.blog_post', index=post.id) }}" class="btn ALL-green-btn mb-2" style="width: 150px;">Read</a>
+                        <p class="card-text"><small class="text-muted"> by {{ post.author.name }} - {{ post.date_to_post.strftime('%d %B %Y') }}</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endfor %}
+
+{% endblock %}

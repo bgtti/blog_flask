@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block meta %}
+<meta name="robots" content="noindex, follow">
+{% endblock %}
+{% block title %}User's Account - Update{% endblock %}
+
+{% block content %}
+<!-- Content -->
+
+<h1 class="mb-3 text-center">Account deletion</h1>
+<section class="mb-3 container-fluid">
+    <div class="justify-content-center">
+        <p class="text-justify text-center">You are about to delete your account.</p>
+        <p class="text-justify text-center">This action cannot be undone.</p>
+        <p class="text-justify text-center">Are you sure you wish to proceed?</p>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="row justify-content-center">
+        <p class="text-justify">{{ message }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</section>
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="" action="/dashboard/manage_account/delete/{{current_user.id}}" method="POST">
+            <button type="submit" name="submit_delete" class="btn btn-danger mb-2">Delete my account</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

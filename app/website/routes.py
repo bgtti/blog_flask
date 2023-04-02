@@ -18,8 +18,8 @@ from datetime import timedelta
 from config import Config
 
 
-
-website = Blueprint('website', __name__)
+website = Blueprint('website', __name__,
+                    static_folder="../static", template_folder="../template")
 
 
 # Blog website pages: Home Page, All posts, About, Contact page
@@ -48,7 +48,7 @@ def home():
                 forth_theme_post_ids.append(this_query.id)
     posts_all = posts_all[0] + posts_all[1] + posts_all[2] + posts_all[3]
 
-    return render_template('index.html', posts_all=posts_all, posts_themes=posts_themes, logged_in=current_user.is_authenticated, forth_theme_post_ids=forth_theme_post_ids)
+    return render_template('website/index.html', posts_all=posts_all, posts_themes=posts_themes, logged_in=current_user.is_authenticated, forth_theme_post_ids=forth_theme_post_ids)
 
 # route to 'All Posts' page or page by chosen theme
 @website.route("/all/<int:index>")
@@ -74,7 +74,7 @@ def all(index):
         else:
             intros.append(post.intro)
 
-    return render_template('all_posts.html', all_blog_posts=all_blog_posts, chosen_theme=chosen_theme, intros=intros, logged_in=current_user.is_authenticated)
+    return render_template('website/all_posts.html', all_blog_posts=all_blog_posts, chosen_theme=chosen_theme, intros=intros, logged_in=current_user.is_authenticated)
 
 
 @website.route("/about/")
@@ -83,7 +83,7 @@ def about():
         Blog_User.blocked == "FALSE", Blog_User.type == "author",
         ).order_by(desc(Blog_User.id)).limit(25)
 
-    return render_template('about.html', authors_all=authors_all, logged_in=current_user.is_authenticated)
+    return render_template('website/about.html', authors_all=authors_all, logged_in=current_user.is_authenticated)
 
 
 @website.route("/contact/", methods=['POST', 'GET'])
@@ -104,7 +104,7 @@ def contact():
         except:
             return "There was an error adding message to the database."
 
-    return render_template('contact.html', msg_sent=False, logged_in=current_user.is_authenticated)
+    return render_template('website/contact.html', msg_sent=False, logged_in=current_user.is_authenticated)
 
 
 @website.route("/post/<int:index>", methods=["GET", "POST"])
@@ -116,16 +116,20 @@ def blog_post(index):
     # get the likes
     post_likes = db.session.query(Blog_Likes).filter(
         Blog_Likes.post_id == index).all()
-    # check if user already liked this post
+
+    # check if user is logged in, and if so, already liked or bookmarked this post
     user_liked = False
-    like = db.session.query(Blog_Likes).filter(
-        Blog_Likes.user_id == current_user.id, Blog_Likes.post_id == index).first()
+    user_bookmarked = False
+    if current_user.is_authenticated:
+        like = db.session.query(Blog_Likes).filter(
+            Blog_Likes.user_id == current_user.id, Blog_Likes.post_id == index).first()
+        bookmark = db.session.query(Blog_Bookmarks).filter(
+            Blog_Bookmarks.user_id == current_user.id, Blog_Bookmarks.post_id == index).first()
+    else:
+        like = False
+        bookmark = False
     if like:
         user_liked = True
-    # check if user already bookmarked this post
-    user_bookmarked = False
-    bookmark = db.session.query(Blog_Bookmarks).filter(
-        Blog_Bookmarks.user_id == current_user.id, Blog_Bookmarks.post_id == index).first()
     if bookmark:
         user_bookmarked = True
     # get the comments
@@ -135,7 +139,7 @@ def blog_post(index):
     replies = db.session.query(Blog_Replies).filter(Blog_Replies.post_id == index,
                                                     ).order_by(Blog_Replies.date_submitted.asc()).limit(100)
 
-    return render_template('post.html', blog_posts=blog_post, logged_in=current_user.is_authenticated, comments=comments, replies=replies, post_likes=post_likes, user_liked=user_liked, user_bookmarked=user_bookmarked)
+    return render_template('website/post.html', blog_posts=blog_post, logged_in=current_user.is_authenticated, comments=comments, replies=replies, post_likes=post_likes, user_liked=user_liked, user_bookmarked=user_bookmarked)
 
 
 # Comment or reply on post

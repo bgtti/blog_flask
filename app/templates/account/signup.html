@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block meta %}
+<meta name="description" content="Travel blog - Sign up">
+{% endblock %}
+{% block title %}Signup{% endblock %}
+
+{% block content %}
+
+<!-- Content -->
+<h1 class="ALL-special-font ALL-h1 text-center">Sign up</h1>
+
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <p class="text-justify">Sign up to keep informed with the Travel Blog <br> and save your favorite posts!</p>
+    </div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="row justify-content-center">
+                    <p class="text-justify">{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</section>
+
+<section class="mb-3 container-fluid">
+    <div class="row justify-content-center">
+        <form class="col-lg-3 col-md-8" action="{{ url_for('account.signup') }}" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="John Doe"
+                    maxlength="200" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" name="email"
+                    placeholder="name@example.com" maxlength="200" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" placeholder="Password" required="required" class="form-control"/>
+            </div>
+            <div class="d-flex justify-content-center" >
+                <button type="submit" class="btn mb-2 ALL-green-btn" >Sign up</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

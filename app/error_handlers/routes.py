@@ -1,11 +1,8 @@
 from flask import Blueprint, render_template
 
 error_handler = Blueprint('error_handler', __name__)
-# 404 and 500 Errors
 
 # 404 and 500 Errors
-
-
 
 @error_handler.errorhandler(404)
 def page_not_found(e):

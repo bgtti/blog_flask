@@ -2,6 +2,9 @@ from app.models.stats import Blog_Stats
 from app.models.comments import Blog_Comments, Blog_Replies
 from app.extensions import db
 from sqlalchemy import desc
+from flask import url_for, current_app
+from config import Config
+import os
 
 # Functions that take the picture's name and output the path to the source file
 def pic_src_post(picture_name):
@@ -11,7 +14,12 @@ def pic_src_theme(picture_name):
     return f"../static/Pictures_Themes/{picture_name}"
 
 def pic_src_user(picture_name):
+    # with current_app.app_context():
+    #     url = os.path.join(current_app.config["PROFILE_IMG_FOLDER"],picture_name)
+    #     url = os.path.abspath(url)
+    # return f"{url}"
     return f"../static/Pictures_Users/{picture_name}"
+    # return f"../Pictures_Users/{picture_name}"
 
 # Functions that update the statistics (Stats)
 def update_stats_comments_total():
