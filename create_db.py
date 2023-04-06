@@ -10,33 +10,34 @@ from app.models.likes import Blog_Likes
 # from app.models.text import about_text_author, about_text_user  # dummie strings
 from app.dummie_data import authors, posts, themes, comments
 from app.account.helpers import hash_pw
-from app.models.helpers import pic_src_user, pic_src_post, pic_src_theme, update_stats_comments_total, update_stats_users_total
+from app.models.helpers import pic_src_user, pic_src_post, pic_src_theme, update_stats_comments_total, update_stats_users_total, update_likes, update_bookmarks, delete_comment, delete_reply, update_approved_post_stats, update_stats_users_active
 from datetime import datetime
 
 
-# Creating a super_admin and a default author account
+# Creating a super_admin, a default author account, and a default user account
 # The super_admin is important as this will enable the management of all other users.
 # The default author is created for the case of an author having his/her account deleted: the posts
 # created by this user will be passed onto the default author's account, to avoid loss of online content.
-# the default user will 'gain ownership' of deleted comments to prevent mismatch.
+# The default user is created to avoid the loss of comments when a user's account it deleted: it will 'gain ownership' of deleted comments to prevent mismatch in treads.
 # you can re-define the log-in credentials for these users by changing the variables bellow.
-ADMIN_PW = "admin123"
-ADMIN_EMAIL = "super@admin"
 ADMIN_NAME = "Super Admin"
+ADMIN_EMAIL = "super@admin"
+ADMIN_PW = "admin123"
 ADMIN_PICTURE = "Picture_default.jpg"
-DEFAULT_AUTHOR_PW = "author123"
-DEFAULT_AUTHOR_EMAIL = "t@t"
 DEFAULT_AUTHOR_NAME = "The Travel Blog Team"
+DEFAULT_AUTHOR_EMAIL = "travel@team"
+DEFAULT_AUTHOR_PW = "author123"
 DEFAULT_AUTHOR_ABOUT = authors.authors_about
 DEFAULT_AUTHOR_PICTURE = "Picture_default_author.jpg"
-DEFAULT_USER_PW = "user123"
-DEFAULT_USER_EMAIL = "d@d"
 DEFAULT_USER_NAME = "[Deleted]"
-DEFAULT_USER_ABOUT = ""
+DEFAULT_USER_EMAIL = "deleted@users"
+DEFAULT_USER_PW = "user123"
+DEFAULT_USER_ABOUT = "This user's account has been deleted"
 DEFAULT_USER_PICTURE = "Picture_default.jpg"
 
 def create_admin_acct():
-    # Check if a super_admin exists in the database, if not, add it:
+    # Check if a super_admin exists in the database, if not, add it as well as the default author and default user:
+    # Note that these three users will not count towards the number of users using the blog (in the blog stats)
     super_admin_exists = Blog_User.query.get(1)
     if not super_admin_exists:
         the_super_admin = Blog_User(
@@ -120,12 +121,16 @@ def create_themes():
 #         db.session.add(theme4)
 #         db.session.commit()
 
+# DUMMIE DATA
+# Users, posts, comments, likes, and bookmarks were created for the purposes of testing and previewing the application
+# These can be deleted. Pleae note, however, that if you delete the posts without replacing them with new data, the blog may present a number of issues.
+# Likewise, deleting the author's account created in this page without changing the authorship of the posts (or deleting the posts) will leave to issues.
+# Dummie users are linked to data such as comments and likes. Deleting the creation of these without edditing or deleting their actions will result in  issues.
 
-
-# Creating dummie accounts: to test and use the app as example
+# Creating dummie user accounts: to test and use the app as example
+# These users can be deleted without impacting the blog's usage
 USER_PW = "user123"
 USER_ABOUT = authors.authors_about
-
 
 def create_dummie_accts():
     # Check if dummies exists in the database, if not, add dummie accounts:
@@ -158,6 +163,7 @@ def create_dummie_accts():
         db.session.commit()
         for i in range(8):
             update_stats_users_total()
+            update_stats_users_active(1)
 
 
 # def create_dummie_accts():
@@ -298,6 +304,9 @@ def create_posts():
         db.session.add(post14)
         db.session.commit()
 
+        for i in range (12):
+            update_approved_post_stats(1)
+
 
 # POST_INTRO = posts.post_intro
 # POST_BODY = posts.post_body
@@ -405,7 +414,7 @@ def create_posts():
 #         db.session.commit()
 
 
-
+# Creating dummie comments in posts
 
 def create_comments():
     comments_exist = Blog_Comments.query.get(1)
@@ -433,7 +442,8 @@ def create_comments():
         db.session.commit()
         for i in range(10):
             update_stats_comments_total()
-    
+
+# Create dummie Likes and Bookmarks in the database, as well as updating the 'stats' related to those
 def create_likes_and_bookmarks():
     likes_exist = Blog_Likes.query.get(1)
     if not likes_exist:
@@ -446,11 +456,17 @@ def create_likes_and_bookmarks():
         like7 = Blog_Likes(post_id=3, user_id=8)
         like8 = Blog_Likes(post_id=4, user_id=8)
         like9 = Blog_Likes(post_id=5, user_id=8)
-        bookmark1 = Blog_Bookmarks(post_id=2, user_id=1)
+        like10 = Blog_Likes(post_id=6, user_id=4)
+        bookmark1 = Blog_Bookmarks(post_id=2, user_id=4)
         bookmark2 = Blog_Bookmarks(post_id=1, user_id=4)
         bookmark3 = Blog_Bookmarks(post_id=4, user_id=5)
         bookmark4 = Blog_Bookmarks(post_id=6, user_id=5)
         bookmark5 = Blog_Bookmarks(post_id=2, user_id=5)
+        bookmark6 = Blog_Bookmarks(post_id=1, user_id=6)
+        bookmark7 = Blog_Bookmarks(post_id=3, user_id=6)
+        bookmark8 = Blog_Bookmarks(post_id=4, user_id=6)
+        bookmark9 = Blog_Bookmarks(post_id=5, user_id=7)
+        bookmark10 = Blog_Bookmarks(post_id=6, user_id=8)
         db.session.add(like1)
         db.session.add(like2)
         db.session.add(like3)
@@ -460,9 +476,18 @@ def create_likes_and_bookmarks():
         db.session.add(like7)
         db.session.add(like8)
         db.session.add(like9)
+        db.session.add(like10)
         db.session.add(bookmark1)
         db.session.add(bookmark2)
         db.session.add(bookmark3)
         db.session.add(bookmark4)
         db.session.add(bookmark5)
+        db.session.add(bookmark6)
+        db.session.add(bookmark7)
+        db.session.add(bookmark8)
+        db.session.add(bookmark9)
+        db.session.add(bookmark10)
         db.session.commit()
+        for i in range (10):
+            update_likes(1)
+            update_bookmarks(1)

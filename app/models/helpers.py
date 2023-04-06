@@ -30,19 +30,40 @@ def update_stats_comments_total():
 
 # note that default users will not be added to the stats
 def update_stats_users_total():
+    """
+    Counts number of users who created an account. Does not take into acount users who deleted their accounts.
+    This function updates the blog statistics database.
+    """
     stats = Blog_Stats.query.get_or_404(1)
     modify_stats = int(stats.user_total) + 1
     stats.user_total = modify_stats
     db.session.commit()
+    
+# note that default users will not be added to the stats
+def update_stats_users_active(num):
+    """
+    Takes -1 or 1 as arguments. 1 when a user creates an account, -1 when a user deletes an account.
+    This function updates the blog statistics database.
+    """
+    if num == -1 or num == 1:
+        stats = Blog_Stats.query.get_or_404(1)
+        if num == 1:
+            modify_stats = int(stats.user_active_total) + 1
+            stats.user_active_total = modify_stats
+        else:
+            modify_stats = int(stats.user_active_total) - 1
+            stats.user_active_total = modify_stats
+            db.session.commit()
+    else:
+        return print("Invalid arguments given to def update_stats_users_active function.")
 
 # takes -1 or 1 as arguments: whether user likes or un-likes a post
 def update_likes(num):
     """
     Takes -1 or 1 as arguments. -1 if user un-likes a post, and 1 if user likes a post.
+    This function updates the blog statistics database.
     """
-    if num != -1 or num != 1:
-        return print("Invalid arguments")
-    else:
+    if num == -1 or num == 1:
         stats = Blog_Stats.query.get_or_404(1)
         if num == 1:
             modify_stats = int(stats.likes_total) + 1
@@ -51,15 +72,16 @@ def update_likes(num):
             modify_stats = int(stats.likes_total) - 1
             stats.likes_total = modify_stats
             db.session.commit()
+    else:
+        return print("Invalid arguments given to def update_likes function.")
 
 # takes -1 or 1 as arguments: whether user bookmarks or un-bookmarks a post
 def update_bookmarks(num):
     """
     Takes -1 or 1 as arguments. -1 if user un-bookmarks a post, and 1 if user bookmarks a post.
+    This function updates the blog statistics database.
     """
-    if num != -1 or num != 1:
-        return print("Invalid arguments")
-    else:
+    if num == -1 or num == 1:
         stats = Blog_Stats.query.get_or_404(1)
         if num == 1:
             modify_stats = int(stats.bookmarks_total) + 1
@@ -68,6 +90,27 @@ def update_bookmarks(num):
             modify_stats = int(stats.bookmarks_total) - 1
             stats.bookmarks_total = modify_stats
             db.session.commit()
+    else:
+        return print("Invalid arguments given to update_bookmarks function.")
+    
+# takes -1 or 1 as arguments: whether post is approved (1) or disapproved (-1). If a post is approved, then deleted = -1. If a post is deleted but was never approved, do not use this function.
+def update_approved_post_stats(num):
+    """
+    Takes -1 or 1 as arguments. Only to be used on approved posts. -1 if a post is disapproved, 1 when a post is approved.
+    If a post was approved, but it then deleted, -1.
+    This function updates the blog statistics database.
+    """
+    if num == -1 or num == 1:
+        stats = Blog_Stats.query.get_or_404(1)
+        if num == 1:
+            modify_stats = int(stats.posts_approved) + 1
+            stats.posts_approved = modify_stats
+        else:
+            modify_stats = int(stats.posts_approved) - 1
+            stats.posts_approved = modify_stats
+            db.session.commit()
+    else:
+        return print("Invalid arguments given to update_approved_post_stats function.")
 
 # deleting a comment
 # comments which have replies will be blocked instead of deleted.
@@ -95,6 +138,7 @@ def delete_comment(commentId):
             db.session.commit()
         return "success"
     else:
+        print("You had an issue with the delete_comment function.")
         return 404
 
 # if blog comment does not have other replies, reply will be deleted.
@@ -130,5 +174,6 @@ def delete_reply(replyId):
             db.session.commit()
         return "success"
     else:
+        print("You had an issue with the delete_reply function.")
         return 404
 
