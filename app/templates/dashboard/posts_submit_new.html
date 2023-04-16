@@ -6,7 +6,7 @@
 
 <section class="mb-3 container-fluid">
     <div class="justify-content-center">
-        <form action="" method="POST">
+        <form action="" method="POST" enctype="multipart/form-data">
             {{form.hidden_tag()}}
             {{form.theme.label (class="form-label")}}
             {{form.theme (class="form-control")}}
@@ -32,19 +32,22 @@
 
             <br>
             {{form.picture_v.label (class="form-label")}}
-            {{form.picture_v (class="form-control")}}
+            {{form.picture_v (class="form-control", oninput="checkFileSizeBlogPic(this, 'picture_v_size')")}}
+            {{form.picture_v_size (class="form-control", id="picture_v_size", type="hidden")}}
             <br>
             {{form.picture_v_source.label (class="form-label")}}
             {{form.picture_v_source (class="form-control")}}
             <br>
             {{form.picture_h.label (class="form-label")}}
-            {{form.picture_h (class="form-control")}}
+            {{form.picture_h (class="form-control", oninput="checkFileSizeBlogPic(this, 'picture_h_size')")}}
+            {{form.picture_h_size (class="form-control", id="picture_h_size", type="hidden")}}
             <br>
             {{form.picture_h_source.label (class="form-label")}}
             {{form.picture_h_source (class="form-control")}}
             <br>
             {{form.picture_s.label (class="form-label")}}
-            {{form.picture_s (class="form-control")}}
+            {{form.picture_s (class="form-control", oninput="checkFileSizeBlogPic(this, 'picture_s_size')")}}
+            {{form.picture_s_size (class="form-control", id="picture_s_size", type="hidden")}}
             <br>
             {{form.picture_s_source.label (class="form-label")}}
             {{form.picture_s_source (class="form-control")}}

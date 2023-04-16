@@ -10,7 +10,7 @@
 
 <section class="mb-3 container-fluid">
     <div class="justify-content-center">
-        <form action="" method="POST">
+        <form action="" method="POST" enctype="multipart/form-data">
             {{form.hidden_tag()}}
             {{form.theme.label (class="form-label")}}
             {{form.theme (class="form-control")}}
@@ -20,7 +20,6 @@
             {{form.author (class="form-control")}}
             <br>
             {% endif %}
-
             {{form.date.label (class="form-label")}}
             {{form.date (class="form-control", type="date")}}
             <br>
@@ -33,20 +32,91 @@
             {{form.body.label (class="form-label")}}
             {{form.body (class="form-control", rows="10")}}
             <br>
+            <div class="card mb-2" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-2">
+                        <img 
+                            {% if not post_to_edit.picture_v or post_to_edit.picture_v == "" %}
+                            src="{{ url_for('static', filename='Pictures_Posts/Picture_not_available.png') }}"
+                            {% else %} 
+                            src="{{ url_for('static', filename='Pictures_Posts/'+post_to_edit.picture_v) }}"
+                            {% endif %}
+                            class="card-img" alt="Img on file" style="height:50px; width: auto">
+                    </div>
+                    <div class="col-md-10" >
+                        <div class="card-body" style="height: 50px;">
+                            <p class="card-text" style="margin-top: -5px;">
+                                {% if not post_to_edit.picture_v or post_to_edit.picture_v == "" %}
+                                <b>Vertical image missing: upload bellow.</b>
+                                {% else %}
+                                <b>To change the image upload a new one bellow.</b>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {{form.picture_v.label (class="form-label")}}
-            {{form.picture_v (class="form-control")}}
+            {{form.picture_v (class="form-control", oninput="checkFileSizeBlogPic(this, 'picture_v_size')")}}
+            {{form.picture_v_size (class="form-control", id="picture_v_size", type="hidden")}}
             <br>
             {{form.picture_v_source.label (class="form-label")}}
             {{form.picture_v_source (class="form-control")}}
             <br>
+            <div class="card mb-2" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-2">
+                        <img {% if not post_to_edit.picture_h or post_to_edit.picture_h == "" %}
+                            src="{{ url_for('static', filename='Pictures_Posts/Picture_not_available.png') }}" {% else %}
+                            src="{{ url_for('static', filename='Pictures_Posts/'+post_to_edit.picture_h) }}" {% endif %}
+                            class="card-img" alt="Img on file" style="height:50px; width: auto">
+                    </div>
+                    <div class="col-md-10">
+                        <div class="card-body" style="height: 50px;">
+                            <p class="card-text" style="margin-top: -5px;">
+                                {% if not post_to_edit.picture_h or post_to_edit.picture_h == "" %}
+                                <b>Horizontal image missing: upload bellow.</b>
+                                {% else %}
+                                <b>To change the image upload a new one bellow.</b>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {{form.picture_h.label (class="form-label")}}
-            {{form.picture_h (class="form-control")}}
+            {{form.picture_h (class="form-control", oninput="checkFileSizeBlogPic(this, 'picture_h_size')")}}
+            {{form.picture_h_size (class="form-control", id="picture_h_size", type="hidden")}}
             <br>
             {{form.picture_h_source.label (class="form-label")}}
             {{form.picture_h_source (class="form-control")}}
             <br>
+            <div class="card mb-2" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-2">
+                        <img {% if not post_to_edit.picture_s or post_to_edit.picture_s == "" %}
+                            src="{{ url_for('static', filename='Pictures_Posts/Picture_not_available.png') }}" 
+                            {% else %}
+                            src="{{ url_for('static', filename='Pictures_Posts/'+post_to_edit.picture_s) }}" 
+                            {% endif %}
+                            class="card-img" alt="Img on file" style="height:50px; width: auto">
+                    </div>
+                    <div class="col-md-10">
+                        <div class="card-body" style="height: 50px;">
+                            <p class="card-text" style="margin-top: -5px;">
+                                {% if not post_to_edit.picture_s or post_to_edit.picture_s == "" %}
+                                <b>Squared image missing: upload bellow.</b>
+                                {% else %}
+                                <b>To change the image upload a new one bellow.</b>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {{form.picture_s.label (class="form-label")}}
-            {{form.picture_s (class="form-control")}}
+            {{form.picture_s (class="form-control", oninput="checkFileSizeBlogPic(this, 'picture_s_size')")}}
+            {{form.picture_s_size (class="form-control", id="picture_s_size", type="hidden")}}
             <br>
             {{form.picture_s_source.label (class="form-label")}}
             {{form.picture_s_source (class="form-control")}}

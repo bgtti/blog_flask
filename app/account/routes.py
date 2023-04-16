@@ -3,8 +3,10 @@ from app.extensions import db, login_manager
 from app.models.user import Blog_User
 from app.models.posts import Blog_Posts
 from app.account.forms import The_Accounts
-from app.account.helpers import hash_pw, allowed_imgs
-from app.models.helpers import update_stats_comments_total, update_stats_users_total, pic_src_user
+from app.models.stats import Blog_Stats
+from app.account.helpers import hash_pw
+from app.models.helpers import update_stats_comments_total, update_stats_users_total, pic_src_user, update_stats_users_active
+from app.general_helpers.helpers import check_image_filename
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import check_password_hash  # used in login
 from werkzeug.utils import secure_filename
@@ -40,6 +42,7 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
         update_stats_users_total()
+        update_stats_users_active(1)
 
         login_user(new_user)
 
@@ -93,9 +96,10 @@ def dashboard():
             Blog_Posts.author_id == current_user.id).all()
         return render_template('account/dashboard_author_dash.html', name=current_user.name, logged_in=True, posts_pending_admin=posts_pending_admin)
     else:
+        current_stats = Blog_Stats.query.get_or_404(1)
         posts_pending_approval = Blog_Posts.query.filter_by(
             admin_approved="FALSE").all()
-        return render_template('account/dashboard_admin_dash.html', name=current_user.name, logged_in=True, posts_pending_approval=posts_pending_approval)
+        return render_template('account/dashboard_admin_dash.html', name=current_user.name, logged_in=True, posts_pending_approval=posts_pending_approval, current_stats=current_stats)
 
 # ***********************************************************************************************
 # ACCOUNT MANAGEMENT, BOOKMARKS, HISTORY
@@ -146,20 +150,19 @@ def update_own_acct_info(id):
 def update_own_acct_picture(id):
     form = The_Accounts()
     user_at_hand = Blog_User.query.get_or_404(id)
-    if user_at_hand.picture == "" or user_at_hand.picture == pic_src_user("Picture_default.jpg"):
+    if user_at_hand.picture == "" or user_at_hand.picture == "Picture_default.jpg":
         profile_picture = None
     else:
         profile_picture = user_at_hand.picture
 
     if request.method == "POST":
         # if form.validate_on_submit():
-        print(f"HERE")
         if form.picture.data:
             # get name from image file:
             pic_filename = secure_filename(form.picture.data.filename)
 
             # check if extension is allowed:
-            if not allowed_imgs(pic_filename):
+            if not check_image_filename(pic_filename):
                 flash("Sorry, this image extension is not allowed.")
                 return redirect(url_for('account.update_own_acct_picture', id=id))
 
@@ -190,6 +193,10 @@ def update_own_acct_picture(id):
 
 
 # Delete account
+# When an account is deleted, this changes the number of active users in the stats
+# Not implemented yet:
+# All bookmarks, likes, comments, replies of this user SHOULD BE TRANSFERED to the Default user!!!!
+# All posts of this user should be transfered to the DEFAULT AUTHOR!!!!
 @account.route("/dashboard/manage_account/delete/<int:id>", methods=["GET", "POST"])
 @login_required
 def delete_own_acct(id):
@@ -203,6 +210,7 @@ def delete_own_acct(id):
                 db.session.delete(user_at_hand)
                 db.session.commit()
                 flash("Your account was deleted successfully.")
+                update_stats_users_active(-1)
                 return redirect(url_for("website.home"))
             except:
                 flash("There was a problem deleting your account.")

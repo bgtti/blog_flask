@@ -208,85 +208,85 @@ def create_posts():
     if not posts_exist:
         post1 = Blog_Posts(theme_id = posts.post_data[0]["theme"], title = posts.post_data[0]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[0]["author_id"], picture_v=posts.post_data[0]["picture_v"], 
-                            picture_v_source=posts.post_data[0]["picture_v_source"], picture_h=posts.post_data[0]["picture_b"],
-                            picture_h_source=posts.post_data[0]["picture_b_source"], picture_s=posts.post_data[0]["picture_s"],
+                            picture_v_source=posts.post_data[0]["picture_v_source"], picture_h=posts.post_data[0]["picture_h"],
+                            picture_h_source=posts.post_data[0]["picture_h_source"], picture_s=posts.post_data[0]["picture_s"],
                             picture_s_source=posts.post_data[0]["picture_s_source"], picture_alt=posts.post_data[0]["picture_alt"],
-                            admin_approved= "TRUE")
+                            admin_approved="TRUE", date_submitted=posts.post_data[0]["date_submitted"], date_to_post=posts.post_data[0]["date_to_post"])
         post2 = Blog_Posts(theme_id = posts.post_data[1]["theme"], title = posts.post_data[1]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[1]["author_id"], picture_v=posts.post_data[1]["picture_v"], 
-                            picture_v_source=posts.post_data[1]["picture_v_source"], picture_h=posts.post_data[1]["picture_b"],
-                            picture_h_source=posts.post_data[1]["picture_b_source"], picture_s=posts.post_data[1]["picture_s"],
+                            picture_v_source=posts.post_data[1]["picture_v_source"], picture_h=posts.post_data[1]["picture_h"],
+                            picture_h_source=posts.post_data[1]["picture_h_source"], picture_s=posts.post_data[1]["picture_s"],
                             picture_s_source=posts.post_data[1]["picture_s_source"], picture_alt=posts.post_data[1]["picture_alt"],
-                            admin_approved= "TRUE")
+                            admin_approved="TRUE", date_submitted=posts.post_data[1]["date_submitted"], date_to_post=posts.post_data[1]["date_to_post"])
         post3 = Blog_Posts(theme_id = posts.post_data[2]["theme"], title = posts.post_data[2]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[2]["author_id"], picture_v=posts.post_data[2]["picture_v"], 
-                            picture_v_source=posts.post_data[2]["picture_v_source"], picture_h=posts.post_data[2]["picture_b"],
-                            picture_h_source=posts.post_data[2]["picture_b_source"], picture_s=posts.post_data[2]["picture_s"],
+                            picture_v_source=posts.post_data[2]["picture_v_source"], picture_h=posts.post_data[2]["picture_h"],
+                            picture_h_source=posts.post_data[2]["picture_h_source"], picture_s=posts.post_data[2]["picture_s"],
                             picture_s_source=posts.post_data[2]["picture_s_source"], picture_alt=posts.post_data[2]["picture_alt"],
-                            admin_approved= "TRUE")
+                            admin_approved="TRUE", date_submitted=posts.post_data[2]["date_submitted"], date_to_post=posts.post_data[2]["date_to_post"])
         post4 = Blog_Posts(theme_id = posts.post_data[3]["theme"], title = posts.post_data[3]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[3]["author_id"], picture_v=posts.post_data[3]["picture_v"], 
-                            picture_v_source=posts.post_data[3]["picture_v_source"], picture_h=posts.post_data[3]["picture_b"],
-                            picture_h_source=posts.post_data[3]["picture_b_source"], picture_s=posts.post_data[3]["picture_s"],
+                            picture_v_source=posts.post_data[3]["picture_v_source"], picture_h=posts.post_data[3]["picture_h"],
+                            picture_h_source=posts.post_data[3]["picture_h_source"], picture_s=posts.post_data[3]["picture_s"],
                             picture_s_source=posts.post_data[3]["picture_s_source"], picture_alt=posts.post_data[3]["picture_alt"],
-                            admin_approved= "TRUE")
+                            admin_approved="TRUE", date_submitted=posts.post_data[3]["date_submitted"], date_to_post=posts.post_data[3]["date_to_post"])
         post5 = Blog_Posts(theme_id = posts.post_data[4]["theme"], title = posts.post_data[4]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[4]["author_id"], picture_v=posts.post_data[4]["picture_v"], 
-                            picture_v_source=posts.post_data[4]["picture_v_source"], picture_h=posts.post_data[4]["picture_b"],
-                            picture_h_source=posts.post_data[4]["picture_b_source"], picture_s=posts.post_data[4]["picture_s"],
+                            picture_v_source=posts.post_data[4]["picture_v_source"], picture_h=posts.post_data[4]["picture_h"],
+                            picture_h_source=posts.post_data[4]["picture_h_source"], picture_s=posts.post_data[4]["picture_s"],
                             picture_s_source=posts.post_data[4]["picture_s_source"], picture_alt=posts.post_data[4]["picture_alt"],
-                            admin_approved= "TRUE")
+                            admin_approved="TRUE", date_submitted=posts.post_data[4]["date_submitted"], date_to_post=posts.post_data[4]["date_to_post"])
         post6 = Blog_Posts(theme_id = posts.post_data[5]["theme"], title = posts.post_data[5]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[5]["author_id"], picture_v=posts.post_data[5]["picture_v"], 
-                            picture_v_source=posts.post_data[5]["picture_v_source"], picture_h=posts.post_data[5]["picture_b"],
-                            picture_h_source=posts.post_data[5]["picture_b_source"], picture_s=posts.post_data[5]["picture_s"],
+                            picture_v_source=posts.post_data[5]["picture_v_source"], picture_h=posts.post_data[5]["picture_h"],
+                            picture_h_source=posts.post_data[5]["picture_h_source"], picture_s=posts.post_data[5]["picture_s"],
                             picture_s_source=posts.post_data[5]["picture_s_source"], picture_alt=posts.post_data[5]["picture_alt"],
-                            admin_approved= "TRUE")
+                            admin_approved="TRUE", date_submitted=posts.post_data[5]["date_submitted"], date_to_post=posts.post_data[5]["date_to_post"])
         post7 = Blog_Posts(theme_id = posts.post_data[6]["theme"], title = posts.post_data[6]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[6]["author_id"], picture_v=posts.post_data[6]["picture_v"], 
-                            picture_v_source=posts.post_data[6]["picture_v_source"], picture_h=posts.post_data[6]["picture_b"],
-                            picture_h_source=posts.post_data[6]["picture_b_source"], picture_s=posts.post_data[6]["picture_s"],
+                            picture_v_source=posts.post_data[6]["picture_v_source"], picture_h=posts.post_data[6]["picture_h"],
+                            picture_h_source=posts.post_data[6]["picture_h_source"], picture_s=posts.post_data[6]["picture_s"],
                             picture_s_source=posts.post_data[6]["picture_s_source"], picture_alt=posts.post_data[6]["picture_alt"],
-                            admin_approved= "TRUE")
+                            admin_approved= "TRUE", date_submitted=posts.post_data[6]["date_submitted"], date_to_post=posts.post_data[6]["date_to_post"])
         post8 = Blog_Posts(theme_id = posts.post_data[7]["theme"], title = posts.post_data[7]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[7]["author_id"], picture_v=posts.post_data[7]["picture_v"], 
-                            picture_v_source=posts.post_data[7]["picture_v_source"], picture_h=posts.post_data[7]["picture_b"],
-                            picture_h_source=posts.post_data[7]["picture_b_source"], picture_s=posts.post_data[7]["picture_s"],
+                            picture_v_source=posts.post_data[7]["picture_v_source"], picture_h=posts.post_data[7]["picture_h"],
+                            picture_h_source=posts.post_data[7]["picture_h_source"], picture_s=posts.post_data[7]["picture_s"],
                             picture_s_source=posts.post_data[7]["picture_s_source"], picture_alt=posts.post_data[7]["picture_alt"],
-                            admin_approved= "TRUE")
+                            admin_approved= "TRUE", date_submitted=posts.post_data[7]["date_submitted"], date_to_post=posts.post_data[7]["date_to_post"])
         post9 = Blog_Posts(theme_id = posts.post_data[8]["theme"], title = posts.post_data[8]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[8]["author_id"], picture_v=posts.post_data[8]["picture_v"], 
-                            picture_v_source=posts.post_data[8]["picture_v_source"], picture_h=posts.post_data[8]["picture_b"],
-                            picture_h_source=posts.post_data[8]["picture_b_source"], picture_s=posts.post_data[8]["picture_s"],
+                            picture_v_source=posts.post_data[8]["picture_v_source"], picture_h=posts.post_data[8]["picture_h"],
+                            picture_h_source=posts.post_data[8]["picture_h_source"], picture_s=posts.post_data[8]["picture_s"],
                             picture_s_source=posts.post_data[8]["picture_s_source"], picture_alt=posts.post_data[8]["picture_alt"],
-                            admin_approved= "TRUE")
+                            admin_approved= "TRUE", date_submitted=posts.post_data[8]["date_submitted"], date_to_post=posts.post_data[8]["date_to_post"])
         post10 = Blog_Posts(theme_id = posts.post_data[9]["theme"], title = posts.post_data[9]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[9]["author_id"], picture_v=posts.post_data[9]["picture_v"], 
-                            picture_v_source=posts.post_data[9]["picture_v_source"], picture_h=posts.post_data[9]["picture_b"],
-                            picture_h_source=posts.post_data[9]["picture_b_source"], picture_s=posts.post_data[9]["picture_s"],
+                            picture_v_source=posts.post_data[9]["picture_v_source"], picture_h=posts.post_data[9]["picture_h"],
+                            picture_h_source=posts.post_data[9]["picture_h_source"], picture_s=posts.post_data[9]["picture_s"],
                             picture_s_source=posts.post_data[9]["picture_s_source"], picture_alt=posts.post_data[9]["picture_alt"],
-                            admin_approved= "TRUE")
+                            admin_approved="TRUE", date_submitted=posts.post_data[9]["date_submitted"], date_to_post=posts.post_data[9]["date_to_post"])
         post11 = Blog_Posts(theme_id=posts.post_data[10]["theme"], title=posts.post_data[10]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[10]["author_id"], picture_v=posts.post_data[10]["picture_v"],
-                            picture_v_source=posts.post_data[10]["picture_v_source"], picture_h=posts.post_data[10]["picture_b"],
-                            picture_h_source=posts.post_data[10]["picture_b_source"], picture_s=posts.post_data[10]["picture_s"],
+                            picture_v_source=posts.post_data[10]["picture_v_source"], picture_h=posts.post_data[10]["picture_h"],
+                            picture_h_source=posts.post_data[10]["picture_h_source"], picture_s=posts.post_data[10]["picture_s"],
                             picture_s_source=posts.post_data[10]["picture_s_source"], picture_alt=posts.post_data[10]["picture_alt"],
-                            admin_approved= "TRUE")
+                            admin_approved="TRUE", date_submitted=posts.post_data[10]["date_submitted"], date_to_post=posts.post_data[10]["date_to_post"])
         post12 = Blog_Posts(theme_id=posts.post_data[11]["theme"], title=posts.post_data[11]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[11]["author_id"], picture_v=posts.post_data[11]["picture_v"],
-                            picture_v_source=posts.post_data[11]["picture_v_source"], picture_h=posts.post_data[11]["picture_b"],
-                            picture_h_source=posts.post_data[11]["picture_b_source"], picture_s=posts.post_data[11]["picture_s"],
+                            picture_v_source=posts.post_data[11]["picture_v_source"], picture_h=posts.post_data[11]["picture_h"],
+                            picture_h_source=posts.post_data[11]["picture_h_source"], picture_s=posts.post_data[11]["picture_s"],
                             picture_s_source=posts.post_data[11]["picture_s_source"], picture_alt=posts.post_data[11]["picture_alt"],
-                            admin_approved= "TRUE")
+                            admin_approved="TRUE", date_submitted=posts.post_data[11]["date_submitted"], date_to_post=posts.post_data[11]["date_to_post"])
         post13 = Blog_Posts(theme_id=posts.post_data[12]["theme"], title=posts.post_data[12]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[12]["author_id"], picture_v=posts.post_data[12]["picture_v"],
-                            picture_v_source=posts.post_data[12]["picture_v_source"], picture_h=posts.post_data[12]["picture_b"],
-                            picture_h_source=posts.post_data[12]["picture_b_source"], picture_s=posts.post_data[12]["picture_s"],
+                            picture_v_source=posts.post_data[12]["picture_v_source"], picture_h=posts.post_data[12]["picture_h"],
+                            picture_h_source=posts.post_data[12]["picture_h_source"], picture_s=posts.post_data[12]["picture_s"],
                             picture_s_source=posts.post_data[12]["picture_s_source"], picture_alt=posts.post_data[12]["picture_alt"])
         post14 = Blog_Posts(theme_id=posts.post_data[13]["theme"], title=posts.post_data[13]["title"], intro=POST_INTRO,
                             body=POST_BODY, author_id=posts.post_data[13]["author_id"], picture_v=posts.post_data[13]["picture_v"],
-                            picture_v_source=posts.post_data[13]["picture_v_source"], picture_h=posts.post_data[13]["picture_b"],
-                            picture_h_source=posts.post_data[13]["picture_b_source"], picture_s=posts.post_data[13]["picture_s"],
+                            picture_v_source=posts.post_data[13]["picture_v_source"], picture_h=posts.post_data[13]["picture_h"],
+                            picture_h_source=posts.post_data[13]["picture_h_source"], picture_s=posts.post_data[13]["picture_s"],
                             picture_s_source=posts.post_data[13]["picture_s_source"], picture_alt=posts.post_data[13]["picture_alt"])
         db.session.add(post1)
         db.session.add(post2)
@@ -440,6 +440,7 @@ def create_comments():
         db.session.add(comment9)
         db.session.add(comment10)
         db.session.commit()
+
         for i in range(10):
             update_stats_comments_total()
 
@@ -466,7 +467,7 @@ def create_likes_and_bookmarks():
         bookmark7 = Blog_Bookmarks(post_id=3, user_id=6)
         bookmark8 = Blog_Bookmarks(post_id=4, user_id=6)
         bookmark9 = Blog_Bookmarks(post_id=5, user_id=7)
-        bookmark10 = Blog_Bookmarks(post_id=6, user_id=8)
+        bookmark10 = Blog_Bookmarks(post_id=6, user_id=7)
         db.session.add(like1)
         db.session.add(like2)
         db.session.add(like3)

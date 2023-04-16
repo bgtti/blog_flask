@@ -15,25 +15,44 @@ function alert(message){
 }
 
 
-// Check picture's size prior to submitting:
+// Check user picture's size prior to submitting
+// This will only alert the user, but not block the file submission!
 function checkFileSize(theInput) {
-    let parentDiv = document.getElementById('messageFileSizeDisapproved');
-    if (parentDiv.hasChildNodes()){
-        parentDiv.removeChild(parentDiv.firstChild);
-    }
+    // let parentDiv = document.getElementById('messageFileSizeDisapproved');
+    // if (parentDiv.hasChildNodes()){
+    //     parentDiv.removeChild(parentDiv.firstChild);
+    // }
     
     if (theInput.files[0].size > 582000){
         alert("Your image file is too big. Maximum image size: 582'000 bytes")
         //CHECK IF NECESSARY
-        let theP = document.createElement('p');
-        theP.innerText = "Your image file is too big. Maximum image size: 582'000 bytes";
-        parentDiv.append(theP);
-        theInput.value= ""
-    } else{
+        // let theP = document.createElement('p');
+        // theP.innerText = "Your image file is too big. Maximum image size: 582'000 bytes, yuipi";
+        // parentDiv.append(theP);
+        // theInput.value= ""
+     } 
        
-        if (parentDiv.hasChildNodes()) {
-            parentDiv.removeChild(parentDiv.firstChild);
-        }
+    //     else if (parentDiv.hasChildNodes()) {
+    //         parentDiv.removeChild(parentDiv.firstChild);
+    //     }
+    // }
+}
+
+// Check blog post picture's size prior to submitting
+// This will only alert the user, but not block the file submission!
+// Arguments: the picture object itself ("this" in the posts_submit_new.html file) and the_picture which
+// can be "picture_v", "picture_h", or "picture_s"
+// This function will return the size to a field in the form if the object is too big, or 0 if the object is within the 
+// allowed file size limit
+function checkFileSizeBlogPic(theInput, the_picture) {
+    tellTheSizeField = document.getElementById(the_picture)
+    console.log(theInput.files[0].size)
+    console.log(tellTheSizeField)
+    if (theInput.files[0].size > 1500000) {
+        alert("Your image file is too big. Maximum image size: 1'500Kb")
+        tellTheSizeField.value = theInput.files[0].size
+    } else {
+        tellTheSizeField.value = 0
     }
 }
 

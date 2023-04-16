@@ -11,8 +11,11 @@ class Config:
     # PERMANENT_SESSION_LIFETIME = timedelta(days=5)
     ABSOLUTE_PATH = os.path.dirname(__file__)
     RELATIVE_PATH = "static/Pictures_Users"
+    BLOG_PICTURES_PATH = "static/Pictures_Posts"
     PROFILE_IMG_FOLDER = os.path.join(ABSOLUTE_PATH, RELATIVE_PATH)
+    BLOG_IMG_FOLDER = os.path.join(ABSOLUTE_PATH, BLOG_PICTURES_PATH)
     STATIC_FOLDER = os.path.join(ABSOLUTE_PATH, "static")
     ALLOWED_IMG_EXTENSIONS = ['PNG', 'JPG', 'JPEG']
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     # STATIC_URL_PATH = "../static"
     # STATIC_FOLDER = "../static"

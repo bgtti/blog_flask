@@ -9,6 +9,7 @@ from app.models.user import Blog_User
 from app.models.likes import Blog_Likes
 from app.models.bookmarks import Blog_Bookmarks
 from app.models.comments import Blog_Comments, Blog_Replies
+from app.models.stats import Blog_Stats
 from app.models.helpers import update_likes, update_bookmarks, delete_comment, delete_reply
 from flask_login import current_user
 from datetime import datetime
@@ -235,7 +236,7 @@ def post_bookmark(index):
     if not post:
         return jsonify({"error": "post does not exist"}, 400)
 
-    # check if user already bookmarked this post
+    # check if user already bookmarked this post to decide whether to add or remove the bookmark
     bookmark = db.session.query(Blog_Bookmarks).filter(
         Blog_Bookmarks.user_id == current_user.id, Blog_Bookmarks.post_id == index).first()
     if bookmark:

@@ -5,7 +5,7 @@
 <section class="mb-3 container-fluid">
     <div class="justify-content-center">
         <p class="text-justify text-center">The post you are about to delete has the admin approved status of {{post_to_delete.admin_approved}}.<br>
-            This post has {{ post_to_delete.likes }} likes and {{ post_to_delete.comments }} comments.
+            This post has {{ post_likes|length }} likes and {{ comments|length }} comments.
     </div>
 </section>
 
@@ -13,7 +13,13 @@
     <div class="row justify-content-center">
         <div class="row no-gutters ALL-box-preview-shadow" style="width: 57rem;">
             <div class="col-md-6 card-img ALL-picture ">
-                <img src="{{ url_for('static', filename='Pictures_Posts/'+post_to_delete.picture_h) }}" class="card-img" alt="picture of blog post">
+                <img 
+                {% if post_to_delete.picture_h %}
+                src="{{ url_for('static', filename='Pictures_Posts/'+post_to_delete.picture_h) }}" 
+                {% else %}
+                src="{{ url_for('static', filename='Pictures_Posts/Picture_not_available.png') }}" 
+                {% endif %}
+                class="card-img" alt="picture of blog post">
             </div>
             <div class="col-md-6">
                 <div class="card-body">

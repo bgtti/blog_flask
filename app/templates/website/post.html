@@ -305,7 +305,7 @@
                                         <div>
                                             <p class="card-text"><small class="text-muted">{{ reply.date_submitted.strftime('%d %B %Y')}}</small></p>
                                             {% if reply.blocked == "FALSE" and current_user.id == comment.user.id %}
-                                            <p class="card-text ALL-svg-parent" id="p-parent-of-{{reply.id}}-reply">
+                                            <p class="card-text ALL-svg-parent" id="p-parent-of-{{reply.id}}-reply" style="justify-content: left; margin-top:-10px;">
                                                 <small class="text-muted">Delete comment:</small>
                                                 <svg id="reply-id-{{reply.id}}" onclick="deleteCommentOrReply(event, {{blog_posts.id}}, 'false', {{reply.id}})"
                                                     class="ALL-svg-delete ALL-grey" xmlns="http://www.w3.org/2000/svg" height="427pt" viewBox="-40 0 427 427.00131"

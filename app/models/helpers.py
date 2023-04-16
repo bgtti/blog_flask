@@ -53,7 +53,7 @@ def update_stats_users_active(num):
         else:
             modify_stats = int(stats.user_active_total) - 1
             stats.user_active_total = modify_stats
-            db.session.commit()
+        db.session.commit()
     else:
         return print("Invalid arguments given to def update_stats_users_active function.")
 
@@ -71,7 +71,8 @@ def update_likes(num):
         else:
             modify_stats = int(stats.likes_total) - 1
             stats.likes_total = modify_stats
-            db.session.commit()
+            
+        db.session.commit()
     else:
         return print("Invalid arguments given to def update_likes function.")
 
@@ -89,7 +90,7 @@ def update_bookmarks(num):
         else:
             modify_stats = int(stats.bookmarks_total) - 1
             stats.bookmarks_total = modify_stats
-            db.session.commit()
+        db.session.commit()
     else:
         return print("Invalid arguments given to update_bookmarks function.")
     
@@ -108,7 +109,7 @@ def update_approved_post_stats(num):
         else:
             modify_stats = int(stats.posts_approved) - 1
             stats.posts_approved = modify_stats
-            db.session.commit()
+        db.session.commit()
     else:
         return print("Invalid arguments given to update_approved_post_stats function.")
 

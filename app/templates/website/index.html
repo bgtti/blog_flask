@@ -62,15 +62,15 @@
             {% if cultural.theme_group.theme == posts_themes[3][0] and cultural.id == forth_theme_post_ids[0] or cultural.id == forth_theme_post_ids[1]: %} <div class="col col-auto mb-3">
                 <a class="ALL-no-hover" href="{{ url_for('website.blog_post', index=cultural.id) }}">
                     <div class="card h-100 ALL-post-hover" style="width: 27.9rem;">
-                        <img src="{{ url_for('static', filename='Pictures_Posts/'+cultural.picture_s) }}" class="card-img" alt="{{ cultural.picture_alt }}" />
-                        {% if cultural.id == forth_theme_post_ids[0]: %}
+                        <img src="{{ url_for('static', filename='Pictures_Posts/'+cultural.picture_h) }}" class="card-img" alt="{{ cultural.picture_alt }}" />
+                        {% if cultural.id == forth_theme_post_ids[1]: %}
                         <div class="card-img-overlay d-flex flex-column justify-content-end">
-                            {% else: %}
-                            <div class="card-img-overlay">
-                                {% endif %}
-                                <h5 class="card-title HOME-txt-background ALL-no-hover">{{ cultural.title }}</h5>
-                                <p class="card-text HOME-txt-background ALL-no-hover">by {{ cultural.author.name }}</p>
-                            </div>
+                        {% else: %}
+                        <div class="card-img-overlay">
+                        {% endif %}
+                            <h5 class="card-title HOME-txt-background ALL-no-hover">{{ cultural.title }}</h5>
+                            <p class="card-text HOME-txt-background ALL-no-hover">by {{ cultural.author.name }}</p>
+                        </div>
                         </div>
                     </div>
                 </a>
@@ -102,7 +102,7 @@
         </div>
     </section>
 
-    <!-- Cards: Culture (missing piece)-->
+    <!-- Cards: Culture -->
     <section class="container-fluid mt-4">
         <div class="row justify-content-center" >
             {% for cultural_post in posts_all: %}
@@ -110,7 +110,7 @@
             <a class="ALL-no-hover" href="{{ url_for('website.blog_post', index=cultural_post.id) }}">
                 <div class="row no-gutters ALL-post-hover" style="width: 57rem;">
                     <div class="col-md-6 card-img" style="display:flex; justify-content:center;">
-                        <img src="{{ url_for('static', filename='Pictures_Posts/'+cultural_post.picture_s) }}" class="card-img" alt="{{ cultural_post.picture_alt }}">
+                        <img src="{{ url_for('static', filename='Pictures_Posts/'+cultural_post.picture_h) }}" class="card-img" alt="{{ cultural_post.picture_alt }}">
                     </div>
                     <div class="col-md-6">
                         <div class="card-body">
@@ -134,7 +134,7 @@
             <a class="ALL-no-hover" href="{{ url_for('website.blog_post', index=city_posts.id) }}">
                 <div class="col col-auto mb-3">
                     <div class="card h-100 HOME-card ALL-post-hover" style="width: 18rem; height: 380px !important;" >
-                        <img src="{{ url_for('static', filename='Pictures_Posts/'+city_posts.picture_s) }}" class="card-img-top" alt="{{ city_posts.picture_alt }}" />
+                        <img src="{{ url_for('static', filename='Pictures_Posts/'+city_posts.picture_h) }}" class="card-img-top" alt="{{ city_posts.picture_alt }}" />
                         <div class="card-body">
                             <h5 class="card-title ALL-no-hover">{{ city_posts.title }}</h5>
                         </div>

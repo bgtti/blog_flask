@@ -29,8 +29,8 @@
                     <td class="align-middle">{{post.date_to_post.strftime('%d %b %Y')}}</td>
                     <td class="align-middle">{{post.date_submitted.strftime('%d %b %Y')}}</td>
                     <td class="align-middle">{{post.author.name}}</td>
-                    <td class="align-middle">{{post.likes}}</td>
-                    <td class="align-middle">{{post.comments}}</td>
+                    <td class="align-middle">{{post.likes|count}}</td>
+                    <td class="align-middle">{{post.comments|count}}</td>
                     <td class="align-middle">{{post.admin_approved}}</td>
                     <td class="d-flex flex-column" style="gap: 5px;">
                         <div class="d-flex" style="gap: 5px;">

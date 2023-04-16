@@ -8,11 +8,12 @@ def hash_pw(password):
         salt_length=8
     )
 
-def allowed_imgs(filename):
-    if not "." in filename:
-        return False
-    extension = filename.rsplit(".", 1)[1]
-    if extension.upper() in current_app.config["ALLOWED_IMG_EXTENSIONS"]:
-        return True
-    else:
-        return False
+#in general now:
+# def allowed_imgs(filename):
+#     if not "." in filename:
+#         return False
+#     extension = filename.rsplit(".", 1)[1]
+#     if extension.upper() in current_app.config["ALLOWED_IMG_EXTENSIONS"]:
+#         return True
+#     else:
+#         return False
