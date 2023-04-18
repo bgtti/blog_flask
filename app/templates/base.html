@@ -64,8 +64,7 @@
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{{ url_for('account.dashboard')}}">Dashboard</a>
                         <a class="dropdown-item" href="{{ url_for('account.manage_acct') }}">Account</a>
-                        <a class="dropdown-item" href="#">Bookmarks</a>
-                        <a class="dropdown-item" href="#">History</a> 
+                        <a class="dropdown-item" href="{{ url_for('account.inbox') }}">Inbox</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ url_for('account.logout') }}"><b>Log out</b></a>
                     </div>

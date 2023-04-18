@@ -4,12 +4,16 @@ from app.models.user import Blog_User
 from app.models.posts import Blog_Posts
 from app.account.forms import The_Accounts
 from app.models.stats import Blog_Stats
+from app.models.bookmarks import Blog_Bookmarks
+from app.models.comments import Blog_Comments, Blog_Replies
 from app.account.helpers import hash_pw
 from app.models.helpers import update_stats_comments_total, update_stats_users_total, pic_src_user, update_stats_users_active
 from app.general_helpers.helpers import check_image_filename
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import check_password_hash  # used in login
 from werkzeug.utils import secure_filename
+from sqlalchemy import desc
+from datetime import datetime
 import uuid as uuid
 import os
 
@@ -90,7 +94,12 @@ def logout():
 @login_required
 def dashboard():
     if current_user.type == "user":
-        return render_template('account/dashboard_user.html', name=current_user.name, logged_in=True)
+        latest_posts = db.session.query(Blog_Posts).filter(
+            Blog_Posts.admin_approved == "TRUE", Blog_Posts.date_to_post <= datetime.utcnow()).order_by(desc(Blog_Posts.date_to_post)).limit(3)
+        latest_bookmarks = Blog_Bookmarks.query.filter_by(user_id=current_user.id).limit(9)
+        if latest_bookmarks.count() == 0:
+            latest_bookmarks = None
+        return render_template('account/dashboard_user.html', name=current_user.name, logged_in=True, latest_posts=latest_posts, latest_bookmarks=latest_bookmarks)
     elif current_user.type == "author":
         posts_pending_admin = Blog_Posts.query.filter(Blog_Posts.admin_approved == "FALSE").filter(
             Blog_Posts.author_id == current_user.id).all()
@@ -218,6 +227,20 @@ def delete_own_acct(id):
     else:
         return render_template("account/account_mgmt_delete.html", logged_in=current_user.is_authenticated)
 
-# BOOKMARKS
+# INBOX
 
-# HISTORY
+
+@account.route("/dashboard/inbox", methods=["GET", "POST"])
+@login_required
+def inbox():
+    users_comments = db.session.query(Blog_Comments).filter(
+        Blog_Comments.user_id == current_user.id).order_by(desc(Blog_Comments.date_submitted)).limit(25)
+
+    replies = Blog_Replies.query.filter(
+        Blog_Replies.comment_id.in_([c.id for c in users_comments])).all()
+    
+    if users_comments.count() == 0:
+        users_comments = None
+
+    return render_template("account/inbox.html", logged_in=current_user.is_authenticated, users_comments=users_comments, replies=replies)
+

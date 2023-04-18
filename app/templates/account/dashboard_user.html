@@ -8,15 +8,55 @@
 {% block content %}
 <!-- Content -->
 
-<h1 class="mb-3 text-center">User Dashboard</h1>
+<h1 class="mb-3 text-center">Bookmarked posts</h1>
 <section class="mb-3 container-fluid">
-    <div class="row justify-content-center">
-        <p class="text-justify">Hi, user!</p>
-    </div>
+    
+        {% if latest_bookmarks != None %}
+        {% for bookmark in latest_bookmarks%}
+        <div class="row justify-content-center">
+            <div class="row no-gutters" style="width: 57rem;">
+                <div class="col-md-3 card-img ALL-picture ">
+                    <img src="{{ url_for('static', filename='Pictures_Posts/'+bookmark.post.picture_h) }}" class="card-img"
+                        alt="{{ bookmark.post.picture_alt }}">
+                </div>
+                <div class="col-md-9">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ bookmark.post.title }}</h4>
+                        <p class="card-text"><small class="text-muted"> by {{ bookmark.post.author.name }} - {{
+                                bookmark.post.date_to_post.strftime('%d %B %Y') }}</small></p>
+                        <a role="button" href="{{ url_for('website.blog_post', index=bookmark.post.id) }}" class="btn ALL-green-btn mb-2"
+                            style="width: 150px;">Read</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center">You have not bookmarked any posts yet.</p>
+        {% endif %}
+    
 </section>
+<br>
 <h2 class="mb-3 text-center">The lattest blog posts we selected for you!</h2>
 <section class="mb-3 container-fluid">
-    <p class="mb-3 text-center"> show post selection here</p>
+    <div class="row justify-content-center">
+        {% for post in latest_posts: %}
+        <a class="ALL-no-hover" href="{{ url_for('website.blog_post', index=post.id) }}">
+            <div class="col col-auto mb-3">
+                <div class="card h-100 HOME-card ALL-post-hover" style="width: 18rem; height: 380px !important;" >
+                    <img src="{{ url_for('static', filename='Pictures_Posts/'+post.picture_h) }}" class="card-img-top" alt="{{ post.picture_alt }}" />
+                    <div class="card-body">
+                        <h5 class="card-title ALL-no-hover">{{ post.title }}</h5>
+                    </div>
+                    <div class="card-footer HOME-card-footer">
+                        <small class="text-muted ALL-no-hover">by {{ post.author.name }} - {{ post.date_to_post.strftime('%d %B %Y') }}</small>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
 </section>
 
 </div>
