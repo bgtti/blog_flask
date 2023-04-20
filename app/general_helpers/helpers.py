@@ -22,3 +22,5 @@ def check_image_filename(filename):
 
     else:
         return True
+
+

@@ -1,7 +1,6 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, make_response, session, current_app
+from flask import Blueprint, render_template, request, jsonify, make_response
 from app.extensions import db
 from app.website.contact import send_email
-from app.website.forms import The_Comments
 from app.models.contact import Blog_Contact
 from app.models.themes import Blog_Theme
 from app.models.posts import Blog_Posts
@@ -9,15 +8,10 @@ from app.models.user import Blog_User
 from app.models.likes import Blog_Likes
 from app.models.bookmarks import Blog_Bookmarks
 from app.models.comments import Blog_Comments, Blog_Replies
-from app.models.stats import Blog_Stats
 from app.models.helpers import update_likes, update_bookmarks, delete_comment, delete_reply
 from flask_login import current_user
 from datetime import datetime
 from sqlalchemy import desc
-import uuid
-from datetime import timedelta
-from config import Config
-
 
 website = Blueprint('website', __name__,
                     static_folder="../static", template_folder="../template")
@@ -77,15 +71,12 @@ def all(index):
 
     return render_template('website/all_posts.html', all_blog_posts=all_blog_posts, chosen_theme=chosen_theme, intros=intros, logged_in=current_user.is_authenticated)
 
-
 @website.route("/about/")
 def about():
     authors_all = db.session.query(Blog_User).filter(
         Blog_User.blocked == "FALSE", Blog_User.type == "author",
         ).order_by(desc(Blog_User.id)).limit(25)
-
     return render_template('website/about.html', authors_all=authors_all, logged_in=current_user.is_authenticated)
-
 
 @website.route("/contact/", methods=['POST', 'GET'])
 def contact():
@@ -101,10 +92,9 @@ def contact():
             db.session.commit()
             # send email:
             send_email(contact_name, contact_email, contact_message)
-            return render_template('contact.html', msg_sent=True)
+            return render_template('website/contact.html', msg_sent=True, logged_in=current_user.is_authenticated)
         except:
             return "There was an error adding message to the database."
-
     return render_template('website/contact.html', msg_sent=False, logged_in=current_user.is_authenticated)
 
 
@@ -139,9 +129,7 @@ def blog_post(index):
     # get the replies
     replies = db.session.query(Blog_Replies).filter(Blog_Replies.post_id == index,
                                                     ).order_by(Blog_Replies.date_submitted.asc()).limit(100)
-
     return render_template('website/post.html', blog_posts=blog_post, logged_in=current_user.is_authenticated, comments=comments, replies=replies, post_likes=post_likes, user_liked=user_liked, user_bookmarked=user_bookmarked)
-
 
 # Comment or reply on post
 @website.route("/comment_post/<int:index>", methods=["POST"])
@@ -175,7 +163,6 @@ def post_comment(index):
 @website.route("/delete_comment_or_reply/<int:index>", methods=["POST"])
 def post_delete_comment(index):
     data = request.get_json()
-    print(data)
     content_type = request.headers.get('Content-Type')
     if (content_type == 'application/json'):
         data = request.get_json()
@@ -225,7 +212,6 @@ def post_like(index):
         db.session.commit()
         update_likes(1)
         has_liked = "true"
-
     return jsonify({"likes": len(post_likes), "user_liked": has_liked})
 
 # Bookmark post request sent by JavaScript
@@ -250,5 +236,4 @@ def post_bookmark(index):
         db.session.commit()
         update_bookmarks(1)
         has_bookmarked = "true"
-
     return jsonify({"user_bookmarked": has_bookmarked})

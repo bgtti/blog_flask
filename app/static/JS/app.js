@@ -1,4 +1,4 @@
-//Closing aler message
+//Closing alert message
 function alertDisplayNone() {
     alert_div = document.getElementById("alertMsgJs");
     alert_div.classList.add("All-display-none")
@@ -14,28 +14,12 @@ function alert(message){
     }, 20000)
 }
 
-
 // Check user picture's size prior to submitting
 // This will only alert the user, but not block the file submission!
-function checkFileSize(theInput) {
-    // let parentDiv = document.getElementById('messageFileSizeDisapproved');
-    // if (parentDiv.hasChildNodes()){
-    //     parentDiv.removeChild(parentDiv.firstChild);
-    // }
-    
+function checkFileSize(theInput) {    
     if (theInput.files[0].size > 582000){
         alert("Your image file is too big. Maximum image size: 582'000 bytes")
-        //CHECK IF NECESSARY
-        // let theP = document.createElement('p');
-        // theP.innerText = "Your image file is too big. Maximum image size: 582'000 bytes, yuipi";
-        // parentDiv.append(theP);
-        // theInput.value= ""
-     } 
-       
-    //     else if (parentDiv.hasChildNodes()) {
-    //         parentDiv.removeChild(parentDiv.firstChild);
-    //     }
-    // }
+    } 
 }
 
 // Check blog post picture's size prior to submitting
@@ -55,7 +39,6 @@ function checkFileSizeBlogPic(theInput, the_picture) {
         tellTheSizeField.value = 0
     }
 }
-
 
 //action can be 'like' or 'bookmark'
 function likeOrBookmark(postId, action) {
@@ -83,7 +66,6 @@ function likeOrBookmark(postId, action) {
         })
         .catch((e) => alert("Could not like/bookmark post"));
 }
-
 
 // reply form in posts.html to hide/show:
 function toggleReplyForm(event, commentId){

@@ -1,94 +1,71 @@
 # blog_flask
-A responsive travel blog template with admin section created using python flask and bootstrap.
-The blog pages 'Home', 'All Posts', 'About', and 'Contact' can be viewed by any person accessing the website, while it also contains a log-in and sign-up section, where users can create an account to like and bookmark posts, as well as use the comment section. An admin and author dashboards is also available, where posts and users can be added, editted, and deleted. 
-
+A responsive blog and blog management software with different user classes, including admin and author sections created using python flask and bootstrap.
+_The Travel Blog_ features post by authors where users can like, bookmark and comment. Admins receive emails from the contact form and are able to manage users, approve and edit blog posts submitted by authors. 
 
 ![Preview of app](app/static/Pictures_Blog_Preview/Preview_01.png)
 
-![Preview of app](app/static/Pictures_Blog_Preview/Preview_02.png)
+---
 
-![Preview of app](app/static/Pictures_Blog_Preview/Preview_03.png)
+## Table of contents(#table-of-contents)
+- [Installation](#installation)
+    -[Clone this repo](#clone-repo)
+    -[Install dependencies](#install-dependencies)
+    -[Create .env file](#create-env-file)
+    -[Create a .gitignore file](#create-gitignore-file)
+    -[Run the project](#run-the-project)
+- [Project overview](#project-overview)
+    -[User classes](#user-classes)
+    -[Visitors and users](#visitors-and-users)
+    -[Authors](#authors)
+    -[Admin and super-admin](#admin-and-super-admin)
+    -[Account blocking and deletion](#account-block-and-delete)
+    -[Contact form](#contact-form)
+    -[Mobile use](#mobile-use)
+- [Code overview](#code-overview)
+    -[Code organization](#code-organization)
+    -[Database models](#database-models)
+- [Project limitations and improvement ideas](#project-limitations-and-improvement-ideas)
+- [About and License](#about-and-license)
 
-## About this project
-This project is composed of a blog and blog management interface which allow for multiple user classes.
-The project was written in python flask (using Blueprints), using SQLite as the database (with the help of SQLalchemy), and uses bootstrap and CSS for styling.
-JavaScript was only used when necessary: to determine sizes of images prior to upload, and to allow for comments, bookmarking, and liking posts, as well as alert message display without re-loading the page for a better user experience.
+---
 
-### User classes
-There are 5 types of user classes (implicit and explicit):
-**Visitors:** webside visitors or logged out users can view the following pages: 'Home', 'All Posts', 'About', and 'Contact'. A visitor can also create an account (which will automatically create a user of type 'user'), and a logged-out user can sign in.
-**User:** a logged-in user of type 'user' can bookmark or like posts. The user can also comment and reply to comments in blog posts. The user can edit his/her username, email, picture, and 'about' section.
-**Author:** authors can do the same things as users of type 'user', as well as add posts, edit posts, and delete posts.
-**Admin:** admins can do the same things as users of type 'user', as well as:
- - block, delete, and edit any users' and authors' accounts,
- - change a user's type to 'author' or 'admin'. Can change a user's type from 'author' to 'user'. Cannot edit, delete, or block other 'admin' type accounts.
- - approve, disapprove, and edit blog posts. Note admins can edit blog posts, but cannot create a blog post from scratch
-**Super-Admin:** there is only one super-admin account. Supera-admins can do everything an admin user can do, as well as managing admin-type accounts as well (allowing for editting, blocking, and deletion of these accounts).
+## Installation(#installation)
 
-### Contact
-Messages sent through the blog's 'contact' page are received by a gmail account. 
-Messages received through the contact form are also stored in an SQLite database.
-
-### Log in validation
-Validation uses WTforms
-
-### How the code is organized
-The blog_flask folder contains:
-- 'app' folder: where the code is
-- '.env' file: with sensitive information such as the email address and password used to receive email from the contact form. Can't be downloaded, so instructions how to create it can be found in the setup section bellow.
-- '.gitignore': which is used to inform git about files that shouldn't be uploaded to the git repository, such as the .env file. Can't be downloaded, so instructions how to create it can be found in the setup section bellow.
-- 'create_db.py': the file used to use the db models to create the database. It is also used to create the 'Super-Admin' user, which is necessary in order to allow for the creation of 'admin' and 'author' accounts. It also sets up dummy user accounts which can be used for testing, and the blog posts, blog themes and dummy comments, likes and bookmarks.
-- 'requirements.txt': stores the required dependencies for this project.
-- 'run.py': used to create the app, initiate the database, and populate the database using the 'create_db.py' file.
-
-Once you run 'run.py', the database will be initiated and an 'instance' folder will be created as well.
-
-The routes were separated into four base folders inside the 'app' folder: website, account, dashboard, and error_handlers. The reason for this was to create a better separation of concerns by dividing the routes according to user access through Blueprints, to avoid one huge .py file and make navigating the code an easier task. We shall explore the 'app' folder next in more detail.
-
-In the 'app' folder, you will find the following:
-- 'account' folder: contains 'routes.py' which are all the routes that can be accessed by a logged-in user (routes to the log-in, sign-up, and log-out pages, dashboard, account management page, etc), as well as 'helpers.py' containing helpful functions such as hashing a password and checking if an image expension is allowed, and 'forms.py' used for a Flask Form Class.
-- 'dashboard' folder: contains 'routes.py' which contains routes that can be accessed by 'admin' and 'author' type users (routes for user account and post management pages), as well as a 'forms.py' used for a Flask Form Class.
-- 'dummie_data' folder: contains files with lists of information about authors, comments, posts, and themes which are used by 'create_db.py' to add the information in these files to insert information to the database when the project is first run. The data will be used to create dummie users, comments, posts, and themes that are necessary to first preview the blog. 
-- 'error_handlers' folder: contains 'routes.py' which render the 404 and 500 error pages.
-- 'models' folder: contains multiple files which are database models necessary to instanciate the database.
-- 'static' folder: contains the CSS and JS files, as well as folders containing pictures used in blog posts and user profiles.
-- 'templates' folder: contains the html files. 'base.html' is used to extend all other files. Besides 'base.html', '404.html' and '500.html', all other html files are placed into three folders ('account', 'dashboard', and 'website'), according to the Blueprint names (where you will find the routes).
-- 'website' folder: contains 'routes.py' which has the routes to website pages which visiting users can access (such as the home page, 'All Posts', 'About', and 'Contact').
-- '\__init__.py': used to mark a directory and indicate that is is a package. This file registers the Blueprints, for instance.
-- 'config.py': stores key value pairs that can be read or accessed in the code.
-- 'extensions.py': used to define and organize extensions. It is used to register the SQLAlchemy, CKEditor, and LoginManager extensions with the Flask app instance app, allowing them to be used throughout the application.
-
-## Installation: how to use this project
-Anyone is welcome to use this code (please see the liability clause at the end of this file). 
+Anyone is welcome to clone this repository. 
 A couple of steps are needed for you to be able to run it properly:
 
-1. install the required dependencies
-2. create an .env file
-3. create a .gitignore file
+1. cloning this repo
+2. install the required dependencies
+3. create an .env and a .gitignore file
 4. open run.py to run the code
 
-### Step 1: installing the dependencies
+### Step 1: cloning this repository(#clone-repo)
+You may clone the repository to your local machine and push it to your own repository in your github account.
+An explanation about how to go about that can be found in this Stackoverflow answer: https://stackoverflow.com/a/44076938/14517941
+
+### Step 2: installing the dependencies(#install-dependencies)
 When you open the folder with your code editor, you will find the requirements.txt file.
-Use the pip install -r requirements.txt command to install all the modules.
-If you make changes to the project you can update the requirements.txt or create a new requirements.txt file with the command pip freeze > requirements.txt . This will output a list of all installed Python modules with their versions.
+Use the `pip install -r requirements.txt` command to install all the modules.
+If you make changes to the project you can update the requirements.txt or create a new requirements.txt file with the command `pip freeze > requirements.txt` . This will output a list of all installed Python modules with their versions.
 Example:
 Python 3.x
 Flask
 Jinja2
 
-### Step 2: create a .env file
+### Step 3: create a .env file(#create-env-file)
 Create a .env file inside the blog_flask folder.
 You should add the following variables:
 
-EMAIL_ADDRESS = "..." <-- replace "..." with your gmail address
-EMAIL_PASSWORD = "..." <-- replace "..." with your gmail app password (two-step verification needed)
+`EMAIL_ADDRESS = "..."` <-- replace `...` with your gmail address
+`EMAIL_PASSWORD = "..."` <-- replace `...` with your gmail app password (two-step verification needed)
 
 The email address and password will be used to receive messages sent through the contact form.
-The credentials (email address and password) have been saved to an .env file, and the variables imported into app>website>contact.py, which containes a helper function, which is then used in app>website>routes.py. This information must be replaced for the code to work on local by anyone willing to use the codebase.
+The credentials (email address and password) have been saved to an .env file, and the variables imported into app>website>contact.py, which containes a helper function, which is then used in app>website>routes.py. This information must be replaced for the code to work locally by anyone willing to use the codebase.
 Messages sent though the contact form are sent and received by a gmail account. If another provider is used, replace "smtp.gmail.com" with the information from the other provider in app>website>contact.py.
 At the time of writing, Gmail allowed users to create an app password to send emails from python. You can google ' Sign in with App Passwords - Gmail Help' to learn how to create one (or follow this link: https://support.google.com/mail/answer/185833?hl=en).
+You will not want your gmail address and password to enter the public domain. This is the reason you want to place them in the .env and include the .env in your gitignore (next step).
 
-### Step 3: create a .gitignore file
+### Step 4: create a .gitignore file(#create-gitignore-file)
 Create a .gitignore file inside the blog_flask folder.
 You should add the following to it:
 
@@ -102,35 +79,269 @@ instance/
 Alternatively, you may also find online a better and more complete template to use.
 This step is only important if you are using git, since it's purpose is to avoid uploading sensitive information or unecessary files to your repository.
 
-### Step 4: run the app
+### Step 5: run the app(#run-the-project)
 You can run the run.py file and open it using local host. 
 That's it, you have installed the project and are ready to use the code!
 
-## Making changes to this file
-You want to make sure you understand how the code works before modifying it, especially regarding the database.
+It is recommended you check out the [code overview](#code-overview) - and the [database section](#database-changes) in particular before making changes to the code and the database. 
 
-### Understanding the create_db.py file
-This file is responsible for populating the database upon running the application. It, however, does a little more than that.
+<div align="right">[ <a href="#table-of-contents">↑ to top ↑</a> ]</div>
 
-#### Flask needs to understand the db models exist
-Adding a model to the modules file may not necessarily create the database on its own. 
-The mention of the database model is in create_db.py, and the functions are contained in run.py so that the models are recognized upon running the application.
+---
 
-#### Default user creation is necessary
-create_db.py will not only use the user database model to instantiate the database, but it will also populate it with three important users:
-1. The Super Admin user of type super_admin: this is the only user capable of changing the status of all other user types. It is the user who can manage admin types of accounts, as it is the only one who can delete or block this type of accounts. If there are no other accounts of type 'admin', this will be the only user capable of giving admin status to another user.
-2. The default author: what happens when an author who has published to the blog deletes their accounts? This app understands that the posts belong to the blog, and as such - the post ownership. An author will be able to edit and delete posts while his/her account is still active and not blocked. However, when an author deletes his/her account, the blog shall retain the post's ownership by transfering it to a default author who has been named "The Travel Blog Team".
-3. Default user 'Deleted'. All logged in users are able to comment or reply to posts. Users may delete their comments while they have an unblocked active account. What happens when a user deletes their account after commenting? If the comments are deleted but have many replies to them, the thread will simply stop to make sense or disappear. In order to keep threads intact, when a comment is deleted, it's content is substituted by \[deleted], allowing the content of replies to remain instact (an approach similar to Reddit). When the user deleted their accounts, however, the ownership of any comment is transfered to the default 'deleted user', since each comment needs a user id as per database requirement. The username of this account is therefore \[Deleted]
+## Project overview(#project-overview)
+This project is composed of a blog and blog management interface with for multiple user classes. Different user tasks can perform different tasks in the blog. Information about the code and technical aspects can be found in the [code overview](#code-overview) section.
 
-Note that posts also need authors to exist, and without posts there will be no content in the blog, and cause a number of errors. Shall you decide to delete the 'dummie data', consider substituting it instead. 
-Consider the database relationships before changing or deleting the dummie data in the create_db.py file.
+A quick overview of user types:
 
-#### Default users credentials and dummie data
-Note that default user credentials are uploaded to the git repo and open for anyone to see. 
-In the create_db.py file you will see the log-in credentials for all users created. Shall you decide to use this app, consider transfering the credentials to a .env file or similar to make sure this information is not public.
-Needless to say that these credentials should be changed: both email and passwords specifically.
+| Type | Access |
+| --- | --- |
+| Visitors | Visitors are non-logged in users who enter the site. The blog pages 'Home', 'All Posts', 'About', and 'Contact' can be viewed by any person accessing the website, while it also contains a log-in and sign-up section. |
+| Users | Any person can create an account. Logged-in users are able to comment on posts, bookmark posts, like posts, and change their profile picture and description. |
+| Authors | Authors can add new posts with picture and SEO-relevant information to the blog, besides being able to perform all actions registered users can perform. |
+| Admins | Admins can edit blog posts, manage (block/edit) users of types User and Author, besides being able to perform all actions registered users can perform.|
+| Super-Admin | Super-admin can perform all tasks that Admins can, as well as being able to edit and block accounts of other admin users. |
 
-### Changing the database model or the data that populates it on 'run'
+![Preview of dashboards](app/static/Pictures_Blog_Preview/Preview_dashboards.png)
+
+### Visitors and Users(#visitors-and-users)
+Website visitors are able to see the blog main content of published posts, the about section, and use the contact form. Visitors can create an account.
+
+![Preview of home](app/static/Pictures_Blog_Preview/Preview_gif.gif)
+
+While visitors would be able to see all public pages of the blog, they would only be able to join a conversation (comment and reply to comments on posts) once signed up and logged in. They would also be able to like and save posts by bookmarking them. Users may also edit their profiles and add profile pictures. 
+
+![Preview of comment section](app/static/Pictures_Blog_Preview/Preview_visitors_vs_users.png)
+
+Upon log-in users are directed to a dashboard where they can see their lattest bookmarked posts (if any). They may see their inbox page, which features their lattest comments in posts, where they may see if there were any replies to their comments. Also, they can manage their accounts' picture by downloading a new one from their computers or change their profile information and visible username.
+
+![Preview of account management and inbox](app/static/Pictures_Blog_Preview/Preview_account_and_inbox.png)
+
+### Authors(#authors)
+Authors can submit a blog post, which will need admin aproval prior to being published. Since authors are trusted user types, they may control the html of the post through the rich text editor, to better manage how the post is displayed. They may upload pictures from their machines to blog posts, edit blog post, and delete them. Authors may also engage with their audience in a conversation in the comment section.
+
+![Preview of adding post](app/static/Pictures_Blog_Preview/Preview_adding_post.png)
+
+### Admins and Super admin(#admin-and-super-admin)
+Admins are responsible for user management and post management - and thus, for content moderation. There is only one super admin, and this is the only user who can block/unblock/edit/delete other admin accounts. Any admin type can edit/delete/approve/disapprove blog posts. Only approved blog posts are published on the blog, and only on or after the designated publish date.
+
+![Preview of admin post approval](app/static/Pictures_Blog_Preview/Preview_post_approval.png)
+
+### Account blocking and deletion(#account-block-and-delete)
+When a user is blocked, he/she can no longer access his/her account. Comments and replies appear as "removed" on posts. User and authors can be blocked/unblocked by any admin, but admin-type accounts can only be blocked/unblocked by the super admin.
+
+When an account is deleted, the user's name and text on comments/replies appear as 'deleted' whenever part of a conversation flow. This is the same behavious as when a user deleted the comment or reply him/herself: it will only be deleted if it is a stand-alone, but the test will be replaced with 'deleted' in case this might affect the flow of a conversation. Keeping the flow in mind, in order to delete the user, but keep the comment/reply in its original place, these are passed on to a default user in the database (called 'deleted')
+
+![Preview of blocked account behaviour](app/static/Pictures_Blog_Preview/Preview_blocked_account.png)
+
+When the user in question is an author, the author's posts' ownership will be passed on to a default user named 'Travel Blog Team'. It is assumed here the authors are blog employees, and their work belongs to the company - with this reasoning, the material continues online even when the author is removed from the team.
+
+User information is deleted when the user - of any type - is deleted or deletes his/her own account.
+
+### Contact form(#contact-form)
+Emails can be sent through the contact form to an email account. The blog currently sends the email to a gmail account `smtplib.SMTP_SSL("smtp.gmail.com") as connection` in contact.py.
+
+![Preview of email](app/static/Pictures_Blog_Preview/Preview_email.png)
+
+The emails are also saved to the database, but they are not currently being displayed on the blog. This is listed as an idea for future development.
+
+### Mobile use(#mobile-use)
+The blog is responsive and blog pages should display well on mobile (tested in chromium browsers only).
+User and post management features (displayed for authors and admin accounts), although possible to use on small devices, are better designed for desktop usage. This is especially true for user and post tables, which could be designed in the future to be displayed in card-like format on smaller screens. This is also a future improvement idea.
+
+![Preview of email](app/static/Pictures_Blog_Preview/Preview_mobile_version.png)
+
+<div align="right">[ <a href="#table-of-contents">↑ to top ↑</a> ]</div>
+
+---
+
+## Code overview(#code-overview)
+The project was written in python flask (with Blueprints), using SQLite as the database (with the help of SQLalchemy), and uses bootstrap and CSS for styling.
+JavaScript was only used when necessary: to determine sizes of images prior to upload, and to allow for comments, bookmarking, and liking posts, as well as alert message display without re-loading the page for a better user experience.
+
+The windows command `tree` yields the following file structure within the blog_flask folder:
+
+![Preview of folder structure](app/static/Pictures_Blog_Preview/Preview_folder_structure.png)
+
+| Folder | Content |
+| --- | --- |
+| blog_flask | app initiation files such as run.py and create_db.py, as well as .env and .gitignore |
+| app | app configuration files as well as all folders that make up the app and its blueprints such as static, db models, and routes|
+| account, dashboard, error_handlers, and website | the folders containing the routes and their helper functions and forms|
+| dummie_data | files with lists of dictionaries with information used to create the visible data such as blog post text and author details |
+| general_helpers | helper functions that can be used by any module containing routes |
+| models | contain all database models as classes |
+| static | contains the CSS and JS files, as well as pictures |
+| templates | the html files are sub-divided into folders named after the blueprint using them |
+
+The routes were separated into four base folders inside the 'app' folder: website, account, dashboard, and error_handlers. The reason for this was to create a better separation of concerns by dividing the routes according to user access through Blueprints, to avoid one huge .py file and make navigating the code an easier task. 
+
+The folders inside the app folder will be explored in more detail bellow. Note the windows command `tree/F` will give you the full folder and file structure in the terminal, but given the high number of pictures and template files, only an overview is shown here which does not include all html and image files.
+
+WTForms was used for log-in validation and forms in general. The rich text editor (used to create and edit posts) is CKEditor.
+
+### Code organization(#code-organization)
+In this section we shall explore the contents of the folders in more detail, subdivided into the following sub-topics:
+
+-[blog_flask and app folders](#blog_flask-and-app-folders)
+-[routes: account, dashboard, error_handlers, and website](#routes-folders)
+-[models, general_helpers, dummie data, static, and templates](#other-folders)
+
+#### blog_flask and app folders(#blog_flask-and-app-folders)
+The project can be ran in run.py which will cann on app/extensions.py and create_db.py to create the app and initiate the database.
+
+![Preview of blog_flask and app folders](app/static/Pictures_Blog_Preview/Preview_blog_flask_and_app_folder.png)
+
+The blog_flask folder contains:
+- **'app' folder**: where the code is
+- **'.env' file**: with sensitive information such as the email address and password used to receive email from the contact form. Can't be downloaded, so instructions how to create it can be found in the [installation section](#installation).
+- **'.gitignore'**: which is used to inform git about files that shouldn't be uploaded to the git repository, such as the .env file. Can't be downloaded, so instructions how to create it can be found in the [installation section](#installation).
+- **'create_db.py'**: the file uses the db models to create the database. It is also used to create the 'Super-Admin' user, the 'default user' and 'default author' accounts, which are necessary in order to allow for the creation of other 'admin' and 'author' accounts, as well as to allow deletion of users without the loss of content. It also sets up dummy user accounts which can be used for testing, and the blog posts, blog themes and dummy comments, likes and bookmarks.
+- **'requirements.txt'**: stores the required dependencies for this project. More details about it in the [installation section](#installation).
+- **'run.py'**: used to create the app, initiate the database, and populate the database using the 'create_db.py' file. This is the python file one should run to initiate the app. Once you run it, you will see the 'instance' folder being created.
+
+In the 'app' folder, you will find the subfolders that make up the app, as well as three important files:
+- **'\__init__.py'**: used to mark a directory and indicate that is is a package. This file registers the Blueprints, for instance.
+- **'config.py'**: stores key value pairs that can be read or accessed in the code.
+- **'extensions.py'**: used to define and organize extensions. It is used to register the SQLAlchemy, CKEditor, and LoginManager extensions with the Flask app instance app, allowing them to be used throughout the application.
+
+The config file is of special importance. It is here where the path to saving pictures is defined, as wll as the `MAX_CONTENT_LENGTH` configuration, which will block big files from being uploaded by the user. 
+
+You will note that all subfolders (with the exception of templates and static) contain an empty '\__init__.py' file. This is needed for them to be recognized as blueprints, and their functions can be referred to inside other files in the form 'app.blueprint_name.filename_name'. Example: `from app.dashboard.helpers import check_blog_picture` imports the check_blog_picture function contained in the helpers file which is in the dashboard folder which is in the app folder.
+
+#### routes: account, dashboard, error_handlers, and website(#routes-folders)
+
+The routes to the html files in templates are found in four blueprints:
+
+![Preview of routes](app/static/Pictures_Blog_Preview/Preview_routes.png)
+
+- **'account' folder**: contains 'routes.py' which are all the routes that can be accessed by a logged-in user (routes to the log-in, sign-up, and log-out pages, dashboard, account management page, etc), as well as 'helpers.py' containing helpful functions such as hashing a password, and 'forms.py' used for a Flask Form Class.
+- **'dashboard' folder**: contains 'routes.py' which contains routes that can be accessed by 'admin' and 'author' type users (routes for user account and post management pages), as well as a 'forms.py' used for a Flask Form Class. It's helpers.py file contain functions such as to check if an uploaded blog image presents the correct file extension.
+- **'error_handlers' folder**: contains 'routes.py' which render the 404 and 500 error pages.
+- **'website' folder**: contains 'routes.py' which has the routes to website pages which visiting users can access (such as the home page, 'All Posts', 'About', and 'Contact'). The contact.py folder contains the function responsible for sending emails from the contact form.
+
+#### models, general_helpers, dummie data, static, and templates(#other-folders)
+
+An overview of what is contained in the other folders inside the app folder (without html and image files):
+
+![Preview of routes](app/static/Pictures_Blog_Preview/Preview_other_folders.png)
+
+- **'dummie_data' folder**: contains files with lists of information about authors, comments, posts, and themes which are used by 'create_db.py' to add the information in these files to insert information to the database when the project is first run. The data will be used to create dummie users, comments, posts, and themes that are necessary to first preview the blog. 
+
+- **'models' folder**: contains multiple files which are database models necessary to instanciate the database.
+- **'static' folder**: contains the CSS and JS files, as well as folders containing pictures used in blog posts and user profiles. The Pictures_Blog_Preview folder contains all pictures used in this Readme.md file. Pictures_Posts are where pictures used in the blog posts or post display areas such as the home page are contained and saved into when uploaded by authors or admins. Pictures_Themes are pictures of the themes which classify posts into groups. Pictures_Users is the folder which contains images uploaded by users to be displayed on their profiles.
+- **'templates' folder**: contains the html files. 'base.html' is used to extend all other files. Besides 'base.html', '404.html' and '500.html', all other html files are placed into three folders ('account', 'dashboard', and 'website'), according to the Blueprint names (where you will find the routes).
+
+### Database models(#database-models)
+The SQLALchemy library was used to facilitate the use of tables with python, and this project leverages it's method of associating classes defined in python with database tables. Adding a model to the modules file may not necessarily create the database on its own. The mention of the database model is in create_db.py, and the functions are contained in run.py so that the models are recognized upon running the application.
+
+Most tables are linked to each other with one-to-many relationships. A blog user may like multiple posts, and each post may have multiple likes associated to them, for instance. Bellow a database schema that summarizes the tables used in this project.
+
+<table><tr><th>type</th><th>name</th><th>tbl_name</th><th>rootpage</th><th>sql</th><tr><tr><td>table</td><td>blog_user</td><td>blog_user</td><td>2</td><td>CREATE TABLE blog_user (
+	id INTEGER NOT NULL, 
+	name VARCHAR(200) NOT NULL, 
+	email VARCHAR(200) NOT NULL, 
+	password VARCHAR(200) NOT NULL, 
+	date_created DATETIME, 
+	about VARCHAR(385), 
+	picture VARCHAR, 
+	type VARCHAR(100) NOT NULL, 
+	blocked VARCHAR(5), 
+	admin_notes TEXT, 
+	PRIMARY KEY (id), 
+	UNIQUE (name), 
+	UNIQUE (email)
+)</td></tr><tr><td>index</td><td>sqlite_autoindex_blog_user_1</td><td>blog_user</td><td>3</td><td>NULL</td></tr><tr><td>index</td><td>sqlite_autoindex_blog_user_2</td><td>blog_user</td><td>4</td><td>NULL</td></tr><tr><td>table</td><td>blog_theme</td><td>blog_theme</td><td>5</td><td>CREATE TABLE blog_theme (
+	id INTEGER NOT NULL, 
+	theme VARCHAR(30) NOT NULL, 
+	picture VARCHAR(700) NOT NULL, 
+	picture_source VARCHAR(700), 
+	PRIMARY KEY (id)
+)</td></tr><tr><td>table</td><td>blog_stats</td><td>blog_stats</td><td>6</td><td>CREATE TABLE blog_stats (
+	id INTEGER NOT NULL, 
+	user_total INTEGER, 
+	user_active_total INTEGER, 
+	posts_approved INTEGER, 
+	comments_total INTEGER, 
+	likes_total INTEGER, 
+	bookmarks_total INTEGER, 
+	PRIMARY KEY (id)
+)</td></tr><tr><td>table</td><td>blog_contact</td><td>blog_contact</td><td>7</td><td>CREATE TABLE blog_contact (
+	id INTEGER NOT NULL, 
+	name VARCHAR(200) NOT NULL, 
+	date_created DATETIME, 
+	email VARCHAR(100) NOT NULL, 
+	message VARCHAR(700), 
+	PRIMARY KEY (id)
+)</td></tr><tr><td>table</td><td>blog_posts</td><td>blog_posts</td><td>8</td><td>CREATE TABLE blog_posts (
+	id INTEGER NOT NULL, 
+	date_submitted DATETIME, 
+	date_to_post DATETIME, 
+	title VARCHAR(200) NOT NULL, 
+	intro VARCHAR(200) NOT NULL, 
+	body TEXT NOT NULL, 
+	picture_v VARCHAR(200), 
+	picture_v_source VARCHAR(500), 
+	picture_h VARCHAR(200), 
+	picture_h_source VARCHAR(500), 
+	picture_s VARCHAR(200), 
+	picture_s_source VARCHAR(500), 
+	picture_alt VARCHAR(200), 
+	meta_tag VARCHAR(200), 
+	title_tag VARCHAR(200), 
+	admin_approved VARCHAR(5), 
+	featured VARCHAR(5), 
+	author_id INTEGER, 
+	theme_id INTEGER, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(author_id) REFERENCES blog_user (id), 
+	FOREIGN KEY(theme_id) REFERENCES blog_theme (id)
+)</td></tr><tr><td>table</td><td>blog_comments</td><td>blog_comments</td><td>9</td><td>CREATE TABLE blog_comments (
+	id INTEGER NOT NULL, 
+	date_submitted DATETIME, 
+	text VARCHAR(500) NOT NULL, 
+	blocked VARCHAR(5), 
+	if_blocked VARCHAR(100), 
+	post_id INTEGER, 
+	user_id INTEGER, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(post_id) REFERENCES blog_posts (id), 
+	FOREIGN KEY(user_id) REFERENCES blog_user (id)
+)</td></tr><tr><td>table</td><td>blog_bookmarks</td><td>blog_bookmarks</td><td>10</td><td>CREATE TABLE blog_bookmarks (
+	id INTEGER NOT NULL, 
+	date_submitted DATETIME, 
+	post_id INTEGER, 
+	user_id INTEGER, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(post_id) REFERENCES blog_posts (id), 
+	FOREIGN KEY(user_id) REFERENCES blog_user (id)
+)</td></tr><tr><td>table</td><td>blog_likes</td><td>blog_likes</td><td>11</td><td>CREATE TABLE blog_likes (
+	id INTEGER NOT NULL, 
+	date_submitted DATETIME, 
+	post_id INTEGER, 
+	user_id INTEGER, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(post_id) REFERENCES blog_posts (id), 
+	FOREIGN KEY(user_id) REFERENCES blog_user (id)
+)</td></tr><tr><td>table</td><td>blog_replies</td><td>blog_replies</td><td>12</td><td>CREATE TABLE blog_replies (
+	id INTEGER NOT NULL, 
+	date_submitted DATETIME, 
+	text VARCHAR(500) NOT NULL, 
+	blocked VARCHAR(5), 
+	if_blocked VARCHAR(100), 
+	likes INTEGER, 
+	comment_id INTEGER, 
+	post_id INTEGER, 
+	user_id INTEGER, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(comment_id) REFERENCES blog_comments (id), 
+	FOREIGN KEY(post_id) REFERENCES blog_posts (id), 
+	FOREIGN KEY(user_id) REFERENCES blog_user (id)
+)</td></tr></table>
+
+Due to such relationships, actions such as deleting a user will impact multiple tables, since that user might have commented, replied to comments, bookmarked posts, and uploaded a profile picture, for instance. Such as action also should take care to properly handle the pictures saved to the folder. 
+
+#### Changing the database model or the data that populates it on 'run'(#database-changes)
 When you run this application for the first time, you will note a database instance is created.
 ![Preview of app](app/static/Pictures_Blog_Preview/Preview_db_instance.png)
 If you modify any of the db modules (which can be found inside the 'modules' folder), or if you make changes to the create_db.py file, you may want to delete the database instance before running the app again.
@@ -139,42 +350,60 @@ In the case you want to avoid the loss of data, it is recommended you do a datab
 
 Tip for VS Code users: for information on how to use SQLite with an extension check out https://www.youtube.com/watch?v=bKixKfb1J1o&list=LL&index=2&t=47s
 
-## This project's limitations and how it could be improved
-This project could be a base to built a more rebust blog and blog management system, and some features could be built or improved upon.
-To list a few:
+<div align="right">[ <a href="#table-of-contents">↑ to top ↑</a> ]</div>
 
-1. Form validation and file upload
-2. Enabling authors to respond to comments with ease
-3. Track user activity to analyse and improve blog engagement
+---
 
-### 1. Form validation and file upload
-WTForms was used to aid validation of forms, and a little bit of JavaScript was used to help out.
-The client can't be trusted, so some back-end validation was also carried out, though not to the extent it could have been.
-One example of this is when the user uploads pictures to be used in blog posts. Here, we check the extension to make sure the file being uploaded is a .png, .jpg. or .jpeg. However, the desired size limit is only being controlled through the front end:
+## Project limitation and improvement ideas(#project-limitations-and-improvement-ideas)
+The project's limitations are also an opportunity for future development. Some ideas of what could be improved are:
 
-![Preview of app](app/static/Pictures_Blog_Preview/Preview_picture_validation.png)
+1. Removing code redundancies
+2. Improving search queries
+3. Admin response to contact form from within the app
+4. Improved inbox
+5. Improve post recommentations and allow sharing
+6. Including a content calendar and mailing list
+7. Improving password and authentication
+8. Improving safety in user-entered data
 
-As one can note from the picture above, the size information is being passed on through a hidden form field, and this information can be easily manipulated when inspecting the code. As a fallback, however, the MAX_CONTENT_LENGTH config key was set to limit upload file size to 16 megabytes to avoid issues that could result from ultra large files being uploaded by the user.
+**1. Removing code redundancies**
+There are several route functions that perform similar tasks. These could be improved by separating code redundancies into functions inside the general helper files, and re-using them in several routes. 
 
-Author's posts could also be better validated. 
-CKEditor is being used to allow authors to write their blog posts in a way that enables them to edit HTML elements. The text will be saved to the database with these HTML elements, which will in turn be published to the blog when the post is approved by an admin user.
-Authors are being allowed to control HTML content since they are supposed to be trusted users of the blog, and admin users are supposed to check and approve the content that will be posted. 
+**2. Improving search queries**
+Database search queries could be optimized, especially regarding the .all() results.
 
-Better safety measures could be put in place, and here are some reading material about possible threats and measures that could be implemented in this regards:
+**3. Admin response to contact form from within the app**
+It would be of help to admin users to be warned of incomming contact form messages in the dashboard, and allow them to answer without leaving the app.
+
+**4. Improve post recommentations, mailing list, and calendar**
+The inbox could be improved to highlight unread replies to user's comments, or also updates on threads where the user had engaged in conversation in general. 
+
+**5. Improve post recommentations and allow sharing**
+A functionality that afacilitates the sharing of posts in social media would be of value. Also, post recommendations could be improved with AI: to recommend to users posts that would interest them based on past bookemarked or liked posts. 
+
+**6. Including a content calendar and mailing list**
+A content-calendar would enable admins and authors to organize their posting schedules better. Mailing news to subscribed users would then help the blog management remind users to come back to the block and check out the new content.
+
+**7. Improving password and authentication**
+It would be a better idea to verify passwords and emails, or verify if the user is indeed human. Including a 'forgot password' functionality and making the user enter a password twice are important updates required. Alternatively, enabling google log-ins or similar would pass on the authentication issues to other companys who are already set up to authenticate users.
+
+**8. Improving safety in user-entered data**
+Data validation could be improved in many areas, one of which is the comment/reply section. Stopping users from spamming the comment section by not allowing the posting of links and similar is important.  
+Another area would be when adding/editting a blog post. Giving authors the ability to edit the html opens many doors that bad actors could exploit. 
+
+Another area where safety can be improved is the image upload. The app configuration is set not to allow big files to be uploaded, and the filename is being checked for unsafe extensions. This check occurs in the back-end in the case front-end validation fails. There are, however, many other measures that could be implemented. Here is some reading material that explores this topic:
 
 - File Upload Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html
 - Input Validation Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html
 - Cross Site Scripting Prevention Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
 - Handling File Uploads with Flask: Handling File Uploads With Flask
 
-### 2. Enabling authors to respond to comments with ease
-It would be a great addition to the author's dashboard to see the lattest or unread user comments to their posts, so they could respond to them easily.
+<div align="right">[ <a href="#table-of-contents">↑ to top ↑</a> ]</div>
 
-### 3. Track user activity to analyse and improve blog engagement
-Knowing about the topics that users like mosts could help offering suggestions of other posts the user could be interested in.
-Information on user activity could improve blog engagement and the offering of benefits to the most active users.
-When suggesting user tracking is important to mention that it is meant in an ethical way, and user data should be treated with repect and anonymously.
+## About and license(#about-and-license)
 
-## Important information and liability
-This is a personal project completed by the author, which you are welcome to use and modify at your discretion.
-The author, owners and maintainers of this project are not liable for any damages or losses caused by the use of this project. Use this project at your own risk. The owners and maintainers of this project do not provide any warranties or guarantees regarding the reliability, accuracy, or completeness of this project. By using this project, you agree to hold harmless the owners and maintainers of this project from any liability, damages, or losses that may arise from the use of this project.
+This blog was created to be submitted as the author's final project for the CS50 course from HarvardX.
+
+This is a personal project completed by the author, which you are welcome to use and modify at your discretion. The author, owners and maintainers of this project are not liable for any damages or losses caused by the use of this project. Use this project at your own risk. The owners and maintainers of this project do not provide any warranties or guarantees regarding the reliability, accuracy, or completeness of this project. By using this project, you agree to hold harmless the owners and maintainers of this project from any liability, damages, or losses that may arise from the use of this project.
+
+<div align="right">[ <a href="#table-of-contents">↑ to top ↑</a> ]</div>

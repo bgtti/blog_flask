@@ -5,9 +5,10 @@ from app.models.posts import Blog_Posts
 from app.account.forms import The_Accounts
 from app.models.stats import Blog_Stats
 from app.models.bookmarks import Blog_Bookmarks
+from app.models.likes import Blog_Likes
 from app.models.comments import Blog_Comments, Blog_Replies
 from app.account.helpers import hash_pw
-from app.models.helpers import update_stats_comments_total, update_stats_users_total, pic_src_user, update_stats_users_active
+from app.models.helpers import  update_stats_users_total, update_stats_users_active, delete_comment, delete_reply, change_authorship_of_all_post, update_bookmarks, update_likes
 from app.general_helpers.helpers import check_image_filename
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import check_password_hash  # used in login
@@ -22,15 +23,15 @@ account = Blueprint('account', __name__)
 # Pages: login, logout, signup, account
 # Routes available for all registered users (all user types) + login and signup (available for all registered and non-registered users)
 
+# ***********************************************************************************************
 # LOGIN, SIGN UP, LOG OUT
-
 @login_manager.user_loader
 def load_user(user_id):
     return Blog_User.query.get(int(user_id))
 
 @account.route("/signup", methods=["GET", "POST"])
 def signup():
-    # in the future, check if username is unique
+    # Future improvement tip: check if username is unique
     if request.method == "POST":
         if Blog_User.query.filter_by(email=request.form.get("email")).first():
             # if user already exists:
@@ -54,7 +55,6 @@ def signup():
 
     return render_template('account/signup.html', logged_in=current_user.is_authenticated)
 
-
 @account.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -73,7 +73,7 @@ def login():
         elif the_user.blocked == "TRUE":
             flash("Your account has been blocked. Please contact us for more information")
             return redirect(url_for("account.login"))
-        # email exists and password is correct
+        # email exists and password is correct:
         else:
             login_user(the_user)
             return redirect(url_for('account.dashboard'))
@@ -86,8 +86,7 @@ def logout():
     logout_user()
     return redirect(url_for('website.home'))
 
-
-
+# ***********************************************************************************************
 # DASHBOARDs
 # displaying user dashboard after log-in according to the account type: user, author, or admin
 @account.route("/dashboard")
@@ -111,21 +110,15 @@ def dashboard():
         return render_template('account/dashboard_admin_dash.html', name=current_user.name, logged_in=True, posts_pending_approval=posts_pending_approval, current_stats=current_stats)
 
 # ***********************************************************************************************
-# ACCOUNT MANAGEMENT, BOOKMARKS, HISTORY
+# OWN ACCOUNT MANAGEMENT, BOOKMARKS, HISTORY
 
-# OWN ACCOUNT MANAGEMENT - all users
-# Account information
-
+# Managing own account information - available to all users
 @account.route("/dashboard/manage_account")
 @login_required
 def manage_acct():
     return render_template("account/account_mgmt.html", logged_in=current_user.is_authenticated)
 
-# Account information form: moved from here
-
-# Update account information
-
-
+# Update own account information
 @account.route("/dashboard/manage_account/update/<int:id>", methods=["GET", "POST"])
 @login_required
 def update_own_acct_info(id):
@@ -140,7 +133,6 @@ def update_own_acct_info(id):
         try:
             db.session.commit()
             flash("Account information updated successfully!")
-            # no time for flash, change way of displaying success
             return redirect(url_for('account.manage_acct'))
         except:
             flash("Oops, error updating account information, try again.")
@@ -153,7 +145,6 @@ def update_own_acct_info(id):
     return render_template("account/account_mgmt_update.html", logged_in=current_user.is_authenticated, form=form)
 
 # Update account information: changing the picture
-
 @account.route("/dashboard/manage_account/update_picture/<int:id>", methods=["GET", "POST"])
 @login_required
 def update_own_acct_picture(id):
@@ -165,7 +156,6 @@ def update_own_acct_picture(id):
         profile_picture = user_at_hand.picture
 
     if request.method == "POST":
-        # if form.validate_on_submit():
         if form.picture.data:
             # get name from image file:
             pic_filename = secure_filename(form.picture.data.filename)
@@ -175,7 +165,7 @@ def update_own_acct_picture(id):
                 flash("Sorry, this image extension is not allowed.")
                 return redirect(url_for('account.update_own_acct_picture', id=id))
 
-            # insert a unique id to the filename to make sure there arent two picutes with the same name:
+            # insert a unique id to the filename to make sure there arent two pictures with the same name:
             pic_filename_unique = str(uuid.uuid1()) + "_" + pic_filename
             user_at_hand.picture = pic_filename_unique
 
@@ -192,7 +182,6 @@ def update_own_acct_picture(id):
 
             db.session.commit()
             flash("Picture updated successfully!")
-            # no time for flash, change way of displaying success
             return redirect(url_for('account.manage_acct'))
         except:
             flash("Oops, error updating profile picture, try again.")
@@ -203,19 +192,64 @@ def update_own_acct_picture(id):
 
 # Delete account
 # When an account is deleted, this changes the number of active users in the stats
-# Not implemented yet:
-# All bookmarks, likes, comments, replies of this user SHOULD BE TRANSFERED to the Default user!!!!
-# All posts of this user should be transfered to the DEFAULT AUTHOR!!!!
+# When this user is deleted, their picture, bookmarks, and likes are deleted as well.
+# If this user is an author, the authorship of the post will be transfered to the blog team.
 @account.route("/dashboard/manage_account/delete/<int:id>", methods=["GET", "POST"])
 @login_required
 def delete_own_acct(id):
     user_at_hand = Blog_User.query.get_or_404(id)
     if request.method == "POST":
+        # impede the deletion of super_admin
         if id == 1:
             flash("Authorization denied: this user cannot be deleted")
             return redirect(url_for('account.manage_acct'))
         else:
             try:
+                # if user is author, transfer the authorship of the posts to the default author
+                if user_at_hand.type == "author":
+                    change_authorship_of_all_post(user_at_hand.id, 2)
+
+                # if user has comments/replies, change ownership (to default user of id 3 and delete or mark as blocked ([deleted]).
+                if user_at_hand.comments:
+                    comments = Blog_Comments.query.filter_by(
+                        user_id=user_at_hand.id).all()
+                    for comment in comments:
+                        comment.user_id = 3
+                        delete_comment(comment.id)
+
+                if user_at_hand.replies:
+                    replies = comments = Blog_Replies.query.filter_by(
+                        user_id=user_at_hand.id).all()
+                    for reply in replies:
+                        reply.user_id = 3
+                        delete_reply(reply.id)
+                
+                # delete bookmarks and likes
+                if user_at_hand.likes:
+                    likes = Blog_Likes.query.filter_by(
+                        user_id=user_at_hand.id).all()
+                    for like in likes:
+                        db.session.delete(like)
+                        update_likes(-1)
+
+                if user_at_hand.bookmarks:
+                    bookmarks = Blog_Bookmarks.query.filter_by(
+                        user_id=user_at_hand.id).all()
+                    for bookmark in bookmarks:
+                        db.session.delete(bookmark)
+                        update_bookmarks(-1)
+
+                # delete user's picture
+                if user_at_hand.picture == "" or user_at_hand.picture == "Picture_default.jpg":
+                    profile_picture = None
+                else:
+                    profile_picture = user_at_hand.picture
+
+                if profile_picture != None and os.path.exists(os.path.join(current_app.config["PROFILE_IMG_FOLDER"], profile_picture)):
+                    os.remove(os.path.join(
+                        current_app.config["PROFILE_IMG_FOLDER"], profile_picture))
+                    
+                # delete user
                 db.session.delete(user_at_hand)
                 db.session.commit()
                 flash("Your account was deleted successfully.")
@@ -223,13 +257,13 @@ def delete_own_acct(id):
                 return redirect(url_for("website.home"))
             except:
                 flash("There was a problem deleting your account.")
+                db.session.rollback()
                 return redirect(url_for('account.manage_acct'))
     else:
         return render_template("account/account_mgmt_delete.html", logged_in=current_user.is_authenticated)
 
 # INBOX
-
-
+# User can see their comments and replies the comment received.
 @account.route("/dashboard/inbox", methods=["GET", "POST"])
 @login_required
 def inbox():

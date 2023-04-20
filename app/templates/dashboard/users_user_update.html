@@ -2,11 +2,13 @@
 {% block page %}
 
 <h1 class="mb-3 text-center">Update user</h1>
+
 <section class="mb-3 container-fluid">
     <div class="row justify-content-center">
         <p class="text-justify">You are about to change the following user:</p>
     </div>
 </section>
+
 <section class="mb-3 container-fluid">
     <div class="row justify-content-center">
         <form class="col-lg-8 col-md-10" action="{{url_for('dashboard.user_update',id=user_to_update.id)}}"
@@ -49,7 +51,6 @@
                     {% endfor %}
                 </select>
             </div>
-
             <button type="submit" name="submit_update" class="btn ALL-green-btn-dark mb-2" style="width: 150px; background-color: #728C69;">Save Changes</button>
         </form>
     </div>

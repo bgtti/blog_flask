@@ -1,5 +1,4 @@
 from flask import Flask
-# from app.extensions import db, ckeditor, login_manager
 import app.extensions as extensions
 from app.config import Config
 import os
@@ -7,7 +6,6 @@ import os
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
-
 
     # db = SQLAlchemy(app)
     extensions.db.init_app(app)
@@ -18,7 +16,6 @@ def create_app(config_class=Config):
     from app.dashboard.routes import dashboard
     from app.website.routes import website
     from app.error_handlers.routes import error_handler
-    # from app.static import static
     from config import Config
     from flask import current_app
 
@@ -38,7 +35,6 @@ def create_app(config_class=Config):
 
     STATIC_PATH = repr(str(app.config["STATIC_FOLDER"]))
     
-
     @app.route("/../static/<filename>")
     def static_path():
         pass

@@ -1,10 +1,8 @@
 from app.models.stats import Blog_Stats
 from app.models.comments import Blog_Comments, Blog_Replies
+from app.models.posts import Blog_Posts
 from app.extensions import db
 from sqlalchemy import desc
-from flask import url_for, current_app
-from config import Config
-import os
 
 # Functions that take the picture's name and output the path to the source file
 def pic_src_post(picture_name):
@@ -14,12 +12,7 @@ def pic_src_theme(picture_name):
     return f"../static/Pictures_Themes/{picture_name}"
 
 def pic_src_user(picture_name):
-    # with current_app.app_context():
-    #     url = os.path.join(current_app.config["PROFILE_IMG_FOLDER"],picture_name)
-    #     url = os.path.abspath(url)
-    # return f"{url}"
     return f"../static/Pictures_Users/{picture_name}"
-    # return f"../Pictures_Users/{picture_name}"
 
 # Functions that update the statistics (Stats)
 def update_stats_comments_total():
@@ -127,7 +120,7 @@ def delete_comment(commentId):
         raise Exception("The id should be an integer")
     # check if comment exists:
     the_comment = Blog_Comments.query.get(commentId)
-    if (the_comment):
+    if the_comment:
         replies = db.session.query(Blog_Replies).filter(
             Blog_Replies.comment_id == commentId).first()
         if replies:
@@ -150,7 +143,6 @@ def delete_reply(replyId):
     Returns "success" or "404" if comment is not found.
     Replies which are not the latest reply will be blocked instead of deleted.
     """
-    print(replyId)
     # logic here
     # check if ID is int
     if not isinstance(replyId, int):
@@ -178,3 +170,15 @@ def delete_reply(replyId):
         print("You had an issue with the delete_reply function.")
         return 404
 
+# Change the authorship of all post
+def change_authorship_of_all_post(current_author_id, new_author_id):
+    """
+    This function changes the authorship of all blog posts associated with an author.
+    Arguments: current_author_id and new_author_id
+    """
+    all_posts_from_author = Blog_Posts.query.filter_by(
+        author_id=current_author_id).all()
+
+    for post in all_posts_from_author:
+        post.author_id = new_author_id
+    db.session.commit()

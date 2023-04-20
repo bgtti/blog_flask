@@ -5,11 +5,10 @@ from app.models.posts import Blog_Posts
 from app.dashboard.forms import The_Posts
 from app.dashboard.helpers import check_blog_picture, delete_blog_img
 from app.models.themes import Blog_Theme
-from app.models.helpers import update_stats_users_active, update_approved_post_stats
+from app.models.helpers import update_stats_users_active, update_approved_post_stats, change_authorship_of_all_post
 from app.models.likes import Blog_Likes
 from app.models.bookmarks import Blog_Bookmarks
 from app.models.comments import Blog_Comments, Blog_Replies
-from app.models.stats import Blog_Stats
 from app.models.helpers import update_likes, update_bookmarks, delete_comment, delete_reply
 from datetime import datetime
 from flask_login import login_required, current_user
@@ -21,7 +20,7 @@ dashboard = Blueprint('dashboard', __name__)
 # Pages: dashboard, etc
 # Routes available for all registered users of types admin and author
 
-
+# ***********************************************************************************************
 # USER MANAGEMENT: admin access only
 # Managing users: see all users
 @dashboard.route("/dashboard/manage_users", methods=["GET", "POST"])
@@ -39,7 +38,6 @@ def users_table():
 @dashboard.route("/dashboard/manage_users/update/<int:id>", methods=["GET", "POST"])
 @login_required
 def user_update(id):
-    print(current_user.picture)
     acct_types = ["admin", "author", "user"]
     acct_blocked = ["FALSE", "TRUE"]
     user_to_update = Blog_User.query.get_or_404(id)
@@ -52,16 +50,44 @@ def user_update(id):
             flash("This username is already registered with us.")
             return render_template("dashboard/users_user_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
         else:
+            # if the user to being updated is of type author, if type is updated, posts have to pass to default author first.
+            if user_to_update.type == "author":
+                if request.form.get("accttype_update") != "author":
+                    change_authorship_of_all_post(user_to_update.id, 2)
+
             user_to_update.name = request.form.get("username_update")
             user_to_update.email = request.form.get("email_update")
             user_to_update.type = request.form.get("accttype_update")
             user_to_update.blocked = request.form.get("acctblocked_update")
             try:
+                if request.form.get("acctblocked_update") == "TRUE":
+                    user_comments = Blog_Comments.query.filter(
+                        Blog_Comments.user_id == user_to_update.id).all()
+                    user_replies = Blog_Replies.query.filter(
+                        Blog_Replies.user_id == user_to_update.id).all()
+                    if user_comments:
+                        for comment in user_comments:
+                            comment.blocked = "TRUE"
+                    if user_replies:
+                        for reply in user_replies:
+                            reply.blocked = "TRUE"
+                if request.form.get("acctblocked_update") == "FALSE":
+                    user_comments = Blog_Comments.query.filter(
+                        Blog_Comments.user_id == user_to_update.id).all()
+                    user_replies = Blog_Replies.query.filter(
+                        Blog_Replies.user_id == user_to_update.id).all()
+                    if user_comments:
+                        for comment in user_comments:
+                            comment.blocked = "FALSE"
+                    if user_replies:
+                        for reply in user_replies:
+                            reply.blocked = "FALSE"
                 db.session.commit()
                 flash("User updated successfully!")
                 # no time for flash, change way of displaying success
                 return redirect(url_for('dashboard.users_table'))
             except:
+                db.session.rollback()
                 flash("Error, try again.")
                 return render_template("dashboard/users_user_update.html", id=user_to_update.id, logged_in=current_user.is_authenticated, user_to_update=user_to_update, acct_types=acct_types, acct_blocked=acct_blocked)
     else:
@@ -69,7 +95,6 @@ def user_update(id):
 
 
 # Deleting user
-
 @dashboard.route("/dashboard/manage_users/delete/<int:id>", methods=["GET", "POST"])
 @login_required
 def user_delete(id):
@@ -79,6 +104,46 @@ def user_delete(id):
             flash("Authorization error: this user cannot be deleted")
         else:
             try:
+                # if user is author, transfer the authorship of the posts to the default author
+                if user_to_delete.type == "author":
+                    change_authorship_of_all_post(user_to_delete.id, 2)
+                # if user has comments/replies, change ownership (to default user of id 3 and delete or mark as blocked ([deleted]).
+                if user_to_delete.comments:
+                    comments = Blog_Comments.query.filter_by(
+                        user_id=user_to_delete.id).all()
+                    for comment in comments:
+                        comment.user_id = 3
+                        delete_comment(comment.id)
+                if user_to_delete.replies:
+                    replies = comments = Blog_Replies.query.filter_by(
+                        user_id=user_to_delete.id).all()
+                    for reply in replies:
+                        reply.user_id = 3
+                        delete_reply(reply.id)
+                # delete bookmarks and likes
+                if user_to_delete.likes:
+                    likes = Blog_Likes.query.filter_by(
+                        user_id=user_to_delete.id).all()
+                    for like in likes:
+                        db.session.delete(like)
+                        update_likes(-1)
+                if user_to_delete.bookmarks:
+                    bookmarks = Blog_Bookmarks.query.filter_by(
+                        user_id=user_to_delete.id).all()
+                    for bookmark in bookmarks:
+                        db.session.delete(bookmark)
+                        update_bookmarks(-1)
+                # delete user's picture
+                if user_to_delete.picture == "" or user_to_delete.picture == "Picture_default.jpg":
+                    profile_picture = None
+                else:
+                    profile_picture = user_to_delete.picture
+
+                if profile_picture != None and os.path.exists(os.path.join(current_app.config["PROFILE_IMG_FOLDER"], profile_picture)):
+                    os.remove(os.path.join(
+                        current_app.config["PROFILE_IMG_FOLDER"], profile_picture))
+
+                # delete user
                 db.session.delete(user_to_delete)
                 db.session.commit()
                 flash("User deleted successfully.")
@@ -86,13 +151,14 @@ def user_delete(id):
                 return redirect(url_for('dashboard.users_table'))
             except:
                 flash("There was a problem deleting this user.")
+                db.session.rollback()
                 return render_template("dashboard/users_user_delete.html", logged_in=current_user.is_authenticated, user_to_delete=user_to_delete)
     else:
         return render_template("dashboard/users_user_delete.html", logged_in=current_user.is_authenticated, user_to_delete=user_to_delete)
 
 # Blocking user
 # Blocking a user will not influence the stats of total active users.
-
+# Blocked users will not be able to log in
 @dashboard.route("/dashboard/manage_users/block/<int:id>", methods=["GET", "POST"])
 @login_required
 def user_block(id):
@@ -102,19 +168,29 @@ def user_block(id):
             flash("Authorization error: this user cannot be blocked")
         else:
             user_to_block.blocked = "TRUE"
+            # all comments and replies shall be blocked
+            user_comments = Blog_Comments.query.filter(
+                Blog_Comments.user_id == user_to_block.id).all()
+            user_replies = Blog_Replies.query.filter(
+                Blog_Replies.user_id == user_to_block.id).all()
+            if user_comments:
+                for comment in user_comments:
+                    comment.blocked = "TRUE"
+            if user_replies:
+                for reply in user_replies:
+                    reply.blocked = "TRUE"
             try:
                 db.session.commit()
                 flash("User blocked successfully.")
                 return redirect(url_for('dashboard.users_table'))
             except:
+                db.session.rollback()
                 flash("There was a problem blocking this user.")
                 return render_template("dashboard/users_user_block.html", logged_in=current_user.is_authenticated, user_to_block=user_to_block)
     else:
         return render_template("dashboard/users_user_block.html", logged_in=current_user.is_authenticated, user_to_block=user_to_block)
 
 # Previewing a user's account information
-
-
 @dashboard.route("/dashboard/manage_users/preview/<int:id>")
 @login_required
 def user_preview(id):
@@ -126,7 +202,6 @@ def user_preview(id):
 
 # ADDING NEW BLOG POST -  AUTHORS ONLY
 # Only users of type authors can add new posts
-
 @dashboard.route("/dashboard/submit_new_post", methods=["GET", "POST"])
 @login_required
 def submit_post():
@@ -153,6 +228,7 @@ def submit_post():
             db.session.commit()
         except:
             flash("Oops, error saving your blog post, check all fields and try again.")
+            db.session.rollback()
 
         # checking images: one image at a time
         the_post_id = post.id
@@ -251,7 +327,6 @@ def submit_post():
 
 # POST MANGEMENT -  ADMIN
 # View table with all posts and manage posts: Admin only
-
 @dashboard.route("/dashboard/manage_posts")
 @login_required
 def posts_table():
@@ -282,8 +357,6 @@ def approve_post(id):
 # Disapprove (disallow) posts: only user accounts of type admin can disapprove a post
 # Disapproving a post will unpublish it from the blog
 # This action will be reflected in the blog stats of active posts
-
-
 @dashboard.route("/dashboard/manage_posts/disallow_post/<int:id>", methods=["GET", "POST"])
 @login_required
 def disallow_post(id):
@@ -303,7 +376,6 @@ def disallow_post(id):
 
 # POST MANAGEMENT - AUTHORS DASH
 # View table with all posts this author has submitted
-
 @dashboard.route("/dashboard/manage_posts_author")
 @login_required
 def posts_table_author():
@@ -323,7 +395,6 @@ def preview_post(id):
 
 # Editing a post - ADMIN AND AUTHORS
 #make authors as a list
-
 @dashboard.route("/dashboard/manage_posts_author/edit_post/<int:id>", endpoint='edit_post_author', methods=["GET", "POST"])
 @dashboard.route("/dashboard/manage_posts/edit_post/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -340,7 +411,6 @@ def edit_post(id):
         # get all information from the form with the exeption of the blog post pictures
         # this will enable the saving of the information even if there is an error with the picture upload:
         post_to_edit.theme_id = form.theme.data
-        # post_to_edit.author = form.author.data #author not available anymore, use author_id
         post_to_edit.date_to_post = form.date.data
         post_to_edit.title = form.title.data
         post_to_edit.intro = form.intro.data
@@ -457,11 +527,8 @@ def edit_post(id):
     form.title.data = post_to_edit.title
     form.intro.data = post_to_edit.intro
     form.body.data = post_to_edit.body
-    # form.picture_v.data = post_to_edit.picture_v
     form.picture_v_source.data = post_to_edit.picture_v_source
-    # form.picture_h.data = post_to_edit.picture_h
     form.picture_h_source.data = post_to_edit.picture_h_source
-    # form.picture_s.data = post_to_edit.picture_s
     form.picture_s_source.data = post_to_edit.picture_s_source
     form.picture_alt.data = post_to_edit.picture_alt
     form.meta_tag.data = post_to_edit.meta_tag

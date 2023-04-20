@@ -10,9 +10,6 @@ class Blog_Comments(db.Model):
     blocked = db.Column(db.String(5), default="FALSE")  # TRUE or FALSE
     if_blocked = db.Column(
         db.String(100), default="[removed]")  # if blocked, show this text
-    # likes = db.Column(db.Integer, default=0)
-    # flagged = db.Column(db.Integer, default=0)
-    # flagged_by = db.Column(db.Integer, default=0)
     replies = db.relationship('Blog_Replies', backref='comment')
     post_id = db.Column(db.Integer, db.ForeignKey('blog_posts.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('blog_user.id'))
@@ -30,8 +27,6 @@ class Blog_Replies(db.Model):
     if_blocked = db.Column(
         db.String(100), default="[removed]")  # if blocked, show this text
     likes = db.Column(db.Integer, default=0)
-    # flagged = db.Column(db.Integer, default=0)
-    # flagged_by = db.Column(db.Integer, default=0)
     comment_id = db.Column(db.Integer, db.ForeignKey('blog_comments.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('blog_posts.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('blog_user.id'))

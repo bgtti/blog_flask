@@ -1,4 +1,3 @@
-
 from datetime import datetime
 from flask_wtf import FlaskForm 
 from flask_wtf.file import FileField
@@ -13,17 +12,6 @@ class The_Posts(FlaskForm):
     title = StringField("Title", validators=[DataRequired()])
     intro = StringField("Intro", validators=[DataRequired()])
     body = CKEditorField("Body", validators=[DataRequired()])
-
-    # picture_v = StringField(
-    #     "Picture Vertical", default="Picture_v_XX.jpg", validators=[DataRequired()])
-    # picture_v_source = StringField("Picture Vertical Source", default="http://")
-    # picture_h = StringField(
-    #     "Picture Horizontal", default="Picture_h_XX.jpg", validators=[DataRequired()])
-    # picture_h_source = StringField(
-    #     "Picture Horizontal Source", default="http://")
-    # picture_s = StringField(
-    #     "Picture Squared", default="Picture_s_XX.jpg", validators=[DataRequired()])
-    # picture_s_source = StringField("Picture Squared Source", default="http://")
 
     picture_v = FileField("Picture Vertical")
     picture_v_source = StringField(
