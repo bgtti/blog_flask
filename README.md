@@ -1,4 +1,8 @@
 # blog_flask
+
+#### Video Demo: https://youtu.be/FfTCV8nbE1M
+#### Description:
+
 A responsive blog and blog management software with different user classes, including admin and author sections created using python flask and bootstrap.
 _The Travel Blog_ features post by authors where users can like, bookmark and comment. Admins receive emails from the contact form and are able to manage users, approve and edit blog posts submitted by authors. 
 
