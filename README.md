@@ -1,6 +1,6 @@
 # blog_flask
 
-#### Video Demo: https://youtu.be/FfTCV8nbE1M
+#### Video Demo: https://youtu.be/t3SGqwRMO6o
 #### Description:
 
 A responsive blog and blog management software with different user classes, including admin and author sections created using python flask and bootstrap.
@@ -97,7 +97,7 @@ It is recommended you check out the <a href="#code-overview">code overview</a> -
 ---
 
 ## Project overview
-This project is composed of a blog and blog management interface with for multiple user classes. Different user tasks can perform different tasks in the blog. Information about the code and technical aspects can be found in the <a href="#code-overview">code overview</a> section.
+This project is composed of a blog and blog management interface with multiple user classes. Different user tasks can perform different tasks in the blog. Information about the code and technical aspects can be found in the <a href="#code-overview">code overview</a> section.
 
 A quick overview of user types:
 
